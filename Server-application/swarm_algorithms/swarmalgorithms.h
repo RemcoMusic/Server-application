@@ -2,16 +2,17 @@
 #define SWARMALGORITHMS_H
 
 #include <QObject>
-#include <QtCore>
 #include <QTimer>
 #include "swarmalgorithmssettings.h"
 extern SwarmAlgorithmsSettings swarmAlgorithmsSettings;
-class SwarmAlgorithms : public QObject
+
+class SwarmAlgorithms: public QObject
 {
+    Q_OBJECT
 public:
     SwarmAlgorithms();
 
-private:
+private slots:
     void update();
 };
 

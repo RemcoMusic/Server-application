@@ -3,7 +3,7 @@
 
 #include <QObject>
 #include "swarmalgorithmbase.h"
-class MoveShapeAlgorithm : public SwarmAlgorithmBase
+class MoveShapeAlgorithm:public SwarmAlgorithmBase
 {
 public:
     MoveShapeAlgorithm();

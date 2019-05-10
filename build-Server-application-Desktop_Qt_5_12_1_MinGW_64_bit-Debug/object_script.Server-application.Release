@@ -1,0 +1,16 @@
+release/main.o
+release/mainwindow.o
+release/swarmalgorithms.o
+release/swarmalgorithmssettings.o
+release/robotdetection.o
+release/robotdetectionsettings.o
+release/swarmsimulation.o
+release/swarmsimulationsettings.o
+release/robotconnection.o
+release/swarmbotcommunicationsettings.o
+release/robotlocationmanager.o
+release/robotlocation.o
+release/swarmalgorithmbase.o
+release/moveshapealgorithm.o
+release/moc_mainwindow.o
+release/moc_swarmalgorithms.o

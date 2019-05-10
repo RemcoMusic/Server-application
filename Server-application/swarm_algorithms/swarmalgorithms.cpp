@@ -3,7 +3,7 @@
 
 SwarmAlgorithms::SwarmAlgorithms()
 {
-    QTimer *timer = new QTimer();
+    QTimer *timer = new QTimer(this);
     connect(timer, SIGNAL(timeout()), this, SLOT(update()));
     timer->start(swarmAlgorithmsSettings.settingVariables.updateIntervalMs);
 }
