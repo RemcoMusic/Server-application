@@ -57,13 +57,17 @@ HEADERS += \
 FORMS += \
         user_interface/mainwindow.ui
 
+<<<<<<< HEAD
 INCLUDEPATH += C:\opencv\build\include
+=======
+>>>>>>> a082620c37a6e34ff5ddb202f8037fe7e4dd7d1f
 INCLUDEPATH += swarm_simulation
 INCLUDEPATH += swarm_algorithms
 INCLUDEPATH += robot_detection
 INCLUDEPATH += robot_connection
 INCLUDEPATH += user_interface
 
+<<<<<<< HEAD
 LIBS += C:\opencv-build\bin\libopencv_core410.dll
 LIBS += C:\opencv-build\bin\libopencv_highgui410.dll
 LIBS += C:\opencv-build\bin\libopencv_imgcodecs410.dll
@@ -71,6 +75,18 @@ LIBS += C:\opencv-build\bin\libopencv_imgproc410.dll
 LIBS += C:\opencv-build\bin\libopencv_features2d410.dll
 LIBS += C:\opencv-build\bin\libopencv_calib3d410.dll
 LIBS += C:\opencv-build\bin\libopencv_videoio410.dll
+=======
+INCLUDEPATH += C:\opencv\build\include
+
+LIBS += $$(OPENCV_PATH)\bin\libopencv_core410.dll
+LIBS += $$(OPENCV_PATH)\bin\libopencv_highgui410.dll
+LIBS += $$(OPENCV_PATH)\bin\libopencv_imgcodecs410.dll
+LIBS += $$(OPENCV_PATH)\bin\libopencv_imgproc410.dll
+LIBS += $$(OPENCV_PATH)\bin\libopencv_features2d410.dll
+LIBS += $$(OPENCV_PATH)\bin\libopencv_calib3d410.dll
+LIBS += $$(OPENCV_PATH)\bin\libopencv_videoio410.dll
+
+>>>>>>> a082620c37a6e34ff5ddb202f8037fe7e4dd7d1f
 # more correct variant, how set includepath and libs for mingw
 # add system variable: OPENCV_SDK_DIR=D:/opencv/opencv-build/install
 # read http://doc.qt.io/qt-5/qmake-variable-reference.html#libs
@@ -84,7 +100,11 @@ LIBS += C:\opencv-build\bin\libopencv_videoio410.dll
 #        -lopencv_imgproc320     \
 #        -lopencv_features2d320  \
 #        -lopencv_calib3d320
+<<<<<<< HEAD
 
+=======
+#message($$(OPENCV_SDK_DIR))
+>>>>>>> a082620c37a6e34ff5ddb202f8037fe7e4dd7d1f
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
