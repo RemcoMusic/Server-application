@@ -2,7 +2,9 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-
+#include <QGraphicsScene>
+#include <QGraphicsView>
+#include <graphicbot.h>
 namespace Ui {
 class MainWindow;
 }
@@ -16,6 +18,8 @@ public:
     ~MainWindow();
 
 private:
+    QGraphicsScene *dataScene;
+    QGraphicsScene *cameraScene;
     Ui::MainWindow *ui;
 };
 

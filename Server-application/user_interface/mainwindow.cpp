@@ -9,15 +9,14 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    /*
-     * Only uncomment this peace of code to check if opencv works correctly within QT
-     */
-        // read an image
-        cv::Mat image = cv::imread("C:/Users/Rene Schouten/Pictures/earth.jpg", 1);
-        // create image window named "My Image"
-        cv::namedWindow("My Image");
-        // show the image on window
-        cv::imshow("My Image", image);
+    cameraScene = new QGraphicsScene(this);
+    dataScene = new QGraphicsScene(this);
+
+
+    ui->graphicsView_Data->setScene(dataScene);
+    ui->graphicsView_CameraRaw->setScene(cameraScene);
+    dataScene->addItem(new GraphicBot());
+
 }
 
 MainWindow::~MainWindow()
