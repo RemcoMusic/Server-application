@@ -3,3 +3,6 @@
 
 #Qt build files
 /build-Server-application-Desktop_Qt_5_12_3_MinGW_64_bit-Debug/*
+
+#VS-Code folder
+/SwarmboTron/.vscode/*
