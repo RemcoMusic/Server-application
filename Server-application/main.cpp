@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-#include "user_interface/mainwindow.h"
-=======
 #include "mainwindow.h"
->>>>>>> a082620c37a6e34ff5ddb202f8037fe7e4dd7d1f
 #include <QApplication>
 #include "swarmalgorithms.h"
 #include "robotconnection.h"
