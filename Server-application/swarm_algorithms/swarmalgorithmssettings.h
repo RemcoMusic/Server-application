@@ -7,16 +7,12 @@ class SwarmAlgorithmsSettings
 {
 public:
     SwarmAlgorithmsSettings();
-    struct VisualisationVariables
-    {
-       QList<SwarmAlgorithmBase*> algorithms;
-    }visualisationVariables;
 
-    struct SettingVariables
-    {
-        SwarmAlgorithmBase *activeAlgorithm=nullptr;
-        int updateIntervalMs=100;
-    }settingVariables;
+    QList<SwarmAlgorithmBase*> algorithms;
+
+
+    SwarmAlgorithmBase *activeAlgorithm=nullptr;
+    int updateIntervalMs=100;
 };
 extern SwarmAlgorithmsSettings swarmAlgorithmsSettings;
 #endif // SWARMALGORITHMSSETTINGS_H

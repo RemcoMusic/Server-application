@@ -19,6 +19,7 @@ public:
         REAL = 1,
         SIMULATED=2
     }type;
+
 };
 
 #endif // ROBOTLOCATION_H

@@ -9,9 +9,9 @@ SwarmAlgorithms::SwarmAlgorithms()
     QTimer *timer = new QTimer(this);
 >>>>>>> a082620c37a6e34ff5ddb202f8037fe7e4dd7d1f
     connect(timer, SIGNAL(timeout()), this, SLOT(update()));
-    timer->start(swarmAlgorithmsSettings.settingVariables.updateIntervalMs);
+    timer->start(swarmAlgorithmsSettings.updateIntervalMs);
 }
 void SwarmAlgorithms::update()
 {
-    swarmAlgorithmsSettings.settingVariables.activeAlgorithm->update();
+    swarmAlgorithmsSettings.activeAlgorithm->update();
 }

@@ -24,6 +24,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 CONFIG += c++11
 
+
 SOURCES += \
     main.cpp \
     user_interface\mainwindow.cpp \
@@ -38,7 +39,9 @@ SOURCES += \
     robotlocationmanager.cpp \
     robotlocation.cpp \
     swarm_algorithms/swarmalgorithmbase.cpp \
-    swarm_algorithms/moveshapealgorithm.cpp
+    swarm_algorithms/moveshapealgorithm.cpp \
+    globalsettings.cpp \
+    robotgroup.cpp
 
 HEADERS += \
     user_interface\mainwindow.h \
@@ -53,7 +56,9 @@ HEADERS += \
     robotlocationmanager.h \
     robotlocation.h \
     swarm_algorithms/swarmalgorithmbase.h \
-    swarm_algorithms/moveshapealgorithm.h
+    swarm_algorithms/moveshapealgorithm.h \
+    globalsettings.h \
+    robotgroup.h
 FORMS += \
         user_interface/mainwindow.ui
 

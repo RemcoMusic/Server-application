@@ -7,6 +7,7 @@ class RobotDetectionSettings
 {
 public:
     RobotDetectionSettings();
+
 };
 
 #endif // ROBOTDETECTIONSETTINGS_H
