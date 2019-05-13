@@ -4,6 +4,5 @@ SwarmAlgorithmsSettings swarmAlgorithmsSettings;
 SwarmAlgorithmsSettings::SwarmAlgorithmsSettings()
 {
     algorithms.append(new MoveShapeAlgorithm());
-
     activeAlgorithm = algorithms.first();
 }

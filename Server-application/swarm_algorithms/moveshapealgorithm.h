@@ -4,6 +4,7 @@
 #include <QObject>
 #include "swarmalgorithmbase.h"
 class MoveShapeAlgorithm : public SwarmAlgorithmBase
+
 {
 public:
     MoveShapeAlgorithm();
