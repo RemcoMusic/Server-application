@@ -7,15 +7,7 @@ class SwarmSimulationSettings
 {
 public:
     SwarmSimulationSettings();
-    struct VisualisationVariables
-    {
 
-    }visualisationVariables;
-
-    struct SettingVariables
-    {
-
-    }settingVariables;
 };
 
 #endif // SWARMSIMULATIONSETTINGS_H

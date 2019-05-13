@@ -7,12 +7,14 @@
 
 #include <QObject>
 #include "robotlocation.h"
+#include "robotgroup.h"
 #include <QList>
 class RobotLocationManager
 {
 public:
     RobotLocationManager();
     QList<RobotLocation> robots;
+    QList<RobotGroup> groups;
 };
 
 #endif // ROBOTLOCATIONMANAGER_H

@@ -4,8 +4,3 @@ SwarmAlgorithmBase::SwarmAlgorithmBase()
 {
 
 }
-SwarmAlgorithmBase::~SwarmAlgorithmBase()
-{
-
-}
-

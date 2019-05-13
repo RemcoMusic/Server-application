@@ -3,7 +3,7 @@
 SwarmAlgorithmsSettings swarmAlgorithmsSettings;
 SwarmAlgorithmsSettings::SwarmAlgorithmsSettings()
 {
-    visualisationVariables.algorithms.append(new MoveShapeAlgorithm());
+    algorithms.append(new MoveShapeAlgorithm());
 
-    settingVariables.activeAlgorithm = visualisationVariables.algorithms.first();
+    activeAlgorithm = algorithms.first();
 }

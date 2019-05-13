@@ -7,7 +7,6 @@ class SwarmAlgorithmBase
 {
 public:
     SwarmAlgorithmBase();
-    ~SwarmAlgorithmBase();
     struct AlgorithmDiscription
     {
         QString name;
@@ -18,7 +17,6 @@ public:
         bool errorOccured=false;
     }algorithmDiscription;
     virtual void update()=0;
-
 };
 
 #endif // SWARMALGORITHMBASE_H
