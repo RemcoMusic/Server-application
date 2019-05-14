@@ -2,7 +2,9 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-
+#include <QGraphicsScene>
+#include <QGraphicsView>
+#include <robotlocation.h>
 namespace Ui {
 class MainWindow;
 }
@@ -15,7 +17,12 @@ public:
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
+private slots:
+    void on_pushButton_clicked();
+
 private:
+    QGraphicsScene *dataScene;
+    QGraphicsScene *cameraScene;
     Ui::MainWindow *ui;
 };
 

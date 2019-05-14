@@ -8,10 +8,8 @@ class SwarmAlgorithmsSettings
 public:
     SwarmAlgorithmsSettings();
 
-    QList<SwarmAlgorithmBase*> algorithms;
+    QList<SwarmAlgorithmBase*> activeAlgorithms;
 
-
-    SwarmAlgorithmBase *activeAlgorithm=nullptr;
     int updateIntervalMs=100;
 };
 extern SwarmAlgorithmsSettings swarmAlgorithmsSettings;

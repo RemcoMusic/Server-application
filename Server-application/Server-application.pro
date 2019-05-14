@@ -27,6 +27,7 @@ CONFIG += c++11
 
 SOURCES += \
     main.cpp \
+    robotlocationpainter.cpp \
     user_interface\mainwindow.cpp \
     swarm_algorithms\swarmalgorithms.cpp \
     swarm_algorithms\swarmalgorithmssettings.cpp \

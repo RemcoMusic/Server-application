@@ -13,8 +13,9 @@ class RobotLocationManager
 {
 public:
     RobotLocationManager();
-    QList<RobotLocation> robots;
-    QList<RobotGroup> groups;
+    QList<RobotLocation*> robots;
+    QList<RobotGroup*> groups;
+    void printAllRobots();
 };
-
+extern RobotLocationManager robotLocationManager;
 #endif // ROBOTLOCATIONMANAGER_H
