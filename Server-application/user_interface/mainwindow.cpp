@@ -15,7 +15,10 @@ MainWindow::MainWindow(QWidget *parent) :
 
     ui->graphicsView_Data->setScene(dataScene);
     ui->graphicsView_CameraRaw->setScene(cameraScene);
-    dataScene->addItem(new GraphicBot());
+    GraphicBot *b = new GraphicBot();
+    dataScene->addItem(b);
+    b->setRotation(270);
+
 
 }
 
