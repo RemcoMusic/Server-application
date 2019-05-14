@@ -1,8 +1,16 @@
 #include "graphicbot.h"
 
+
+GraphicBot::GraphicBot()
+{
+    botSizeX = 10;
+    botSizeY = 10;
+    x = 0;
+    y = 0;
+}
 QRectF GraphicBot::boundingRect() const
 {
-    return QRectF(0,0,200,200);
+    return QRectF(x,y,botSizeX,botSizeY);
 }
 
 void GraphicBot::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
@@ -15,14 +23,17 @@ void GraphicBot::paint(QPainter *painter, const QStyleOptionGraphicsItem *option
 
 
         painter->setPen(pen);
+        painter->setBrush(brush);
 
-        for(int i = 0;i<=5;i++)
-        {
+        painter->drawEllipse(0,0,botSizeX,botSizeY);
 
-            painter->drawArc(0,100-10*i,20*i,20*i,(-70)*16,(140)*16);
+//        for(int i = 0;i<=5;i++)
+//        {
+
+//            painter->drawArc(0,100-10*i,20*i,20*i,(-70)*16,(140)*16);
 
 
-        }
+//        }
 
 
 //    painter->translate(100,100);
@@ -44,4 +55,15 @@ void GraphicBot::paint(QPainter *painter, const QStyleOptionGraphicsItem *option
 void GraphicBot::setRotation(int d)
 {
     angle = d;
+}
+
+void GraphicBot::setLocation(int x, int y)
+{
+    this->x = x;
+    this->y = y;
+}
+
+void GraphicBot::setColor(QColor newColor)
+{
+    myColor = newColor;
 }
