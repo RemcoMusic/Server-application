@@ -27,7 +27,7 @@ CONFIG += c++11
 
 SOURCES += \
     main.cpp \
-    user_interface/graphicbot.cpp \
+    robotlocationpainter.cpp \
     user_interface\mainwindow.cpp \
     swarm_algorithms\swarmalgorithms.cpp \
     swarm_algorithms\swarmalgorithmssettings.cpp \
@@ -45,7 +45,6 @@ SOURCES += \
     robotgroup.cpp
 
 HEADERS += \
-    user_interface/graphicbot.h \
     user_interface\mainwindow.h \
     swarm_algorithms\swarmalgorithms.h \
     robot_detection\robotdetection.h \

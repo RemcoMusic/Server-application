@@ -7,14 +7,23 @@
 
 #include <QObject>
 #include "robotgroup.h"
+#include "globalsettings.h"
+#include <QGraphicsItem>
+#include <QPainter>
+#include <QColor>
 
-class RobotLocation
+class RobotLocation: public QGraphicsItem
 {
 public:
+    QRectF boundingRect() const;
+    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
+    void setRotation(int r);
     RobotLocation(RobotGroup *group = nullptr);
+    int angle = 90;
+
     int x = 0;
     int y = 0;
-    int angle = 0;//degrees seen from the camera
+    QColor myColor = Qt::yellow;
 
     double batteryVoltage=7.4;
 

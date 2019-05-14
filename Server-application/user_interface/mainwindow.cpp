@@ -15,9 +15,25 @@ MainWindow::MainWindow(QWidget *parent) :
 
     ui->graphicsView_Data->setScene(dataScene);
     ui->graphicsView_CameraRaw->setScene(cameraScene);
-    GraphicBot *b = new GraphicBot();
+    RobotLocation *b = new RobotLocation();
     dataScene->addItem(b);
-    b->setRotation(270);
+    dataScene->addRect(0,0,globalSettings.fieldSizeX,globalSettings.fieldSizeY);
+
+    for(int i =0;i<50;i++){
+        int x = qrand() % globalSettings.fieldSizeX;
+        int y = qrand() % globalSettings.fieldSizeY;
+        int a = qrand() % 360;
+        RobotLocation *l = new RobotLocation();
+        l->x = x;
+        l->y = y;
+        l->setX(x-0.5*globalSettings.botDiameter);
+        l->setY(y-0.5*globalSettings.botDiameter);
+        l->setRotation(a);
+        dataScene->addItem(l);
+
+    }
+    //ui->graphicsView_Data->fitInView(dataScene->sceneRect(), Qt::KeepAspectRatio);
+    update();
 
 
 }
@@ -25,4 +41,15 @@ MainWindow::MainWindow(QWidget *parent) :
 MainWindow::~MainWindow()
 {
     delete ui;
+}
+
+void MainWindow::on_pushButton_clicked()
+{
+    int width = globalSettings.fieldSizeX;
+    int height = globalSettings.fieldSizeY;
+    //ui->graphicsView_Data->setFixedSize(width, height);
+    ui->graphicsView_Data->setSceneRect(0-10, 0-10, width+10, height+10);
+    ui->graphicsView_Data->fitInView(0-10, 0-10, width+10, height+10, Qt::KeepAspectRatio);
+    repaint();
+
 }

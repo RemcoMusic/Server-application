@@ -1,21 +1,10 @@
-#include "graphicbot.h"
-
-
-GraphicBot::GraphicBot()
+#include <robotlocation.h>
+QRectF RobotLocation::boundingRect() const
 {
-    botSizeX = 10;
-    botSizeY = 10;
-    x = 0;
-    y = 0;
-    angle = 90;
-    myColor = Qt::yellow;
-}
-QRectF GraphicBot::boundingRect() const
-{
-    return QRectF(x,y,botSizeX,botSizeY);
+    return QRectF(0,0,2*globalSettings.botDiameter,2*globalSettings.botDiameter);
 }
 
-void GraphicBot::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
+void RobotLocation::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
     QRectF rect = boundingRect();
         QBrush brush(Qt::black);
@@ -78,19 +67,6 @@ void GraphicBot::paint(QPainter *painter, const QStyleOptionGraphicsItem *option
 
 
 }
-
-void GraphicBot::setRotation(int d)
-{
-    angle = d;
-}
-
-void GraphicBot::setLocation(int x, int y)
-{
-    this->x = x;
-    this->y = y;
-}
-
-void GraphicBot::setColor(QColor newColor)
-{
-    myColor = newColor;
+void RobotLocation::setRotation(int r){
+    angle = r;
 }

@@ -2,7 +2,8 @@
 
 RobotLocation::RobotLocation(RobotGroup *group)
 {
-
+    x = globalSettings.botDiameter/2;
+    y = globalSettings.botDiameter/2;
 }
 void RobotLocation::print()
 {
