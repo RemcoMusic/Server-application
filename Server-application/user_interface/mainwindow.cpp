@@ -13,11 +13,11 @@ MainWindow::MainWindow(QWidget *parent) :
      * Only uncomment this peace of code to check if opencv works correctly within QT
      */
         // read an image
-        cv::Mat image = cv::imread("C:/Users/Rene Schouten/Pictures/earth.jpg", 1);
+        //cv::Mat image = cv::imread("C:/Users/Rene Schouten/Pictures/earth.jpg", 1);
         // create image window named "My Image"
-        cv::namedWindow("My Image");
+        //cv::namedWindow("My Image");
         // show the image on window
-        cv::imshow("My Image", image);
+        //cv::imshow("My Image", image);
 }
 
 MainWindow::~MainWindow()
