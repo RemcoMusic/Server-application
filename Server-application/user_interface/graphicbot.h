@@ -1,6 +1,6 @@
 #ifndef GRAPHICBOT_H
 #define GRAPHICBOT_H
-
+#include <globalsettings.h>
 
 #include <QGraphicsItem>
 #include <QPainter>

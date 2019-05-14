@@ -12,5 +12,5 @@ public:
     int botDiameter = 100;//mm
 
 };
-
+extern GlobalSettings globalSettings;
 #endif // GLOBALSETTINGS_H

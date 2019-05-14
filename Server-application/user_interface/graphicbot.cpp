@@ -7,6 +7,8 @@ GraphicBot::GraphicBot()
     botSizeY = 10;
     x = 0;
     y = 0;
+    angle = 90;
+    myColor = Qt::yellow;
 }
 QRectF GraphicBot::boundingRect() const
 {
@@ -16,16 +18,41 @@ QRectF GraphicBot::boundingRect() const
 void GraphicBot::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
     QRectF rect = boundingRect();
-        QBrush brush(Qt::red);
+        QBrush brush(Qt::black);
         QPen pen(Qt::red);
-        pen.setWidth(8);
+        pen.setWidth(1);
         QFont f;
 
+        double d = globalSettings.botDiameter;
+
+        painter->translate(0.5*d,0.5*d);
+        painter->rotate(angle);
+        painter->translate(-0.5*d,-0.5*d);
 
         painter->setPen(pen);
         painter->setBrush(brush);
 
-        painter->drawEllipse(0,0,botSizeX,botSizeY);
+        painter->drawEllipse(0,0,d,d);
+
+        brush.setColor(myColor);//statusColor
+        painter->setBrush(brush);
+        double p = 0.1; //value
+        painter->drawEllipse(p*d,p*d,d-2*p*d,d-2*p*d);
+
+        brush.setColor(Qt::black);//statusColor
+        painter->setBrush(brush);
+        p = 0.2;
+        painter->drawEllipse(p*d,p*d,d-2*p*d,d-2*p*d);
+
+        brush.setColor(Qt::red);//statusColor
+        painter->setBrush(brush);
+        p = 0.45;
+        painter->drawEllipse(p*d,p*d,d-2*p*d,d-2*p*d);
+
+        brush.setColor(Qt::red);//statusColor
+        painter->setBrush(brush);
+        double v =0.01;
+        painter->drawRect(d/2-d*v,0,2*d*v,0.5*d);
 
 //        for(int i = 0;i<=5;i++)
 //        {
