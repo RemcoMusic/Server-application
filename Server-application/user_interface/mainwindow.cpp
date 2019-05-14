@@ -14,12 +14,13 @@ MainWindow::MainWindow(QWidget *parent) :
 
 
     ui->graphicsView_Data->setScene(dataScene);
+    ui->graphicsView_data_large->setScene(dataScene);
     ui->graphicsView_CameraRaw->setScene(cameraScene);
     RobotLocation *b = new RobotLocation();
     dataScene->addItem(b);
     dataScene->addRect(0,0,globalSettings.fieldSizeX,globalSettings.fieldSizeY);
 
-    for(int i =0;i<50;i++){
+    for(int i =0;i<10000;i++){
         int x = qrand() % globalSettings.fieldSizeX;
         int y = qrand() % globalSettings.fieldSizeY;
         int a = qrand() % 360;
@@ -50,6 +51,8 @@ void MainWindow::on_pushButton_clicked()
     //ui->graphicsView_Data->setFixedSize(width, height);
     ui->graphicsView_Data->setSceneRect(0-10, 0-10, width+10, height+10);
     ui->graphicsView_Data->fitInView(0-10, 0-10, width+10, height+10, Qt::KeepAspectRatio);
+    ui->graphicsView_data_large->setSceneRect(0-10, 0-10, width+10, height+10);
+    ui->graphicsView_data_large->fitInView(0-10, 0-10, width+10, height+10, Qt::KeepAspectRatio);
     repaint();
 
 }
