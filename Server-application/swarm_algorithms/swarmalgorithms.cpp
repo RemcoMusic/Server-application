@@ -8,6 +8,10 @@ SwarmAlgorithms::SwarmAlgorithms()
     timer->start(swarmAlgorithmsSettings.updateIntervalMs);
 }
 void SwarmAlgorithms::update()
-{
-    swarmAlgorithmsSettings.activeAlgorithm->update();
+{        
+    QListIterator<SwarmAlgorithmBase*> i(swarmAlgorithmsSettings.activeAlgorithms);
+    while (i.hasNext())
+    {
+        i.next()->update();
+    }
 }
