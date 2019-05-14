@@ -6,19 +6,37 @@
 #define ROBOTLOCATION_H
 
 #include <QObject>
+#include "robotgroup.h"
+#include "globalsettings.h"
+#include <QGraphicsItem>
+#include <QPainter>
+#include <QColor>
 
-class RobotLocation
+class RobotLocation: public QGraphicsItem
 {
 public:
-    RobotLocation();
+    QRectF boundingRect() const;
+    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
+    void setRotation(int r);
+    RobotLocation(RobotGroup *group = nullptr);
+    int angle = 90;
+
     int x = 0;
     int y = 0;
-    int angle = 0;//degrees seen from the camera
+    QColor myColor = Qt::yellow;
+
+    double batteryVoltage=7.4;
+
+    int destinationX = 0;
+    int destinationY = 0;
+
+    RobotGroup* group = nullptr;
     enum class RobotType
     {
         REAL = 1,
         SIMULATED=2
     }type;
+    void print();
 
 };
 

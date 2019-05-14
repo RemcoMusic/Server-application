@@ -27,6 +27,7 @@ CONFIG += c++11
 
 SOURCES += \
     main.cpp \
+    robotlocationpainter.cpp \
     user_interface\mainwindow.cpp \
     swarm_algorithms\swarmalgorithms.cpp \
     swarm_algorithms\swarmalgorithmssettings.cpp \
@@ -69,7 +70,7 @@ INCLUDEPATH += robot_detection
 INCLUDEPATH += robot_connection
 INCLUDEPATH += user_interface
 
-INCLUDEPATH += C:\opencv\build\include
+INCLUDEPATH += D:\opencv\build\include
 
 LIBS += $$(OPENCV_PATH)\bin\libopencv_core410.dll
 LIBS += $$(OPENCV_PATH)\bin\libopencv_highgui410.dll
