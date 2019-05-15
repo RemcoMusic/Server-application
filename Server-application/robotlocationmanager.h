@@ -15,7 +15,11 @@ public:
     RobotLocationManager();
     QList<RobotLocation*> robots;
     QList<RobotGroup*> groups;
+
     void printAllRobots();
+    RobotLocation* addSimulatedRobot(RobotGroup* group = nullptr);
+    void deleteAllSimulatedRobots();
+    void deleteAllSimulatedRobotsFromGroup(RobotGroup* group = nullptr);
 };
 extern RobotLocationManager robotLocationManager;
 #endif // ROBOTLOCATIONMANAGER_H

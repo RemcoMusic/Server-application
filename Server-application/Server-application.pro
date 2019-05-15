@@ -70,7 +70,7 @@ INCLUDEPATH += robot_detection
 INCLUDEPATH += robot_connection
 INCLUDEPATH += user_interface
 
-INCLUDEPATH += D:\opencv\build\include
+INCLUDEPATH += C:\opencv\build\include
 
 LIBS += $$(OPENCV_PATH)\bin\libopencv_core410.dll
 LIBS += $$(OPENCV_PATH)\bin\libopencv_highgui410.dll

@@ -9,9 +9,7 @@ class SwarmSimulation
 {
 public:
     SwarmSimulation();
-    RobotLocation* addSimulatedRobot(RobotGroup* group = nullptr);
-    void deleteAllSimulatedRobots();
-    void deleteAllSimulatedRobotsFromGroup(RobotGroup* group = nullptr);
+
 };
 
 #endif // SWARMSIMULATION_H
