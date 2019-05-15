@@ -21,10 +21,5 @@ int main(int argc, char *argv[])
     robotDetection robotDetection;
 
     SwarmSimulation swarmSimulation;
-
-    swarmSimulation.addSimulatedRobot();
-    robotLocationManager.printAllRobots();
-    swarmSimulation.deleteAllSimulatedRobotsFromGroup(nullptr);
-    robotLocationManager.printAllRobots();
     return a.exec();
 }

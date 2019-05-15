@@ -4,7 +4,8 @@
 #include <QMainWindow>
 #include <QGraphicsScene>
 #include <QGraphicsView>
-#include <robotlocation.h>
+#include "robotlocation.h"
+#include "robotlocationmanager.h"
 namespace Ui {
 class MainWindow;
 }
