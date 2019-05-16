@@ -11,6 +11,7 @@ public:
     QList<SwarmAlgorithmBase*> activeAlgorithms;
 
     int updateIntervalMs=100;
+    int distanceBetweenRobots=150;//from center
 };
 extern SwarmAlgorithmsSettings swarmAlgorithmsSettings;
 #endif // SWARMALGORITHMSSETTINGS_H
