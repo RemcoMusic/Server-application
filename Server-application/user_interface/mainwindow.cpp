@@ -34,8 +34,6 @@ MainWindow::MainWindow(QWidget *parent) :
     }
     //ui->graphicsView_Data->fitInView(dataScene->sceneRect(), Qt::KeepAspectRatio);
     update();
-
-
 }
 
 MainWindow::~MainWindow()
