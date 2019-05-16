@@ -1,10 +1,7 @@
 #include "robotdetection.h"
-#include <iostream>
-#include <opencv2/core/core.hpp>
-#include "opencv2/highgui/highgui.hpp"
-#include "opencv2/imgproc/imgproc.hpp"
 
-using namespace cv;
+
+
 
 robotDetection::robotDetection()
 {
@@ -13,10 +10,10 @@ robotDetection::robotDetection()
 
 int robotDetection::detectSomething()
 {
-    VideoCapture cap(0);
-    Mat imgTmp;
+    cv::VideoCapture cap(0);
+    cv::Mat imgTmp;
     cap.read(imgTmp);
-    Mat imgLines = Mat::zeros(imgTmp.size(),CV_8UC3);
+    cv::Mat imgLines = cv::Mat::zeros(imgTmp.size(),CV_8UC3);
     int lastX = -1;
     int lastY = -1;
 
@@ -25,24 +22,24 @@ int robotDetection::detectSomething()
     }
 
     for(;;) {
-        Mat originalFrame;
-        Mat hsvFrame;
-        Mat thresholdedFrame;
+        cv::Mat originalFrame;
+        cv::Mat hsvFrame;
+        cv::Mat thresholdedFrame;
 
         cap >> originalFrame;
 
-        cvtColor(originalFrame, hsvFrame, COLOR_BGR2HSV);
+        cvtColor(originalFrame, hsvFrame, cv::COLOR_BGR2HSV);
 
-        inRange(hsvFrame, Scalar(110, 50, 50), Scalar(130, 255, 255), thresholdedFrame);
+        inRange(hsvFrame, cv::Scalar(110, 50, 50), cv::Scalar(130, 255, 255), thresholdedFrame);
 
 
-        erode(thresholdedFrame, thresholdedFrame, getStructuringElement(MORPH_ELLIPSE, Size(5, 5)));
-        dilate(thresholdedFrame, thresholdedFrame, getStructuringElement(MORPH_ELLIPSE, Size(5, 5)));
+        erode(thresholdedFrame, thresholdedFrame, getStructuringElement(cv::MORPH_ELLIPSE, cv::Size(5, 5)));
+        dilate(thresholdedFrame, thresholdedFrame, getStructuringElement(cv::MORPH_ELLIPSE, cv::Size(5, 5)));
 
-        erode(thresholdedFrame, thresholdedFrame, getStructuringElement(MORPH_ELLIPSE, Size(5, 5)));
-        dilate(thresholdedFrame, thresholdedFrame, getStructuringElement(MORPH_ELLIPSE, Size(5, 5)));
+        erode(thresholdedFrame, thresholdedFrame, getStructuringElement(cv::MORPH_ELLIPSE, cv::Size(5, 5)));
+        dilate(thresholdedFrame, thresholdedFrame, getStructuringElement(cv::MORPH_ELLIPSE, cv::Size(5, 5)));
 
-        Moments oMoments = moments(thresholdedFrame);
+        cv::Moments oMoments = moments(thresholdedFrame);
 
         double dM01 = oMoments.m01;
         double dM10 = oMoments.m10;
@@ -53,7 +50,7 @@ int robotDetection::detectSomething()
           int posY = dM01 / dArea;
 
           if (lastX >= 0 && lastY >= 0 && posX >= 0 && posY >= 0) {
-           line(imgLines, Point(posX, posY), Point(lastX, lastY), Scalar(0,0,255), 2);
+           line(imgLines, cv::Point(posX, posY), cv::Point(lastX, lastY), cv::Scalar(0,0,255), 2);
           }
           lastX = posX;
           lastY = posY;
@@ -67,8 +64,8 @@ int robotDetection::detectSomething()
         imshow("Color detection", originalFrame);
 
 
-        if(waitKey(30) >= 0) break;
+        if(cv::waitKey(30) >= 0) break;
     }
-    emit newFrame();
+    emit newFrameFinished();
     return 0;
 }
