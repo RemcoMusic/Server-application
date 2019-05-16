@@ -8,9 +8,13 @@
 
 class robotDetection
 {
+    Q_OBJECT
     public:
         robotDetection();
         int detectSomething();
+
+    signals:
+        void newFrame();
 };
 
 #endif // ROBOTDETECTION_H
