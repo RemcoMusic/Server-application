@@ -6,6 +6,7 @@ QRectF RobotLocation::boundingRect() const
 
 void RobotLocation::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
+    setPos(x,y);
     QRectF rect = boundingRect();
         QBrush brush(Qt::black);
         QPen pen(Qt::red);

@@ -57,4 +57,5 @@ void MainWindow::on_pushButton_clicked()
 void MainWindow::updateGui()
 {
     qDebug() << "update Gui called" << endl;
+    repaint();
 }
