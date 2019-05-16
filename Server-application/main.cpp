@@ -4,8 +4,13 @@
 #include "robotconnection.h"
 #include "robotdetection.h"
 #include "swarmsimulation.h"
+#include <QDebug>
+#include <QObject>
+
+
 int main(int argc, char *argv[])
 {
+
     //visualisation
     QApplication a(argc, argv);
     MainWindow w;
@@ -13,14 +18,19 @@ int main(int argc, char *argv[])
 
     //swarm algorithms
     SwarmAlgorithms swarmAlgorithms;
-
+    qDebug() << "swarmAlgorithms Started!" << endl;
     //wifi connection to the physical swarm robots
     RobotConnection robotConnection;
-
-
-    robotDetection robotDetection;
-
+    qDebug() << "robotConnection Started!" << endl;
     SwarmSimulation swarmSimulation;
+    qDebug() << "swarmSimulation Started!" << endl;
+    robotDetection robotDetection;
+    robotDetection.start();
+    qDebug() << "robotDetection Started!" << endl;
+    qDebug() << "setting up signals and slots" << endl;
 
+    QObject::connect(&robotDetection,SIGNAL(newFrameFinished()),&swarmSimulation,SLOT(startSimulation()));
+    QObject::connect(&swarmSimulation,SIGNAL(simulationFinished()),&swarmAlgorithms,SLOT(update()));
+    QObject::connect(&swarmAlgorithms,SIGNAL(algoritmFinished()),&w,SLOT(updateGui()));
     return a.exec();
 }

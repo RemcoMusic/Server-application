@@ -6,14 +6,18 @@
 #include "opencv2/highgui/highgui.hpp"
 #include "opencv2/imgproc/imgproc.hpp"
 #include <iostream>
+#include <QThread>
 
 
-class robotDetection: public QObject
+class robotDetection: public QThread
 {
     Q_OBJECT
 
     public:
         robotDetection();
+        void run();
+
+    public slots:
         int detectSomething();
 
     signals:

@@ -3,9 +3,9 @@
 
 SwarmAlgorithms::SwarmAlgorithms()
 {
-    QTimer *timer = new QTimer(this);
-    connect(timer, SIGNAL(timeout()), this, SLOT(update()));
-    timer->start(swarmAlgorithmsSettings.updateIntervalMs);
+//    QTimer *timer = new QTimer(this);
+//    connect(timer, SIGNAL(timeout()), this, SLOT(update()));
+//    timer->start(swarmAlgorithmsSettings.updateIntervalMs);
 }
 void SwarmAlgorithms::update()
 {        
@@ -14,4 +14,5 @@ void SwarmAlgorithms::update()
     {
         i.next()->update();
     }
+    emit algoritmFinished();
 }

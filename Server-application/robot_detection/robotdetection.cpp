@@ -5,7 +5,14 @@
 
 robotDetection::robotDetection()
 {
-    detectSomething();
+    //detectSomething();
+
+
+}
+
+void robotDetection::run()
+{
+    detectSomething(); //make sure it has an infinite loop
 }
 
 int robotDetection::detectSomething()

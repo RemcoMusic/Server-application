@@ -6,6 +6,7 @@
 #include <QGraphicsView>
 #include "robotlocation.h"
 #include "robotlocationmanager.h"
+#include <QDebug>
 namespace Ui {
 class MainWindow;
 }
@@ -21,6 +22,8 @@ public:
 private slots:
     void on_pushButton_clicked();
 
+public slots:
+    void updateGui();
 private:
     QGraphicsScene *dataScene;
     QGraphicsScene *cameraScene;

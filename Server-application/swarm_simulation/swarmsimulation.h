@@ -2,14 +2,19 @@
 #define SWARMSIMULATION_H
 
 #include <QObject>
+#include <QDebug>
 #include "robotlocation.h"
 #include "robotlocationmanager.h"
 extern RobotLocationManager robotLocationManager;
-class SwarmSimulation
+class SwarmSimulation: public QObject
 {
+    Q_OBJECT
 public:
     SwarmSimulation();
-
+public slots:
+    void startSimulation();
+signals:
+    void simulationFinished();
 };
 
 #endif // SWARMSIMULATION_H

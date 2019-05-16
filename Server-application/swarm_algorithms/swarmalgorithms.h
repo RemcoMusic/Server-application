@@ -13,8 +13,10 @@ class SwarmAlgorithms: public QObject
 public:
     SwarmAlgorithms();
 
-private slots:
+public slots:
     void update();
+signals:
+    void algoritmFinished();
 };
 
 #endif // SWARMALGORITHMS_H
