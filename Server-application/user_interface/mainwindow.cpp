@@ -30,7 +30,6 @@ MainWindow::MainWindow(QWidget *parent) :
         l->setY(y-0.5*globalSettings.botDiameter);
         l->setRotation(a);
         dataScene->addItem(l);
-
     }
     //ui->graphicsView_Data->fitInView(dataScene->sceneRect(), Qt::KeepAspectRatio);
     update();
@@ -57,5 +56,5 @@ void MainWindow::on_pushButton_clicked()
 void MainWindow::updateGui()
 {
     qDebug() << "update Gui called" << endl;
-    repaint();
+    dataScene->update();
 }

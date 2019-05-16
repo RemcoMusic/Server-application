@@ -20,12 +20,10 @@ void MoveShapeAlgorithm::update()
         RobotLocation* robot = i.next();
         if(robot->x>preferedX)
         {
-            robot->x -=10;
+            robot->x -=2;
         }
         else if(robot->x<preferedX){
-            robot->x +=10;
+            robot->x +=2;
         }
-
-
     }
 }
