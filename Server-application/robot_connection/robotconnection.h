@@ -8,6 +8,7 @@ class RobotConnection
 
 public:
     RobotConnection();
+
 };
 
 #endif // ROBOTCONNECTION_H
