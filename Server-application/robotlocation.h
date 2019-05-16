@@ -2,8 +2,7 @@
 //Rene Schouten
 //5-2019
 //this class represent a single robot of the swarm, it can be both simulated or real
-#ifndef ROBOTLOCATION_H
-#define ROBOTLOCATION_H
+#pragma once
 
 #include <QObject>
 #include "robotgroup.h"
@@ -40,4 +39,3 @@ public:
 
 };
 
-#endif // ROBOTLOCATION_H

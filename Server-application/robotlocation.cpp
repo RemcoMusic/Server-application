@@ -15,6 +15,5 @@ void RobotLocation::print()
     else
     {
         qDebug("robot at x=%d y=%d real",x,y);
-
     }
 }

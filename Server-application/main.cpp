@@ -21,5 +21,6 @@ int main(int argc, char *argv[])
     robotDetection robotDetection;
 
     SwarmSimulation swarmSimulation;
+
     return a.exec();
 }

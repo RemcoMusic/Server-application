@@ -28,6 +28,8 @@ CONFIG += c++11
 SOURCES += \
     main.cpp \
     robotlocationpainter.cpp \
+    swarm_algorithms/linealgorithm.cpp \
+    swarm_algorithms/linearmotionalgorithms.cpp \
     user_interface\mainwindow.cpp \
     swarm_algorithms\swarmalgorithms.cpp \
     swarm_algorithms\swarmalgorithmssettings.cpp \
@@ -45,6 +47,8 @@ SOURCES += \
     robotgroup.cpp
 
 HEADERS += \
+    swarm_algorithms/linealgorithm.h \
+    swarm_algorithms/linearmotionalgorithms.h \
     user_interface\mainwindow.h \
     swarm_algorithms\swarmalgorithms.h \
     robot_detection\robotdetection.h \
