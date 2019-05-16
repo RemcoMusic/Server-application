@@ -63,9 +63,9 @@ int robotDetection::detectSomething()
         originalFrame = originalFrame + imgLines;
         imshow("Color detection", originalFrame);
 
-
+        emit newFrameFinished();
         if(cv::waitKey(30) >= 0) break;
     }
-    emit newFrameFinished();
+
     return 0;
 }
