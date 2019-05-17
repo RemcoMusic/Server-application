@@ -4,5 +4,5 @@
 SwarmAlgorithmsSettings swarmAlgorithmsSettings;
 SwarmAlgorithmsSettings::SwarmAlgorithmsSettings()
 {
-    activeAlgorithms.append(new MoveShapeAlgorithm());
+    activeAlgorithms.append(new LineAlgorithm());
 }

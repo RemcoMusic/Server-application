@@ -20,8 +20,7 @@ public:
     RobotLocation(RobotGroup *group = nullptr);
     int angle = 90;
 
-    int x = 0;
-    int y = 0;
+    QPoint *location;
     QColor myColor = Qt::yellow;
 
     double batteryVoltage=7.4;

@@ -16,6 +16,7 @@ public:
     QPoint *point2 = new QPoint(100,200);
 private:
     void calculatePoints();
+    void calculateDestination();
 };
 
 #endif // LINEALGORITHM_H

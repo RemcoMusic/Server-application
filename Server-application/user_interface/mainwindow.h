@@ -4,12 +4,15 @@
 #include <QMainWindow>
 #include <QGraphicsScene>
 #include <QGraphicsView>
+#include <algrorithmvisualisation.h>
 #include "robotlocation.h"
 #include "robotlocationmanager.h"
 #include <QDebug>
 namespace Ui {
 class MainWindow;
 }
+
+extern AlgrorithmVisualisation algorithmVisualisation;
 
 class MainWindow : public QMainWindow
 {
