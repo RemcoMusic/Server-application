@@ -7,6 +7,8 @@
 #include "opencv2/imgproc/imgproc.hpp"
 #include <iostream>
 #include <QThread>
+#include "robotdetectionsettings.h"
+#include "globalsettings.h"
 
 
 class robotDetection: public QThread
@@ -16,6 +18,8 @@ class robotDetection: public QThread
     public:
         robotDetection();
         void run();
+    private:
+        cv::Mat detectColors(cv::Mat frame);
 
     public slots:
         int detectSomething();
