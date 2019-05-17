@@ -11,9 +11,35 @@
 #include <QPainter>
 #include <QColor>
 
+enum robotStatus{
+    OFF = 0,
+    STARTUP = 1,
+    NORMAL = 2,
+    CHARGING = 3,
+};
+struct UdpData {
+  uint16_t currentX = 0;
+  uint16_t currentY = 0;
+  uint16_t newX = 0;
+  uint16_t newY = 0;
+  uint16_t currentAngle = 360;
+  uint8_t speed = 0;
+  uint8_t status = robotStatus::OFF;
+};
+
+
+//status
+// 0 = off
+// 1 = startup (middle led on)
+// 2 = direction leds
+// 3 = charging
+
+
 class RobotLocation: public QGraphicsItem
 {
 public:
+    UdpData sharedData; // <-- must be used for all data that the bots must know
+
     QRectF boundingRect() const;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
     void setRotation(int r);

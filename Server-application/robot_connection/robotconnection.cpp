@@ -57,10 +57,38 @@ void RobotConnection::connectionloop()
 void RobotConnection::processIP(QString ip)
 {
 //check if IP is new IP
+    bool found = false;
+    for(int i = 0; i< IpList.size();i++){
+        if(!IpList.at(i).compare(ip)){
+           //equals
+            found = true;
+            break;
+        }
+    }
+
+    if(found){
+        //update IP
+    }else{
+        //turn it on
+        turnRobotOn(ip);
+        //add it to the list
+        IpList.append(ip);
+    }
     //no?, update voltage in bots
     //yes?, add it to the list
     //ask the device to turn on ->make local pointer to the device we just asked
 
 //check if there is a new bot with status connecting detected.
+
+}
+
+void RobotConnection::turnRobotOn(QString ip)
+{
+    lastRequestedBotIP = ip;
+    UdpData packet;
+    packet.status = robotStatus::STARTUP;
+    qDebug() << "turning robot on with ip: " << ip << endl;
+    //send to IP
+    socket->writeDatagram(reinterpret_cast<char*>(&packet), sizeof(UdpData) ,QHostAddress(ip), 4210);
 
 }
