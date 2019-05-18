@@ -5,6 +5,10 @@
 #include "swarmalgorithmbase.h"
 #include "robotlocationmanager.h"
 #include "math.h"
+#include <QDebug>
+#include <iostream>
+#include <QTextStream>
+#include <iomanip>
 class LinearMotionAlgorithms : public SwarmAlgorithmBase
 {
 public:
@@ -14,22 +18,45 @@ public:
     {
         int x;
         int y;
-        bool occupied=false;
-        RobotLocation* robot = nullptr;
+        RobotLocation* robot;
     };
     QList<Destination*> destinations;
     void update();
 
-    struct DistanceObject
-    {
-        RobotLocation* robot = nullptr;
-        int distance;
-    };
 private:
-    void calculateDestination();
+    void connectDestinationsToRobots();
+    struct ConnectAlgorithmData
+    {
+        QList<RobotLocation*> swarmRobots;
+        int amountOfDestinations;
+        int amountOfRobots;
+        uint16_t **distanceTable = nullptr;
+        uint8_t *collumnMask;
+        uint16_t *rowResult;
+        uint8_t *rowResultIndex;
+        uint8_t *lastfoundResultIndex;
+        uint8_t* rowAvailabilities;
+        uint8_t* rowOrder;
+        uint16_t lastHighestDistance;
+        bool locked = false;
+    }data;
 
+    void calculateTable();
+    void allocateTable();
+    void freeTable();
+    bool findPath();
+    void resetTempData();
+    void printTable();
 
-    void moveRobotTo(RobotLocation *robot, Destination *destination);
+    void optimizeTable();
+    void calculateAvailabilities();
+    bool resultIsValid();
+    void clearOrder();
+    bool optimalisationPossible();
+    int getHighestDistance();
+    void moveRobotTo(RobotLocation *robot, Destination *destination, double speed);
+
+    int getHighestDistanceOverAll();
 };
 
 #endif // LINEARMOTIONALGORITHMS_H

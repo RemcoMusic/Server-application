@@ -30,8 +30,10 @@ void AlgrorithmVisualisation::paint(QPainter *painter, const QStyleOptionGraphic
             painter->drawLine(destination->x+size, destination->y-size, destination->x-size, destination->y+size);
             if(destination->robot!=nullptr)
             {
-                painter->drawLine(destination->robot->location->x(), destination->robot->location->y(), destination->x, destination->y);
+                painter->drawLine(destination->robot->x, destination->robot->y, destination->x, destination->y);
+
             }
+
         }
     }
 

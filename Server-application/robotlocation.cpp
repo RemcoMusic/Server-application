@@ -2,18 +2,17 @@
 
 RobotLocation::RobotLocation(RobotGroup *group)
 {
-    location = new QPoint();
-    location->setX(globalSettings.botDiameter/2);
-    location->setY(globalSettings.botDiameter/2);
+    x = globalSettings.botDiameter/2;
+    y = globalSettings.botDiameter/2;
 }
 void RobotLocation::print()
 {
     if(type == RobotType::SIMULATED)
     {
-        qDebug("robot at x=%d y=%d simulated",location->x(),location->y());
+        qDebug("robot at x=%d y=%d simulated",x,y);
     }
     else
     {
-        qDebug("robot at x=%d y=%d real",location->x(),location->y());
+        qDebug("robot at x=%d y=%d real",x,y);
     }
 }

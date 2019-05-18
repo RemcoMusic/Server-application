@@ -18,14 +18,14 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->graphicsView_CameraRaw->setScene(cameraScene);
     dataScene->addRect(0,0,globalSettings.fieldSizeX,globalSettings.fieldSizeY);
 
-    for(int i =0;i<5;i++){
+    for(int i =0;i<4;i++){
         int x = qrand() % globalSettings.fieldSizeX;
         int y = qrand() % globalSettings.fieldSizeY;
         int a = qrand() % 360;
 
         RobotLocation *l = robotLocationManager.addSimulatedRobot();
-        l->location->setX(x);
-        l->location->setY(y);
+        l->x = x;
+        l->y = y;
         l->setX(x-0.5*globalSettings.botDiameter);
         l->setY(y-0.5*globalSettings.botDiameter);
         l->setRotation(a);
