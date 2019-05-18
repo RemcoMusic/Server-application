@@ -19,7 +19,7 @@ void LinearMotionAlgorithms::update()
 void LinearMotionAlgorithms::allocateTable()
 {
     //the array is 2 demensional, allocate it on the heap
-    data.distanceTable =(uint16_t**) malloc(data.amountOfRobots*sizeof(uint16_t *));
+    data.distanceTable =(uint16_t**) malloc(data.amountOfRobots*sizeof(uint16_t*));
     for(int i=0;i<data.amountOfRobots;i++)
         data.distanceTable[i]= (uint16_t *) malloc(data.amountOfDestinations*sizeof(uint16_t));
     //also allocate collumn mask array
@@ -110,96 +110,110 @@ void LinearMotionAlgorithms::calculateAvailabilities()
 }
 bool LinearMotionAlgorithms::findPath()
 {
-    for(int currentAmountOfAvailabilities = 1; currentAmountOfAvailabilities <= data.amountOfRobots; currentAmountOfAvailabilities++)
+    for(int currentOrder = data.amountOfDestinations; currentOrder >=0; currentOrder--)
     {
-        for(int currentOrder = 4; currentOrder >=0; currentOrder--)
+        for(int robotIndex = 0; robotIndex < data.amountOfRobots; robotIndex++)
         {
-            int lastRobotIndex = 0;
-            for(int robotIndex = 0; robotIndex < data.amountOfRobots; robotIndex++)
+
+            if(currentOrder == data.rowOrder[robotIndex])
             {
-
-                if((data.rowAvailabilities[robotIndex] == currentAmountOfAvailabilities) && (currentOrder == data.rowOrder[robotIndex]))
+                uint16_t lowest = UINT16_MAX;
+                int lowestIndex = -1;
+                int collumsOpen = 0;
+                for(int destinationIndex = 0; destinationIndex < data.amountOfDestinations; destinationIndex++)
                 {
-                    uint16_t lowest = UINT16_MAX;
-                    int lowestIndex = 0;
-                    int collumsOpen = 0;
-                    for(int destinationIndex = 0; destinationIndex < data.amountOfDestinations; destinationIndex++)
+                    if(data.collumnMask[destinationIndex] == 0)
                     {
-                        if(data.collumnMask[destinationIndex] == 0)
+                        collumsOpen++;
+                        uint16_t distance = data.distanceTable[robotIndex][destinationIndex];
+                        if(distance < lowest)
                         {
-                            collumsOpen++;
-                            uint16_t distance = data.distanceTable[robotIndex][destinationIndex];
-                            if(distance < lowest)
-                            {
-                                lowestIndex = destinationIndex;
-                                lowest = distance;
-                            }
+                            lowestIndex = destinationIndex;
+                            lowest = distance;
                         }
                     }
+                }
 
-                    if(lowest == UINT16_MAX)
+                if(lowestIndex == -1)//no open collumn found
+                {
+                    if(data.rowOrder[robotIndex] >= data.rowAvailabilities[robotIndex])
                     {
-
-                        if(data.rowOrder[robotIndex] >= data.rowAvailabilities[robotIndex])
-                        {
-                           data.locked = true;
-                        }
-
-                        for(int destinationIndex = 0; destinationIndex < data.amountOfDestinations; destinationIndex++)
-                        {
-                            uint16_t distance = data.distanceTable[robotIndex][destinationIndex];
-                            if(distance < lowest)
-                            {
-                                lowestIndex = destinationIndex;
-                                lowest = distance;
-                            }
-
-                        }
-                        for(int i=0;i<data.amountOfRobots;i++)
-                        {
-                            if(data.rowResultIndex[i] == lowestIndex)
-                            {
-                                if(data.rowAvailabilities[i] == data.rowAvailabilities[robotIndex])
-                                {
-                                    data.rowOrder[robotIndex]++;
-                                }
-                                else {
-                                    data.rowOrder[robotIndex]++;
-                                    data.rowOrder[i]++;
-                                }
-                                break;
-                            }
-                        }
-
-                        return false;
+                       data.locked = true;
                     }
-                    else if(collumsOpen==0)
-                    {
-                        return false;
-                    }
-                    else {
-                        data.collumnMask[lowestIndex] = 1;
-                        data.rowResult[robotIndex] = lowest;
-                        data.rowResultIndex[robotIndex] = lowestIndex;
-                    }
-                    lastRobotIndex = robotIndex;
+                    data.rowOrder[robotIndex]++;
+                    return false;
+                }
+                else if(collumsOpen==0)
+                {
+                    return false;
+                }
+
+                else {
+                    data.collumnMask[lowestIndex] = 1;
+                    data.rowResult[robotIndex] = lowest;
+                    data.rowResultIndex[robotIndex] = lowestIndex;
+                }
+
+            }
+        }
+    }
+}
+void LinearMotionAlgorithms::filterPointAvailabilities()
+{
+    for(int destinationIndex =0; destinationIndex < data.amountOfDestinations;destinationIndex++)
+    {
+        int totalDestinationAvailabilities=0;
+        int lastAvailability = 0;//(robot index)
+        for(int robotIndex = 0; robotIndex < data.amountOfRobots; robotIndex++)
+        {
+            if(data.distanceTable[robotIndex][destinationIndex] != UINT16_MAX)
+            {
+                totalDestinationAvailabilities++;
+                lastAvailability = robotIndex;
+            }
+        }
+        if(totalDestinationAvailabilities == 1)
+        {
+            //delete the rest of the row
+            for(int i=0;i<data.amountOfDestinations;i++)
+            {
+                if(i != destinationIndex)
+                {
+                    data.distanceTable[lastAvailability][i] = UINT16_MAX;
+                }
+            }
+        }
+
+    }
+}
+void LinearMotionAlgorithms::swapOptimize()
+{
+    for(int row1=0;row1<data.amountOfRobots;row1++)
+    {
+        for(int row2=0;row2<data.amountOfRobots;row2++)
+        {
+            if(row1 != row2)
+            {
+                uint16_t row1Result = data.distanceTable[row1][data.lastfoundResultIndex[row1]];
+                uint16_t row1Alternative = data.distanceTable[row1][data.lastfoundResultIndex[row2]];
+                uint16_t row2Result = data.distanceTable[row2][data.lastfoundResultIndex[row2]];;
+                uint16_t row2Alternative = data.distanceTable[row2][data.lastfoundResultIndex[row1]];
+                int totalNow = row1Result + row2Result;
+                int totalAlternative = row1Alternative + row2Alternative;
+                if(totalAlternative < totalNow)
+                {
+                    int temp = data.lastfoundResultIndex[row1];
+                    data.lastfoundResultIndex[row1] = data.lastfoundResultIndex[row2];
+                    data.lastfoundResultIndex[row2] = temp;
 
                 }
             }
         }
     }
-    return true;
 }
 void LinearMotionAlgorithms::optimizeTable()
 {
-    int longestPath = 0;
-    for(int robotIndex = 0; robotIndex < data.amountOfRobots; robotIndex++)
-    {
-        if(data.rowResult[robotIndex] > longestPath)
-        {
-            longestPath = data.rowResult[robotIndex];
-        }
-    }
+    int longestPath = getHighestDistance();
     for(int robotIndex = 0; robotIndex < data.amountOfRobots; robotIndex++)
     {
 
@@ -254,7 +268,7 @@ void LinearMotionAlgorithms::printTable()
                 }
             }
         }
-        std::cout <<"   |   " << data.rowResult[robotIndex] << "        "<< (int)data.rowAvailabilities[robotIndex] << "   - " << (int)data.rowOrder[robotIndex] << "    " << (int)data.rowResultIndex[robotIndex]<<std::endl;
+        std::cout <<"   |   " << data.rowResult[robotIndex] << "    "<< (int)data.rowAvailabilities[robotIndex] << "  - " << (int)data.rowOrder[robotIndex] << "    " << (int)data.rowResultIndex[robotIndex]<<std::endl;
     }
     std::cout << std::endl;
 }
@@ -316,11 +330,17 @@ void LinearMotionAlgorithms::resetTempData()
     //reset values after one table calculation
     //todo: make more efficient with memset
 
-    memset(data.collumnMask,0,data.amountOfDestinations * sizeof(uint8_t));
+   for(int i=0;i<data.amountOfDestinations;i++)
+   {
+       data.collumnMask[i] = 0;
+   }
 }
 void LinearMotionAlgorithms::clearOrder()
 {
-    memset(data.rowOrder,0,data.amountOfRobots * sizeof(uint8_t));
+    for(int i=0;i<data.amountOfRobots;i++)
+    {
+        data.rowOrder[i] = 0;
+    }
 }
 void LinearMotionAlgorithms::connectDestinationsToRobots()
 {
@@ -330,13 +350,20 @@ void LinearMotionAlgorithms::connectDestinationsToRobots()
 
     //first make list of robots of this specific group
     data.swarmRobots.clear();
-    QListIterator<RobotLocation*> i(robotLocationManager.robots);
-    while (i.hasNext())
     {
-        RobotLocation *currentRobot = i.next();
-        if(currentRobot->group == robotGroup)
+        QListIterator<RobotLocation*> i(robotLocationManager.robots);
+        while (i.hasNext())
         {
-            data.swarmRobots.append(currentRobot);
+            RobotLocation *currentRobot = i.next();
+            if(currentRobot->group == robotGroup)
+            {
+                data.swarmRobots.append(currentRobot);
+            }
+        }
+        QListIterator<Destination*> destinationIterator(destinations);
+        while (destinationIterator.hasNext())
+        {
+            destinationIterator.next()->robot = nullptr;
         }
     }
     //make a table with the distances between robots and points
@@ -351,28 +378,32 @@ void LinearMotionAlgorithms::connectDestinationsToRobots()
     //generate the table of distances between all combinations of robots and points
     calculateTable();
 
-    for(int i=0;i<10;i++)
+    for(int i=0;i<20;i++)
     {
         resetTempData();
-        calculateAvailabilities();
         bool pathfound = findPath();
         if(pathfound)
         {
             data.lastHighestDistance = getHighestDistanceOverAll();
             memcpy(data.lastfoundResultIndex, data.rowResultIndex, data.amountOfRobots * sizeof(uint8_t));
+            filterPointAvailabilities();
+            clearOrder();
+            calculateAvailabilities();
             if(!optimalisationPossible())
             {
                 break;
             }
-            clearOrder();
             optimizeTable();
+            filterPointAvailabilities();
+
         }
         if(data.locked)
         {
             break;
         }
-        printTable();
+        //printTable();
     }
+    //swapOptimize();
     std::cout << "best path found" << std::endl;
     for(int i=0;i<data.amountOfRobots;i++)
     {
@@ -388,21 +419,16 @@ void LinearMotionAlgorithms::connectDestinationsToRobots()
         {
             if(data.lastfoundResultIndex[i] == destinationIndex)
             {
-                currentDestination->robot = data.swarmRobots.at(i);
-                if(currentDestination->robot == nullptr)
-                {
-                    std::cout << "nullptr" << std::endl;
-                }
-                else {
-                    double speed;
-                    speed = (double)distanceBetweenPoints(currentDestination,currentDestination->robot->x,currentDestination->robot->y)/data.lastHighestDistance;
-                    if(speed >1)
-                    {
-                        speed = 1;
-                    }
-                    moveRobotTo(currentDestination->robot,currentDestination, speed);
+                currentDestination->robot = data.swarmRobots[i];
 
+                double speed;
+                std::cout << distanceBetweenPoints(currentDestination,currentDestination->robot->x,currentDestination->robot->y) << std::endl;
+                speed = (double)distanceBetweenPoints(currentDestination,currentDestination->robot->x,currentDestination->robot->y)/data.lastHighestDistance;
+                if(speed >1)
+                {
+                    speed = 1;
                 }
+                moveRobotTo(currentDestination->robot,currentDestination, speed);
             }
         }
         destinationIndex++;
@@ -415,12 +441,12 @@ void LinearMotionAlgorithms::moveRobotTo(RobotLocation *robot,Destination *desti
 {
     double deltaX = destination->x - robot->x;
     double deltaY = destination->y - robot->y;
-    if(deltaX <= 1 && deltaY <= 1)return;
+    if((abs(deltaX) <= 1) && (abs(deltaY) <= 1))return;
     double angle = atan2(deltaY,deltaX);
-    double newX = robot->x + cos(angle) * speed * 2;
-    double newY = robot->y + sin(angle) * speed * 2;
-    robot->x = newX;
-    robot->y = newY;
+    robot->x = robot->x + std::fmin(cos(angle) * speed * 4, abs(deltaX));
+    robot->y = robot->y + std::fmin(sin(angle) * speed * 4, abs(deltaY));
+
+
 }
 
 

@@ -29,6 +29,7 @@ SOURCES += \
     main.cpp \
     robotlocationpainter.cpp \
     swarm_algorithms/algrorithmvisualisation.cpp \
+    swarm_algorithms/circlealgorithm.cpp \
     swarm_algorithms/linealgorithm.cpp \
     swarm_algorithms/linearmotionalgorithms.cpp \
     user_interface\mainwindow.cpp \
@@ -49,6 +50,7 @@ SOURCES += \
 
 HEADERS += \
     swarm_algorithms/algrorithmvisualisation.h \
+    swarm_algorithms/circlealgorithm.h \
     swarm_algorithms/linealgorithm.h \
     swarm_algorithms/linearmotionalgorithms.h \
     user_interface\mainwindow.h \

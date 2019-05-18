@@ -57,6 +57,8 @@ private:
     void moveRobotTo(RobotLocation *robot, Destination *destination, double speed);
 
     int getHighestDistanceOverAll();
+    void filterPointAvailabilities();
+    void swapOptimize();
 };
 
 #endif // LINEARMOTIONALGORITHMS_H

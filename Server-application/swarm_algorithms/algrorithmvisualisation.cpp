@@ -22,6 +22,7 @@ void AlgrorithmVisualisation::paint(QPainter *painter, const QStyleOptionGraphic
     if(dynamic_cast<LinearMotionAlgorithms*>(swarmAlgorithmsSettings.activeAlgorithms.first()) != nullptr)
     {
         QListIterator<LinearMotionAlgorithms::Destination*> destinations( ((LinearMotionAlgorithms*)swarmAlgorithmsSettings.activeAlgorithms.first())->destinations);
+        int index=0;
         while (destinations.hasNext())
         {
             LinearMotionAlgorithms::Destination *destination = destinations.next();
@@ -31,8 +32,9 @@ void AlgrorithmVisualisation::paint(QPainter *painter, const QStyleOptionGraphic
             if(destination->robot!=nullptr)
             {
                 painter->drawLine(destination->robot->x, destination->robot->y, destination->x, destination->y);
-
+                painter->drawText(destination->robot->x ,destination->robot->y+30,QString::number(index));
             }
+            index++;
 
         }
     }
