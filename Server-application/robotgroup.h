@@ -1,7 +1,4 @@
-#ifndef SWARM_H
-#define SWARM_H
-
-#include "robotlocation.h"
+#pragma once
 
 #include <QObject>
 
@@ -11,5 +8,3 @@ public:
     RobotGroup();
     QString name;
 };
-
-#endif // SWARM_H

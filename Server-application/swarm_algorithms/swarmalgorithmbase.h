@@ -2,6 +2,7 @@
 #define SWARMALGORITHMBASE_H
 
 #include <QObject>
+#include <robotgroup.h>
 
 class SwarmAlgorithmBase
 {
@@ -9,6 +10,7 @@ public:
     SwarmAlgorithmBase();
 
     ~SwarmAlgorithmBase();
+    RobotGroup *robotGroup = nullptr;
     struct AlgorithmDiscription
     {
         QString name;

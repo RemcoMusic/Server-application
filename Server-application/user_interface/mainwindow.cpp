@@ -18,7 +18,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->graphicsView_CameraRaw->setScene(cameraScene);
     dataScene->addRect(0,0,globalSettings.fieldSizeX,globalSettings.fieldSizeY);
 
-    for(int i =0;i<10;i++){
+    for(int i =0;i<16;i++){
         int x = qrand() % globalSettings.fieldSizeX;
         int y = qrand() % globalSettings.fieldSizeY;
         int a = qrand() % 360;
@@ -31,7 +31,9 @@ MainWindow::MainWindow(QWidget *parent) :
         l->setRotation(a);
         dataScene->addItem(l);
     }
+    //dataScene->addItem(&algorithmVisualisation);
     //ui->graphicsView_Data->fitInView(dataScene->sceneRect(), Qt::KeepAspectRatio);
+
     update();
 }
 

@@ -18,11 +18,11 @@ void MoveShapeAlgorithm::update()
     while (i.hasNext())
     {
         RobotLocation* robot = i.next();
-        if(robot->x>preferedX)
+        if(robot->x > preferedX)
         {
             robot->x -=2;
         }
-        else if(robot->x<preferedX){
+        else if(robot->x < preferedX){
             robot->x +=2;
         }
     }

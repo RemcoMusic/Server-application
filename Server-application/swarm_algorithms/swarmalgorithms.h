@@ -1,11 +1,12 @@
-#ifndef SWARMALGORITHMS_H
-#define SWARMALGORITHMS_H
+#pragma once
 
 #include <QObject>
 
 #include <QTimer>
+#include "algrorithmvisualisation.h"
 #include "swarmalgorithmssettings.h"
 extern SwarmAlgorithmsSettings swarmAlgorithmsSettings;
+//extern AlgrorithmVisualisation algorithmVisualisation;
 
 class SwarmAlgorithms: public QObject
 {
@@ -19,4 +20,3 @@ signals:
     void algoritmFinished();
 };
 
-#endif // SWARMALGORITHMS_H
