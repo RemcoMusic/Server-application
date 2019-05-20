@@ -10,7 +10,10 @@
 #include <QGraphicsItem>
 #include <QPainter>
 #include <QColor>
-
+#include <QCursor>
+#include <QGraphicsSceneMouseEvent>
+#include <QPoint>
+#include <QFrame>
 enum robotStatus{
     OFF = 0,
     STARTUP = 1,
@@ -35,7 +38,7 @@ struct UdpData {
 // 3 = charging
 
 
-class RobotLocation: public QGraphicsItem
+class RobotLocation: public QGraphicsItem, public QFrame
 {
 public:
     UdpData sharedData; // <-- must be used for all data that the bots must know
@@ -44,6 +47,10 @@ public:
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
     void setRotation(int r);
     RobotLocation(RobotGroup *group = nullptr);
+
+
+
+
     int angle = 90;
 
     double x = 0;
@@ -62,6 +69,11 @@ public:
         SIMULATED=2
     }type;
     void print();
+
+protected:
+    void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
+    void mouseMoveEvent(QGraphicsSceneMouseEvent *event) override;
+    void mouseReleaseEvent(QGraphicsSceneMouseEvent *event) override;
 
 };
 
