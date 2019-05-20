@@ -10,7 +10,6 @@ CircleAlgorithm::CircleAlgorithm()
 }
 void CircleAlgorithm::update()
 {
-    point2->ry()+=1;
     calculatePoints();
     LinearMotionAlgorithms::update();
 }

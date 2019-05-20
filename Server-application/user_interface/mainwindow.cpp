@@ -31,7 +31,7 @@ MainWindow::MainWindow(QWidget *parent) :
         l->setRotation(a);
         dataScene->addItem(l);
     }
-    dataScene->addItem(&algorithmVisualisation);
+    //dataScene->addItem(&algorithmVisualisation);
     //ui->graphicsView_Data->fitInView(dataScene->sceneRect(), Qt::KeepAspectRatio);
 
     update();

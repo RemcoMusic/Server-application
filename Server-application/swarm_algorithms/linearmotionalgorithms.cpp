@@ -5,21 +5,19 @@ LinearMotionAlgorithms::LinearMotionAlgorithms()
 }
 inline int distanceBetweenPoints(LinearMotionAlgorithms::Destination* destination1, double x, double y)
 {
-    int deltaX = abs(destination1->x - x);//pytagoras A
-    int deltaY = abs(destination1->y - y);//pytagoras b
-    int c = sqrt(deltaX*deltaX + deltaY*deltaY);//pytagoras C, distance between points
-    return c;
+    int deltaX = destination1->x - x;//pytagoras A
+    int deltaY = destination1->y - y;//pytagoras b
+    return sqrt(deltaX*deltaX + deltaY*deltaY);//pytagoras C, distance between points
 }
 
 void LinearMotionAlgorithms::update()
 {
     connectDestinationsToRobots();
-
 }
 void LinearMotionAlgorithms::allocateTable()
 {
     //the array is 2 demensional, allocate it on the heap
-    data.distanceTable =(uint16_t**) malloc(data.amountOfRobots*sizeof(uint16_t*));
+    data.distanceTable = (uint16_t**) malloc(data.amountOfRobots*sizeof(uint16_t*));
     for(int i=0;i<data.amountOfRobots;i++)
         data.distanceTable[i]= (uint16_t *) malloc(data.amountOfDestinations*sizeof(uint16_t));
     //also allocate collumn mask array
@@ -72,12 +70,12 @@ void LinearMotionAlgorithms::freeTable()
 }
 void LinearMotionAlgorithms::calculateTable()
 {
+    //build a table/matrix with the distance between robots and destinations, destinations on the x-axis, robots on the y-axis
     int robotIndex=0;
     QListIterator<RobotLocation*> robotIterator(data.swarmRobots);
     while (robotIterator.hasNext())
     {
         RobotLocation *currentRobot = robotIterator.next();
-
         int destinationIndex = 0;
         QListIterator<Destination*> destinationIterator(destinations);
         while (destinationIterator.hasNext())
@@ -95,6 +93,8 @@ void LinearMotionAlgorithms::calculateTable()
 }
 void LinearMotionAlgorithms::calculateAvailabilities()
 {
+    //calculate on each row(for each robot) how much destinations are still possible
+    //save it in rowAvailabilities array
     for(int robotIndex = 0; robotIndex < data.amountOfRobots; robotIndex++)
     {
         int available = 0;
@@ -110,11 +110,15 @@ void LinearMotionAlgorithms::calculateAvailabilities()
 }
 bool LinearMotionAlgorithms::findPath()
 {
+    //find a path through the table of distances / find a possible set of combinations in the table
+    //method will not find the perfect path at once, but after multiple optimalisation steps the output path will become better
+    //if a possible path is found the method will return true, otherwise false
+
+    //when the method fail the next search happens in a other order
     for(int currentOrder = data.amountOfDestinations; currentOrder >=0; currentOrder--)
     {
         for(int robotIndex = 0; robotIndex < data.amountOfRobots; robotIndex++)
         {
-
             if(currentOrder == data.rowOrder[robotIndex])
             {
                 uint16_t lowest = UINT16_MAX;
@@ -160,6 +164,8 @@ bool LinearMotionAlgorithms::findPath()
 }
 void LinearMotionAlgorithms::filterPointAvailabilities()
 {
+    //when there is only one robot that can go to a destination it must go to that destination,
+    //so we can optimize the table by deleting all other possibillites for that robot
     for(int destinationIndex =0; destinationIndex < data.amountOfDestinations;destinationIndex++)
     {
         int totalDestinationAvailabilities=0;
@@ -188,6 +194,12 @@ void LinearMotionAlgorithms::filterPointAvailabilities()
 }
 void LinearMotionAlgorithms::swapOptimize()
 {
+    //unfortunetly the perfect solution will not alwast be found in the given amount of computing power
+    //as result sometimes lines will cross
+    //this method is a optimalisation to optimze and find that crossing lines
+    //by simply comparing every row to every row, when swapping the 2 rows is better it will swap
+
+    //at the moment not working well, todo find bug
     for(int row1=0;row1<data.amountOfRobots;row1++)
     {
         for(int row2=0;row2<data.amountOfRobots;row2++)
@@ -213,6 +225,7 @@ void LinearMotionAlgorithms::swapOptimize()
 }
 void LinearMotionAlgorithms::optimizeTable()
 {
+
     int longestPath = getHighestDistance();
     for(int robotIndex = 0; robotIndex < data.amountOfRobots; robotIndex++)
     {
