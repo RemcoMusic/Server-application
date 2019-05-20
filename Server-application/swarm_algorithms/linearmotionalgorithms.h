@@ -50,7 +50,6 @@ private:
 
     void optimizeTable();
     void calculateAvailabilities();
-    bool resultIsValid();
     void clearOrder();
     bool optimalisationPossible();
     int getHighestDistance();

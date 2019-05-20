@@ -342,10 +342,7 @@ void LinearMotionAlgorithms::resetTempData()
 }
 void LinearMotionAlgorithms::clearOrder()
 {
-    for(int i=0;i<data.amountOfRobots;i++)
-    {
-        data.rowOrder[i] = 0;
-    }
+    memset(data.rowOrder,0,data.amountOfRobots * sizeof(uint8_t));
 }
 void LinearMotionAlgorithms::connectDestinationsToRobots()
 {
