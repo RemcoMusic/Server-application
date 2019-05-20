@@ -1,18 +1,12 @@
 #include "robotdetection.h"
 
-
-
-
 robotDetection::robotDetection()
 {
-    //detectSomething();
-
-
 }
 
 void robotDetection::run()
 {
-    detectSomething(); //make sure it has an infinite loop
+    detectSomething(); //make sure it has an infinite loop - tyvm will do
 }
 
 int robotDetection::detectSomething()
@@ -39,12 +33,12 @@ int robotDetection::detectSomething()
 
         inRange(hsvFrame, cv::Scalar(110, 50, 50), cv::Scalar(130, 255, 255), thresholdedFrame);
 
+//Tijdelijk totdat hsv in gui is aangepast
+//        erode(thresholdedFrame, thresholdedFrame, getStructuringElement(cv::MORPH_ELLIPSE, cv::Size(5, 5)));
+//        dilate(thresholdedFrame, thresholdedFrame, getStructuringElement(cv::MORPH_ELLIPSE, cv::Size(5, 5)));
 
-        erode(thresholdedFrame, thresholdedFrame, getStructuringElement(cv::MORPH_ELLIPSE, cv::Size(5, 5)));
-        dilate(thresholdedFrame, thresholdedFrame, getStructuringElement(cv::MORPH_ELLIPSE, cv::Size(5, 5)));
-
-        erode(thresholdedFrame, thresholdedFrame, getStructuringElement(cv::MORPH_ELLIPSE, cv::Size(5, 5)));
-        dilate(thresholdedFrame, thresholdedFrame, getStructuringElement(cv::MORPH_ELLIPSE, cv::Size(5, 5)));
+//        erode(thresholdedFrame, thresholdedFrame, getStructuringElement(cv::MORPH_ELLIPSE, cv::Size(5, 5)));
+//        dilate(thresholdedFrame, thresholdedFrame, getStructuringElement(cv::MORPH_ELLIPSE, cv::Size(5, 5)));
 
         cv::Moments oMoments = moments(thresholdedFrame);
 
@@ -62,17 +56,24 @@ int robotDetection::detectSomething()
           lastX = posX;
           lastY = posY;
           if(lastX != 0) {
-              qDebug("%s :%d","Coördinates X", lastX);
-              qDebug("%s :%d","Coördinates Y", lastY);
+              if(globalSettings.printRobotDetection)
+              {
+                  qDebug("%s :%d","Coördinates X", lastX);
+                  qDebug("%s :%d","Coördinates Y", lastY);
+              }
           }
         }
 
         originalFrame = originalFrame + imgLines;
-        imshow("Color detection", originalFrame);
+        imshow("Color detection", thresholdedFrame);
 
         emit newFrameFinished();
         if(cv::waitKey(30) >= 0) break;
     }
 
     return 0;
+}
+
+cv::Mat robotDetection::detectColors(cv::Mat frame) {
+
 }
