@@ -57,7 +57,8 @@ private:
 
     int getHighestDistanceOverAll();
     void filterPointAvailabilities();
-    void swapOptimize();
+    bool swapOptimize();
+    int getHighestDistanceIndex();
 };
 
 #endif // LINEARMOTIONALGORITHMS_H
