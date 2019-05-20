@@ -5,6 +5,7 @@ RobotConnection::RobotConnection()
     communicationSettings.settingVariables.updateRate=0;
 
     qDebug() << "udp setup"<<endl;
+
     //QNetworkInterface hotspot;
 //    QHostAddress hotspotAddress;
 //    foreach(QNetworkAddressEntry address, hotspot.addressEntries())
@@ -20,6 +21,7 @@ RobotConnection::RobotConnection()
 //    //qDebug()<<hotspot.addressEntries();
 //    qDebug()<<hotspotAddress;
 //    qDebug()<<
+    myTimer.start();
     socket = new QUdpSocket(this);
     socket->bind(QHostAddress::Any,4210);
     connect(socket,SIGNAL(readyRead()),this,SLOT(readyRead()));
@@ -51,6 +53,15 @@ void RobotConnection::readyRead()
 
 void RobotConnection::connectionloop()
 {
+    if(myTimer.elapsed() <= 5000 && lastRequestedBotIP !="0.0.0.0"){   // 5 seconds to detect a
+           // check if there is a robot with a green led
+    }  else{
+        //no robot showed up. lets reset and wait for another bot
+        lastRequestedBotIP ="0.0.0.0";
+
+
+    }
+
  emit done();
 }
 
@@ -90,5 +101,6 @@ void RobotConnection::turnRobotOn(QString ip)
     qDebug() << "turning robot on with ip: " << ip << endl;
     //send to IP
     socket->writeDatagram(reinterpret_cast<char*>(&packet), sizeof(UdpData) ,QHostAddress(ip), 4210);
+    myTimer.restart();
 
 }

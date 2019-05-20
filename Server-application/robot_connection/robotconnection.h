@@ -5,7 +5,9 @@
 #include <QUdpSocket>
 #include <QDebug>
 #include "robotlocation.h" // for the UDP struct
+#include "robotlocationmanager.h"
 #include <QList>
+#include <QTime>
 extern SwarmBotCommunicationSettings communicationSettings;
 class RobotConnection : public QObject
 {
@@ -23,6 +25,8 @@ signals:
 private:
     QUdpSocket * socket;
     QString lastRequestedBotIP;
+    QTime myTimer;
+
 
     void processIP(QString ip);
     void turnRobotOn(QString ip);
