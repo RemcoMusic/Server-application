@@ -31,6 +31,7 @@ int main(int argc, char *argv[])
 
     QObject::connect(&robotDetection,SIGNAL(newFrameFinished()),&swarmSimulation,SLOT(startSimulation()));
     QObject::connect(&swarmSimulation,SIGNAL(simulationFinished()),&swarmAlgorithms,SLOT(update()));
-    QObject::connect(&swarmAlgorithms,SIGNAL(algoritmFinished()),&w,SLOT(updateGui()));
+    QObject::connect(&swarmAlgorithms,SIGNAL(algoritmFinished()),&robotConnection,SLOT(connectionloop()));
+    QObject::connect(&robotConnection,SIGNAL(done()),&w,SLOT(updateGui()));
     return a.exec();
 }
