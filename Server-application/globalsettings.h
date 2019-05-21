@@ -10,6 +10,8 @@ public:
     int fieldSizeX=1000;//mm
     int fieldSizeY=1000;//mm
     int botDiameter = 100;//mm
+    int botDistanceBetweenWheels = 80;
+    int simulationSpeed = 10;
 
     bool printRobotDetection = 0;
     bool printSwarmAlgoritme = 0;

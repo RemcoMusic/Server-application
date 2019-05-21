@@ -82,14 +82,14 @@ void LinearMotionAlgorithms::calculateTable()
         {
             Destination *currentDestination = destinationIterator.next();
             data.distanceTable[robotIndex][destinationIndex] = distanceBetweenPoints(currentDestination, currentRobot->x, currentRobot->y);
-            std::cout <<  std::setw(7) << data.distanceTable[robotIndex][destinationIndex];
+            //std::cout <<  std::setw(7) << data.distanceTable[robotIndex][destinationIndex];
 
             destinationIndex++;
         }
-        std::cout << std::endl;
+        //std::cout << std::endl;
         robotIndex++;
     }
-    std::cout << std::endl;
+    //std::cout << std::endl;
 }
 
 
@@ -120,7 +120,7 @@ bool LinearMotionAlgorithms::swapOptimize()
                     int temp = data.rowResultIndex[row1];
                     data.rowResultIndex[row1] = data.rowResultIndex[row2];
                     data.rowResultIndex[row2] = temp;
-                    std::cout << "swap optimize" << std::endl;
+                    //std::cout << "swap optimize" << std::endl;
                     succes = true;
                     row2--;
                 }
@@ -133,7 +133,7 @@ bool LinearMotionAlgorithms::swapOptimize()
                         int temp = data.rowResultIndex[row1];
                         data.rowResultIndex[row1] = data.rowResultIndex[row2];
                         data.rowResultIndex[row2] = temp;
-                        std::cout << "swap optimize" << std::endl;
+                        //std::cout << "swap optimize" << std::endl;
                         succes = true;
                         row2--;
                     }
@@ -207,7 +207,7 @@ int LinearMotionAlgorithms::getHighestDistanceIndex()
 }
 void LinearMotionAlgorithms::connectDestinationsToRobots()
 {
-    std::cout << "connect destinations to robots algorithm" << std::endl;
+    //std::cout << "connect destinations to robots algorithm" << std::endl;
     //complex algorithm to connect the destination points to the robots with the shortest maximal path
     //brute force algorithm has o(n!) complexity, this algorithm works with elemination combinations
 
@@ -236,7 +236,7 @@ void LinearMotionAlgorithms::connectDestinationsToRobots()
 
     allocateTable();
 
-    std::cout << "size" << data.amountOfRobots << " " << data.amountOfDestinations << std::endl;
+    //std::cout << "size" << data.amountOfRobots << " " << data.amountOfDestinations << std::endl;
 
     //generate the table of distances between all combinations of robots and points
     calculateTable();
@@ -248,7 +248,7 @@ void LinearMotionAlgorithms::connectDestinationsToRobots()
     int lowestHighest=UINT16_MAX;
     for(int i=0;i<5;i++)
     {
-        std::cout << i << std::endl;
+        //std::cout << i << std::endl;
         while(swapOptimize());
 
         int highestIndex = getHighestDistanceIndex();
@@ -262,7 +262,7 @@ void LinearMotionAlgorithms::connectDestinationsToRobots()
 
 
         while(swapOptimize());
-        std::cout << highest << "  "<< getHighestDistance()<< std::endl;
+        //std::cout << highest << "  "<< getHighestDistance()<< std::endl;
         if(getHighestDistance() <= highest)
         {
 
@@ -272,15 +272,8 @@ void LinearMotionAlgorithms::connectDestinationsToRobots()
         }
     }
 
-    printTable();
+    //printTable();
     data.lastHighestDistance = lowestHighest;
-
-
-    std::cout << "best path found" << std::endl;
-    for(int i=0;i<data.amountOfRobots;i++)
-    {
-        std::cout << (int)data.lastfoundResultIndex[i] << "  ";
-    }std::cout << std::endl << data.lastHighestDistance << std::endl;
 
     int destinationIndex=0;
     QListIterator<Destination*> destinationIterator(destinations);
@@ -310,7 +303,7 @@ void LinearMotionAlgorithms::connectDestinationsToRobots()
 }
 void LinearMotionAlgorithms::moveRobotTo(RobotLocation *robot,Destination *destination, double speed)
 {
-    robot->speed = speed;
+    robot->speed = speed * 10 + 1;
     robot->destinationX = destination->x;
     robot->destinationY = destination->y;
 //    double deltaX = destination->x - robot->x;

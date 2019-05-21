@@ -36,7 +36,7 @@ void CircleAlgorithm::calculatePoints()
         newDestination->x = point1->x() + cos(angle) * c;
         newDestination->y = point1->y() + sin(angle) * c;
         destinations.append(newDestination);
-        qDebug("new position %d, %d",newDestination->x,newDestination->y);
+        //qDebug("new position %d, %d",newDestination->x,newDestination->y);
 
         angle+=angleBetweenRobots;
     }
