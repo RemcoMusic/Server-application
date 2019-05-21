@@ -452,12 +452,15 @@ void LinearMotionAlgorithms::connectDestinationsToRobots()
 }
 void LinearMotionAlgorithms::moveRobotTo(RobotLocation *robot,Destination *destination, double speed)
 {
-    double deltaX = destination->x - robot->x;
-    double deltaY = destination->y - robot->y;
-    if((abs(deltaX) <= 1) && (abs(deltaY) <= 1))return;
-    double angle = atan2(deltaY,deltaX);
-    robot->x = robot->x + std::fmin(cos(angle) * speed * 4, abs(deltaX));
-    robot->y = robot->y + std::fmin(sin(angle) * speed * 4, abs(deltaY));
+    robot->speed = speed;
+    robot->destinationX = destination->x;
+    robot->destinationY = destination->y;
+//    double deltaX = destination->x - robot->x;
+//    double deltaY = destination->y - robot->y;
+//    if((abs(deltaX) <= 1) && (abs(deltaY) <= 1))return;
+//    double angle = atan2(deltaY,deltaX);
+//    robot->x = robot->x + std::fmin(cos(angle) * speed * 4, abs(deltaX));
+//    robot->y = robot->y + std::fmin(sin(angle) * speed * 4, abs(deltaY));
 
 
 }

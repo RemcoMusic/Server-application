@@ -7,7 +7,7 @@ class SwarmSimulationSettings
 {
 public:
     SwarmSimulationSettings();
-
+    int maxSpeed = 5;
 };
-
+extern SwarmSimulationSettings swarmSimulationSettings;
 #endif // SWARMSIMULATIONSETTINGS_H

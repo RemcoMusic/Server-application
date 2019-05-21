@@ -55,12 +55,15 @@ public:
 
     double x = 0;
     double y = 0;
-    QColor myColor = Qt::yellow;
 
-    double batteryVoltage=7.4;
+    double speed = 1;
 
     int destinationX = 0;
     int destinationY = 0;
+
+    QColor myColor = Qt::yellow;
+
+    double batteryVoltage=7.4;
 
     RobotGroup* group = nullptr;
     enum class RobotType
