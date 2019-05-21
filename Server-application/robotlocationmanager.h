@@ -9,8 +9,9 @@
 #include "robotlocation.h"
 #include "robotgroup.h"
 #include <QList>
-class RobotLocationManager
+class RobotLocationManager: public QObject
 {
+    Q_OBJECT
 public:
     RobotLocationManager();
     QList<RobotLocation*> robots;
@@ -20,6 +21,9 @@ public:
     RobotLocation* addSimulatedRobot(RobotGroup* group = nullptr);
     void deleteAllSimulatedRobots();
     void deleteAllSimulatedRobotsFromGroup(RobotGroup* group = nullptr);
+
+public slots:
+    void makeNewRealRobot(int x,int y);
 };
 extern RobotLocationManager robotLocationManager;
 #endif // ROBOTLOCATIONMANAGER_H

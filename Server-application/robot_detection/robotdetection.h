@@ -39,6 +39,7 @@ class robotDetection: public QThread
 
     signals:
         void newFrameFinished();
+        void makeANewRobot(int x,int y);
 };
 
 #endif // ROBOTDETECTION_H

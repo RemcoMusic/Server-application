@@ -18,7 +18,7 @@ void robotDetection::run()
 
 int robotDetection::detectSomething()
 {
-    cv::VideoCapture cap(0);
+    cv::VideoCapture cap(1);
     cv::Mat originalFrame;
     cv::Mat threshold;
     cv::Mat HSV;
@@ -93,6 +93,7 @@ void robotDetection::trackFilteredObject(cv::Mat threshold,cv::Mat HSV, cv::Mat 
                             }
                         }
                         if (newRobot) {
+                            emit makeANewRobot(500,500);
 //                          RobotLocation *newFoundRobot = new RobotLocation();
 //                          newFoundRobot->x = moment.m10/area;
 //                          newFoundRobot->y = moment.m01/area;

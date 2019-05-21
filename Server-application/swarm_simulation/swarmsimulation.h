@@ -5,6 +5,7 @@
 #include <QDebug>
 #include "robotlocation.h"
 #include "robotlocationmanager.h"
+#include <QThread>
 extern RobotLocationManager robotLocationManager;
 class SwarmSimulation: public QObject
 {

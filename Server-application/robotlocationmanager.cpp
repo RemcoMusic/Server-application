@@ -46,3 +46,10 @@ void RobotLocationManager::deleteAllSimulatedRobotsFromGroup(RobotGroup *group)
         }
     }
 }
+
+void RobotLocationManager::makeNewRealRobot(int x, int y)
+{
+    RobotLocation *newRobot = new RobotLocation();
+    newRobot->type = RobotLocation::RobotType::REAL;
+    robots.append(newRobot);
+}
