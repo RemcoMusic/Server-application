@@ -8,11 +8,14 @@
 #include "robotlocation.h"
 #include "robotlocationmanager.h"
 #include <QDebug>
+
+
+extern QGraphicsScene *dataScene; //forward declaration (made in cpp)
+
 namespace Ui {
 class MainWindow;
 }
 
-extern AlgrorithmVisualisation algorithmVisualisation;
 
 class MainWindow : public QMainWindow
 {
@@ -28,7 +31,7 @@ private slots:
 public slots:
     void updateGui();
 private:
-    QGraphicsScene *dataScene;
+    //QGraphicsScene *dataScene;
     QGraphicsScene *cameraScene;
     Ui::MainWindow *ui;
 };
