@@ -35,6 +35,7 @@ int robotDetection::detectSomething()
         morphOps(threshold);
         trackFilteredObject(threshold,HSV,originalFrame);
 
+        imshow("Thresholded Frame", threshold);
         imshow("Color detection", originalFrame);
 
         emit newFrameFinished();
@@ -70,7 +71,7 @@ void robotDetection::trackFilteredObject(cv::Mat threshold,cv::Mat HSV, cv::Mat 
                 //if the area is the same as the 3/2 of the image size, probably just a bad filter
                 //we only want the object with the largest area so we safe a reference area each
                 //iteration and compare it to the area in the next iteration.
-                if(area>200)
+                if(area>100)
                 {
                     if(robotList.isEmpty()) {
                         robotList.insert(0,"ID_1");
@@ -149,6 +150,7 @@ cv::Mat robotDetection::detectColors(cv::Mat frame) {
 
     cv::Mat allDetectedColors;
     cv::Mat redDetectedColor;
+    cv::Mat blueColorFrame;
     cv::Mat low;
     cv::Mat high;
 
@@ -157,12 +159,12 @@ cv::Mat robotDetection::detectColors(cv::Mat frame) {
     inRange(frame, cv::Scalar(robotDetectionSettings.redHigherBHue, robotDetectionSettings.redHigherBSaturation, robotDetectionSettings.redHigherBValue),
             cv::Scalar(robotDetectionSettings.redHigherBHue2, robotDetectionSettings.redHigherBSaturation2, robotDetectionSettings.redHigherBValue2), high);
 
-//    inRange(frame, cv::Scalar(robotDetectionSettings.blueLowerBHue, robotDetectionSettings.blueLowerBSaturation, robotDetectionSettings.blueLowerBValue),
-//            cv::Scalar(robotDetectionSettings.blueHigherBHue, robotDetectionSettings.blueHigherBSaturation, robotDetectionSettings.blueHigherBValue), blueColorFrame);
+    inRange(frame, cv::Scalar(robotDetectionSettings.blueLowerBHue, robotDetectionSettings.blueLowerBSaturation, robotDetectionSettings.blueLowerBValue),
+            cv::Scalar(robotDetectionSettings.blueHigherBHue, robotDetectionSettings.blueHigherBSaturation, robotDetectionSettings.blueHigherBValue), blueColorFrame);
 //    inRange(frame, cv::Scalar(robotDetectionSettings.greenLowerBHue, robotDetectionSettings.greenLowerBSaturation, robotDetectionSettings.greenLowerBValue),
 //            cv::Scalar(robotDetectionSettings.greenHigherBHue, robotDetectionSettings.greenHigherBSaturation, robotDetectionSettings.greenHigherBValue), greenColorFrame);
 
-    cv::addWeighted(low, 1.0, high, 1.0, 0.0, allDetectedColors);
-    //cv::addWeighted(redDetectedColor, 1.0, blueColorFrame, 1.0, 0.0, allDetectedColors);
+    cv::addWeighted(low, 1.0, high, 1.0, 0.0, redDetectedColor);
+    cv::addWeighted(redDetectedColor, 1.0, blueColorFrame, 1.0, 0.0, allDetectedColors);
     return allDetectedColors;
 }
