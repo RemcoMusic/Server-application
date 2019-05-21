@@ -16,7 +16,6 @@ namespace Ui {
 class MainWindow;
 }
 
-extern AlgrorithmVisualisation algorithmVisualisation;
 
 class MainWindow : public QMainWindow
 {

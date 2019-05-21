@@ -53,6 +53,7 @@ void RobotLocationManager::makeNewRealRobot(int x, int y)
     newRobot->type = RobotLocation::RobotType::REAL;
     newRobot->x = x;
     newRobot->y = y;
+    newRobot->myColor = Qt::red;
     robots.append(newRobot);
     //dataScene.addItem(newRobot);
     //Ui::ui->dataSene->addItem(newRobot);
