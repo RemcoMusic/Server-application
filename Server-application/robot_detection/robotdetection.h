@@ -9,6 +9,8 @@
 #include <QThread>
 #include "robotdetectionsettings.h"
 #include "globalsettings.h"
+#include "robotlocationmanager.h"
+#include "robotlocation.h"
 
 
 class robotDetection: public QThread

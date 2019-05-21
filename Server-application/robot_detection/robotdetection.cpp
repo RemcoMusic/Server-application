@@ -46,11 +46,7 @@ int robotDetection::detectSomething()
 
 void robotDetection::trackFilteredObject(cv::Mat threshold,cv::Mat HSV, cv::Mat &originalFrame)
 {
-
-
-
-
-    //vector <Object> objects;
+    bool newRobot = true;
     cv::Mat temp;
     threshold.copyTo(temp);
     //these two vectors needed for output of findContours
@@ -81,22 +77,43 @@ void robotDetection::trackFilteredObject(cv::Mat threshold,cv::Mat HSV, cv::Mat 
                         robotXcoordinates.insert(0, moment.m10/area);
                         robotYcoordinates.insert(0, moment.m01/area);
                     }else {
-                        int x = index+1;
-                        QString f = "ID_";
-                        f += QString::number(x);
-                        robotList.insert(index + 1, f);
-                        robotXcoordinates.insert(index + 1, moment.m10/area);
-                        robotYcoordinates.insert(index + 1, moment.m01/area);
+//                          for(int i =0;i<robotLocationManager.robots.size();
+//                                RobotLocation* ptr = robotLocationManager.robots.at(i);
+//                                if(ptr->type == RobotLocation::RobotType::REAL){
+//                                }
+//                            }
+                        for (int i = 0; i < robotList.size(); i++) {
+                            if (robotXcoordinates.at(i) >= (moment.m10/area - 30) && robotXcoordinates.at(i) <= (moment.m10/area + 30)) {
+                                if(robotYcoordinates.at(i) >= (moment.m01/area -30) && robotYcoordinates.at(i) <= (moment.m01/area + 30)) {
+                                    newRobot = false;
+                                    robotXcoordinates.replace(i, moment.m10/area);
+                                    robotYcoordinates.replace(i, moment.m01/area);
+                                    break;
+                              }
+                            }
+                        }
+                        if (newRobot) {
+//                          RobotLocation *newFoundRobot = new RobotLocation();
+//                          newFoundRobot->x = moment.m10/area;
+//                          newFoundRobot->y = moment.m01/area;
+//                          newFoundRobot->type = RobotLocation::RobotType::REAL;
+//                          robotLocationManager.robots.append(newFoundRobot);
+
+                            int x = robotList.size()+1;
+                            QString f = "ID_";
+                            f += QString::number(x);
+                            robotList.insert(index + 1, f);
+                            robotXcoordinates.insert(index + 1, moment.m10/area);
+                            robotYcoordinates.insert(index + 1, moment.m01/area);
+                            newRobot = true;
+                        }
                     }
                     objectFound = true;
-
                 }
                 else objectFound = false;
             }
-            //let user know you found an object
             if(objectFound ==true)
             {
-                //draw object location on screen
                 drawObjects(originalFrame);
             }
         }
@@ -105,12 +122,11 @@ void robotDetection::trackFilteredObject(cv::Mat threshold,cv::Mat HSV, cv::Mat 
 
 void robotDetection::drawObjects(cv::Mat &frame) {
 
-    for(int i =0; i<robotList.size(); i++){
-
-    cv::circle(frame,cv::Point(robotXcoordinates.at(i),robotYcoordinates.at(i)),10,cv::Scalar(0,0,255));
-    cv::putText(frame,std::to_string(robotXcoordinates.at(i))+ " , " + std::to_string(robotYcoordinates.at(i)),
+    for(int i =0; i<robotList.size(); i++) {
+        cv::circle(frame,cv::Point(robotXcoordinates.at(i),robotYcoordinates.at(i)),10,cv::Scalar(0,0,255));
+        cv::putText(frame,std::to_string(robotXcoordinates.at(i))+ " , " + std::to_string(robotYcoordinates.at(i)),
                 cv::Point(robotXcoordinates.at(i),robotYcoordinates.at(i)+10),1,1,cv::Scalar(0,255,0));
-    cv::putText(frame,robotList.at(1).toLocal8Bit().constData(),cv::Point(robotXcoordinates.at(i),robotYcoordinates.at(i)-15),1,2,cv::Scalar(0,0,255));
+        cv::putText(frame,robotList.at(i).toLocal8Bit().constData(),cv::Point(robotXcoordinates.at(i),robotYcoordinates.at(i)-15),1,2,cv::Scalar(0,0,255));
     }
 }
 
