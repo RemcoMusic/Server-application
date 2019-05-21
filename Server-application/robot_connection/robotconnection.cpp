@@ -72,7 +72,6 @@ void RobotConnection::connectionloop()
         //no robot showed up. lets reset and wait for another bot
         lastRequestedBotIP ="0.0.0.0";
 
-
     }
 
     emit done();
