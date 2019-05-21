@@ -20,8 +20,7 @@ public:
     bool debugLinearMotionVerbose = false;
     bool debugLinearMotionSources = false;
 
-
-    int distanceBetweenRobots=150;//distance between the destinations of the robots,
+    int distanceBetweenRobots=120;//distance between the destinations of the robots,
 
     enum class algorithmInputSource
     {

@@ -4,16 +4,54 @@
 LinearMotionAlgorithms::LinearMotionAlgorithms()
 {
 }
-inline int distanceBetweenPoints(LinearMotionAlgorithms::Destination* destination1, int x, int y)
+inline uint16_t distanceBetweenPoints(int x1, int y1, int x2, int y2)
 {
-    int deltaX = destination1->x - x;//pytagoras A
-    int deltaY = destination1->y - y;//pytagoras b
+    int deltaX = x1 - x2;//pytagoras A
+    int deltaY = y1 - y2;//pytagoras b
     return sqrt(deltaX*deltaX + deltaY*deltaY);//pytagoras C, distance between points
 }
 void LinearMotionAlgorithms::update()
 {
     connectDestinationsToRobots();
+    runCollisionAvoidance();
 }
+void LinearMotionAlgorithms::runCollisionAvoidance()
+{
+    //connectDestinationsToRobots must run before this, otherwise data.swarmRobots is empty
+
+    QListIterator<RobotLocation*> robotIterator1(data.swarmRobots);
+    while (robotIterator1.hasNext())
+    {
+        RobotLocation *robot1 = robotIterator1.next();
+        QListIterator<RobotLocation*> robotIterator2(data.swarmRobots);
+        while (robotIterator2.hasNext())
+        {
+            RobotLocation *robot2 = robotIterator2.next();
+            if(robot1 == robot2)continue;
+
+            //calculate distance from center to center
+            int distance = distanceBetweenPoints(robot1->x, robot1->y, robot2->x, robot2->y);
+            if(distance < 100)
+            {
+                std::cout << "collision" << std::endl;
+                int robotsAngle = atan2(robot1->x - robot2->x, robot1->y - robot2->y);
+
+                int robot1AngleDifference = robot1->angle - robotsAngle;
+                if(robot1AngleDifference > M_PI)robot1AngleDifference-= 2* M_PI;
+                if(robot1AngleDifference < -M_PI)robot1AngleDifference += 2* M_PI;
+
+                int robot2AngleDifference = robot2->angle - robotsAngle;
+                if(robot2AngleDifference > M_PI)robot2AngleDifference-= 2* M_PI;
+                if(robot2AngleDifference < -M_PI)robot2AngleDifference += 2* M_PI;
+
+
+            }
+        }
+    }
+}
+
+
+
 void LinearMotionAlgorithms::allocateTable()
 {
     //the array is 2 demensional, allocate it on the heap
@@ -57,13 +95,12 @@ void LinearMotionAlgorithms::calculateTable()
         while (destinationIterator.hasNext())
         {
             Destination *currentDestination = destinationIterator.next();
-            data.distanceTable[robotIndex][destinationIndex] = distanceBetweenPoints(currentDestination, currentRobot->x, currentRobot->y);
+            data.distanceTable[robotIndex][destinationIndex] = distanceBetweenPoints(currentDestination->x, currentDestination->y, currentRobot->x, currentRobot->y);
             destinationIndex++;
         }
         robotIndex++;
     }
 }
-
 
 bool LinearMotionAlgorithms::swapOptimize()
 {
@@ -176,7 +213,6 @@ int LinearMotionAlgorithms::getHighestDistanceIndex()
         {
            highest = data.distanceTable[robotIndex][data.rowResultIndex[robotIndex]];
            highestIndex = robotIndex;
-
         }
     }
     data.lastHighestDistance = highest;
@@ -262,13 +298,19 @@ void LinearMotionAlgorithms::connectDestinationsToRobots()
             {
                 currentDestination->robot = data.swarmRobots[i];
 
-                double speed;
-                speed = (double)distanceBetweenPoints(currentDestination,currentDestination->robot->x,currentDestination->robot->y)/data.lastHighestDistance;
-                if(speed >1)
+                if(swarmAlgorithmsSettings.dynamicSpeed)
                 {
-                    speed = 1;
+                    double speed;
+                    speed = (double)distanceBetweenPoints(currentDestination->x, currentDestination->y,currentDestination->robot->x,currentDestination->robot->y)/data.lastHighestDistance;
+                    if(speed >1)
+                    {
+                        speed = 1;
+                    }
+                    currentDestination->robot->speed = speed * 10 + 1;
                 }
-                currentDestination->robot->speed = speed * 10 + 1;
+                else {
+                    currentDestination->robot->speed = 10;
+                }
                 currentDestination->robot->destinationX = currentDestination->x;
                 currentDestination->robot->destinationY = currentDestination->y;
             }
