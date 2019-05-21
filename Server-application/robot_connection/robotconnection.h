@@ -19,6 +19,7 @@ public:
 public slots:
     void readyRead();
     void connectionloop();
+    void updateRobots();
 signals:
     void done();
 

@@ -47,10 +47,11 @@ public:
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
     void setRotation(int r);
     RobotLocation(RobotGroup *group = nullptr);
+    bool isReady();
 
 
 
-
+    QString ip = "0.0.0.0";  // 0.0.0.0 equals no IP
     int angle = 90;
 
     double x = 0;
