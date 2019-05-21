@@ -9,6 +9,10 @@
 #include "robotlocation.h"
 #include "robotgroup.h"
 #include <QList>
+
+
+#include "mainwindow.h"
+
 class RobotLocationManager: public QObject
 {
     Q_OBJECT

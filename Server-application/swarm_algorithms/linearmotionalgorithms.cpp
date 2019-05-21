@@ -220,7 +220,9 @@ void LinearMotionAlgorithms::connectDestinationsToRobots()
             RobotLocation *currentRobot = i.next();
             if(currentRobot->group == robotGroup)
             {
-                data.swarmRobots.append(currentRobot);
+                if(currentRobot->type == RobotLocation::RobotType::SIMULATED){
+                    data.swarmRobots.append(currentRobot);
+                }
             }
         }
         QListIterator<Destination*> destinationIterator(destinations);

@@ -51,5 +51,12 @@ void RobotLocationManager::makeNewRealRobot(int x, int y)
 {
     RobotLocation *newRobot = new RobotLocation();
     newRobot->type = RobotLocation::RobotType::REAL;
+    newRobot->x = x;
+    newRobot->y = y;
     robots.append(newRobot);
+    //dataScene.addItem(newRobot);
+    //Ui::ui->dataSene->addItem(newRobot);
+    dataScene->addItem(newRobot);
+    qDebug() << "MADE A NEW ROBOT";
+
 }
