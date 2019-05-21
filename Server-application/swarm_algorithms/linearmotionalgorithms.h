@@ -50,7 +50,6 @@ private:
 
     void optimizeTable();
     void calculateAvailabilities();
-    bool resultIsValid();
     void clearOrder();
     bool optimalisationPossible();
     int getHighestDistance();
@@ -58,7 +57,8 @@ private:
 
     int getHighestDistanceOverAll();
     void filterPointAvailabilities();
-    void swapOptimize();
+    bool swapOptimize();
+    int getHighestDistanceIndex();
 };
 
 #endif // LINEARMOTIONALGORITHMS_H
