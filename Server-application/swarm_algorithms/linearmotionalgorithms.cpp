@@ -52,9 +52,6 @@ void LinearMotionAlgorithms::runCollisionAvoidance()
             //don't compare the same robots, don't compare robots 2 times
             if(robot1 == robot2)break;
 
-            //if a robot is not driving collision is not important
-            //if(distanceBetweenPoints(robot1->x,robot1->y,robot1->destinationX, robot1->destinationY) < 100)continue;
-
             //calculate distance from center to center
             int distance = distanceBetweenPoints(robot1->x, robot1->y, robot2->x, robot2->y);
             if(distance < 130)//collision
