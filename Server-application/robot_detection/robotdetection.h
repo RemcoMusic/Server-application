@@ -1,18 +1,20 @@
 #ifndef ROBOTDETECTION_H
 #define ROBOTDETECTION_H
 
-#include <QObject>
 #include <opencv2/core/core.hpp>
 #include "opencv2/highgui/highgui.hpp"
 #include "opencv2/imgproc/imgproc.hpp"
-#include <iostream>
-#include <QThread>
 #include "robotdetectionsettings.h"
 #include "globalsettings.h"
 #include "robotlocationmanager.h"
 #include "robotlocation.h"
-#include <opencv2/core/core.hpp>
-
+#include <QObject>
+#include <QThread>
+#include <QtDebug>
+#include <iostream>
+#include <sstream>
+#include <string>
+#include <vector>
 
 class robotDetection: public QThread
 {
@@ -21,26 +23,19 @@ class robotDetection: public QThread
     public:
         robotDetection();
         void run();
+
     private:
-        void trackFilteredObject(cv::Mat threshold,cv::Mat HSV, cv::Mat &originalFrame);
+        void detectNewRobots(cv::Mat threshold, cv::Mat &originalFrame);
+        void trackFilteredObject(cv::Mat threshold, cv::Mat &originalFrame);
         void drawObjects(cv::Mat &frame);
         void morphOps(cv::Mat &thresh);
-        cv::Mat detectColors(cv::Mat frame);
-
-        QList<QString> robotList;
-        QList<int> robotXcoordinates;
-        QList<int> robotYcoordinates;
-
-        cv::Mat redColorFrame;
-        cv::Mat blueColorFrame;
-        cv::Mat greenColorFrame;
+        cv::Mat detectColors(cv::Mat frame, QString color);
 
     public slots:
-        int detectSomething();
+        int startDetecting();
 
     signals:
         void newFrameFinished();
         void makeANewRobot(int x,int y);
 };
-
 #endif // ROBOTDETECTION_H
