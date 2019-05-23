@@ -9,15 +9,50 @@
 
 robotDetection::robotDetection()
 {
-    for (int i = 0; i < 6; i++) {
-        Hsv temporary;
-        temporary.c = i;
-        temporary.h = 0;
-        temporary.s = 0;
-        temporary.v = 0;
 
-        robotDetectionSettings.HSVColorValues.append(temporary);
-    }
+        Hsv* temporaryRL = new Hsv();
+        temporaryRL->c = ColorNames::RED_LOW;
+        temporaryRL->h = 10;
+        temporaryRL->s = 10;
+        temporaryRL->v = 10;
+        robotDetectionSettings.HSVColorValues.append(temporaryRL);
+
+        Hsv* temporaryRH = new Hsv();
+        temporaryRH->c = ColorNames::RED_HIGH;
+        temporaryRH->h = 20;
+        temporaryRH->s = 20;
+        temporaryRH->v = 20;
+        robotDetectionSettings.HSVColorValues.append(temporaryRH);
+
+        Hsv* temporaryBL = new Hsv();
+        temporaryBL->c = ColorNames::BLUE_LOW;
+        temporaryBL->h = 30;
+        temporaryBL->s = 30;
+        temporaryBL->v = 30;
+        robotDetectionSettings.HSVColorValues.append(temporaryBL);
+
+        Hsv* temporaryBH = new Hsv();
+        temporaryBH->c = ColorNames::BLUE_HIGH;
+        temporaryBH->h = 40;
+        temporaryBH->s = 40;
+        temporaryBH->v = 40;
+        robotDetectionSettings.HSVColorValues.append(temporaryBH);
+
+        Hsv* temporaryGL = new Hsv();
+        temporaryGL->c = ColorNames::GREEN_LOW;
+        temporaryGL->h = 50;
+        temporaryGL->s = 50;
+        temporaryGL->v = 50;
+        robotDetectionSettings.HSVColorValues.append(temporaryGL);
+
+        Hsv* temporaryGH = new Hsv();
+        temporaryGH->c = ColorNames::GREEN_HIGH;
+        temporaryGH->h = 100;
+        temporaryGH->s = 100;
+        temporaryGH->v = 100;
+        robotDetectionSettings.HSVColorValues.append(temporaryGH);
+        robotDetectionSettings.HSVColorValues.at(ColorNames::RED_LOW)->h; // HIER KIJKEN
+
 }
 
 void robotDetection::run()
@@ -31,6 +66,7 @@ int robotDetection::detectSomething()
     cv::Mat originalFrame;
     cv::Mat threshold;
     cv::Mat HSV;
+    cv::Mat RGB;
 
 
     if(!cap.isOpened()) {
@@ -46,7 +82,8 @@ int robotDetection::detectSomething()
 
         imshow("Thresholded Frame", threshold);
         imshow("Color detection", originalFrame);
-        robotDetectionSettings.processedFrame = originalFrame;
+        cv::cvtColor(originalFrame,RGB, cv::COLOR_BGR2RGB);
+        robotDetectionSettings.processedFrame = RGB;
 
         emit newFrameFinished();
         if(cv::waitKey(30) >= 0) break;
