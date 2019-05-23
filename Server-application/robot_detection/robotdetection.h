@@ -11,6 +11,7 @@
 #include "globalsettings.h"
 #include "robotlocationmanager.h"
 #include "robotlocation.h"
+#include <opencv2/core/core.hpp>
 
 
 class robotDetection: public QThread

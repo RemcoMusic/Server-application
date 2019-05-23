@@ -9,6 +9,15 @@
 
 robotDetection::robotDetection()
 {
+    for (int i = 0; i < 6; i++) {
+        Hsv temporary;
+        temporary.c = i;
+        temporary.h = 0;
+        temporary.s = 0;
+        temporary.v = 0;
+
+        robotDetectionSettings.HSVColorValues.append(temporary);
+    }
 }
 
 void robotDetection::run()
@@ -37,6 +46,7 @@ int robotDetection::detectSomething()
 
         imshow("Thresholded Frame", threshold);
         imshow("Color detection", originalFrame);
+        robotDetectionSettings.processedFrame = originalFrame;
 
         emit newFrameFinished();
         if(cv::waitKey(30) >= 0) break;
