@@ -4,6 +4,10 @@
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
 
+
+QGraphicsScene *dataScene;   //global
+
+
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
@@ -18,7 +22,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->graphicsView_CameraRaw->setScene(cameraScene);
     dataScene->addRect(0,0,globalSettings.fieldSizeX,globalSettings.fieldSizeY);
 
-    for(int i =0;i<16;i++){
+    for(int i =0;i<20;i++){
         int x = qrand() % globalSettings.fieldSizeX;
         int y = qrand() % globalSettings.fieldSizeY;
         int a = qrand() % 360;
@@ -28,6 +32,8 @@ MainWindow::MainWindow(QWidget *parent) :
         l->y = y;
         l->setX(x-0.5*globalSettings.botDiameter);
         l->setY(y-0.5*globalSettings.botDiameter);
+        l->destinationX = x;
+        l->destinationY = y;
         l->setRotation(a);
         dataScene->addItem(l);
     }

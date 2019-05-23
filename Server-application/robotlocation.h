@@ -14,6 +14,7 @@
 #include <QGraphicsSceneMouseEvent>
 #include <QPoint>
 #include <QFrame>
+#include <math.h>
 enum robotStatus{
     OFF = 0,
     STARTUP = 1,
@@ -46,21 +47,27 @@ public:
     QRectF boundingRect() const;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
     void setRotation(int r);
+
     RobotLocation(RobotGroup *group = nullptr);
 
 
 
 
-    int angle = 90;
+    double angle = 0;
 
-    double x = 0;
-    double y = 0;
-    QColor myColor = Qt::yellow;
+    int x = 0;
+    int y = 0;
 
-    double batteryVoltage=7.4;
+    double speed = 1;
+    double currentSpeedLeft = 0;
+    double currentSpeedRight = 0;
 
     int destinationX = 0;
     int destinationY = 0;
+
+    QColor myColor = Qt::yellow;
+
+    double batteryVoltage=7.4;
 
     RobotGroup* group = nullptr;
     enum class RobotType

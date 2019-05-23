@@ -9,6 +9,9 @@
 #include <QThread>
 #include "robotdetectionsettings.h"
 #include "globalsettings.h"
+#include "robotlocationmanager.h"
+#include "robotlocation.h"
+#include <opencv2/core/core.hpp>
 
 
 class robotDetection: public QThread
@@ -19,15 +22,25 @@ class robotDetection: public QThread
         robotDetection();
         void run();
     private:
+        void trackFilteredObject(cv::Mat threshold,cv::Mat HSV, cv::Mat &originalFrame);
+        void drawObjects(cv::Mat &frame);
+        void morphOps(cv::Mat &thresh);
         cv::Mat detectColors(cv::Mat frame);
+
+        QList<QString> robotList;
+        QList<int> robotXcoordinates;
+        QList<int> robotYcoordinates;
+
+        cv::Mat redColorFrame;
+        cv::Mat blueColorFrame;
+        cv::Mat greenColorFrame;
 
     public slots:
         int detectSomething();
 
     signals:
         void newFrameFinished();
-
-
+        void makeANewRobot(int x,int y);
 };
 
 #endif // ROBOTDETECTION_H

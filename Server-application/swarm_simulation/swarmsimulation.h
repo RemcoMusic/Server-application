@@ -5,10 +5,18 @@
 #include <QDebug>
 #include "robotlocation.h"
 #include "robotlocationmanager.h"
+#include <math.h>
+#include <QGenericMatrix>
+#include <swarmalgorithmbase.h>
+#include <time.h>
 extern RobotLocationManager robotLocationManager;
 class SwarmSimulation: public QObject
 {
     Q_OBJECT
+    void moveRobot(RobotLocation *robot);
+    void moveWheels(double Vl, double Vr, RobotLocation *robot);
+    clock_t lastTime;
+    double deltaT=0;
 public:
     SwarmSimulation();
 public slots:
