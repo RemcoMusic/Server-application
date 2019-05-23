@@ -4,13 +4,16 @@
 LinearMotionAlgorithms::LinearMotionAlgorithms()
 {
 }
+
 #define sign(a) ( ( (a) < 0 )  ?  -1   : ( (a) > 0 ) )
+
 inline uint16_t distanceBetweenPoints(int x1, int y1, int x2, int y2)
 {
     int deltaX = x1 - x2;//pytagoras A
     int deltaY = y1 - y2;//pytagoras b
     return sqrt(deltaX*deltaX + deltaY*deltaY);//pytagoras C, distance between points
 }
+
 double map(double x, double x1, double x2, double y1, double y2)
 {
  return (x - x1) * (y2 - y1) / (x2 - x1) + y1;
@@ -27,6 +30,7 @@ bool isMoving(RobotLocation* robot)
     }
     return true;
 }
+
 void LinearMotionAlgorithms::update()
 {
     connectDestinationsToRobots();
@@ -309,7 +313,9 @@ void LinearMotionAlgorithms::connectDestinationsToRobots()
             RobotLocation *currentRobot = i.next();
             if(currentRobot->group == robotGroup)
             {
-                data.swarmRobots.append(currentRobot);
+                if(currentRobot->type == RobotLocation::RobotType::SIMULATED){
+                    data.swarmRobots.append(currentRobot);
+                }
             }
         }
         QListIterator<Destination*> destinationIterator(destinations);
@@ -387,6 +393,7 @@ void LinearMotionAlgorithms::connectDestinationsToRobots()
                 else {
                     currentDestination->robot->speed = 6;
                 }
+
                 currentDestination->robot->destinationX = currentDestination->x;
                 currentDestination->robot->destinationY = currentDestination->y;
             }

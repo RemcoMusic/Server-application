@@ -43,7 +43,7 @@ void SwarmSimulation::moveRobot(RobotLocation *robot)
     double deltaX = robot->destinationX - robot->x;
     double deltaY = robot->destinationY - robot->y;
     double distanceFromDestination = sqrt(deltaX*deltaX + deltaY*deltaY);//pythogoras
-    if((abs(deltaX) <= 4) && (abs(deltaY) <= 4))return;//already on location
+    if((abs(deltaX) <= 10) && (abs(deltaY) <= 10))return;//already on location
 
     double goalAngle = atan2(deltaY,deltaX);
     while(goalAngle <0) goalAngle += M_PI * 2;

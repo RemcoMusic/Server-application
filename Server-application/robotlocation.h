@@ -55,8 +55,8 @@ public:
 
     double angle = 0;
 
-    double x = 0;
-    double y = 0;
+    int x = 0;
+    int y = 0;
 
     double speed = 1;
     double currentSpeedLeft = 0;
