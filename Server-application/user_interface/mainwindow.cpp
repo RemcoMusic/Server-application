@@ -24,8 +24,30 @@ MainWindow::MainWindow(QWidget *parent) :
     dataScene->addRect(0,0,globalSettings.fieldSizeX,globalSettings.fieldSizeY);
 
 
-    for(int i =0;i<8;i++){
+    fpsTimer = new QTime();
+    fpsTimer->start();
 
+    ui->fpsNumber->setPalette(Qt::red);
+    ui->lcdNumberHue->setPalette(Qt::red);
+    ui->lcdNumberSaturation->setPalette(Qt::red);
+    ui->lcdNumberVDinges->setPalette(Qt::red);
+    ui->lcdNumberErode->setPalette(Qt::green);
+    ui->lcdNumberDilate->setPalette(Qt::green);
+    ui->lcdNumberDeviation->setPalette(Qt::green);
+
+
+    connect(ui->sliderHue, SIGNAL(valueChanged(int)),this, SLOT(colorSlidersChanged(int)));
+    connect(ui->sliderSaturation, SIGNAL(valueChanged(int)),this, SLOT(colorSlidersChanged(int)));
+    connect(ui->sliderVDinges, SIGNAL(valueChanged(int)),this, SLOT(colorSlidersChanged(int)));
+
+    connect(ui->sliderHue, SIGNAL(valueChanged(int)),ui->lcdNumberHue, SLOT(display(int)));
+    connect(ui->sliderSaturation, SIGNAL(valueChanged(int)),ui->lcdNumberSaturation, SLOT(display(int)));
+    connect(ui->sliderVDinges, SIGNAL(valueChanged(int)),ui->lcdNumberVDinges, SLOT(display(int)));
+
+    //on_colorComboBox_currentIndexChanged(0);
+
+
+    for(int i =0;i<8;i++){
         int x = qrand() % globalSettings.fieldSizeX;
         int y = qrand() % globalSettings.fieldSizeY;
         int a = qrand() % 360;

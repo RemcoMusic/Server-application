@@ -22,7 +22,7 @@ void SwarmSimulation::moveRobot(RobotLocation *robot)
     double goalAngle = atan2(deltaY,deltaX);
     while(goalAngle <0) goalAngle += M_PI * 2;
 
-    double currentAngle = (robot->angle - 90) * (M_PI / 180);
+    double currentAngle = robot->angle;
     while(currentAngle < 0) currentAngle += M_PI * 2;
 
     if(currentAngle - goalAngle > 0)
@@ -33,11 +33,10 @@ void SwarmSimulation::moveRobot(RobotLocation *robot)
     {
         currentAngle += std::min(goalAngle - currentAngle, 0.1);
     }
-    qDebug("%f , %f",currentAngle,goalAngle);
 
     robot->x = robot->x + std::fmin(cos(goalAngle) * robot->speed * swarmSimulationSettings.maxSpeed, abs(deltaX));
     robot->y = robot->y + std::fmin(sin(goalAngle) * robot->speed * swarmSimulationSettings.maxSpeed, abs(deltaY));
-    robot->angle = (int)(currentAngle * (180/M_PI) + 450) % 360;
+    robot->angle = currentAngle;
 }
 void SwarmSimulation::moveRobotRealistic(RobotLocation *robot)
 {
