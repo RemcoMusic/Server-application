@@ -20,15 +20,17 @@ void CircleAlgorithm::calculatePoints()
     int deltaX = abs(point1->rx() - point2->rx());//pytagoras A
     int deltaY = abs(point1->ry() - point2->ry());//pytagoras b
     int c = sqrt(deltaX*deltaX + deltaY*deltaY);//pytagoras C, distance between points
-    qDebug("distance between points %d",c);
     double circumference = (2 * c * M_PI);
     int amountOfRobotsFitting = circumference/swarmAlgorithmsSettings.distanceBetweenRobots;
-    qDebug("amount of bots fitting %d",amountOfRobotsFitting);
     int distanceBetweenBots = circumference/amountOfRobotsFitting;
-    qDebug("distance between bots %d",distanceBetweenBots);
     double angleBetweenRobots = 2 * M_PI/amountOfRobotsFitting;
-    qDebug("angle between bots %f",angleBetweenRobots);
-
+    if(swarmAlgorithmsSettings.debugLinearMotionSources)
+    {
+        qDebug("distance between points %d",c);
+        qDebug("amount of bots fitting %d",amountOfRobotsFitting);
+        qDebug("distance between bots %d",distanceBetweenBots);
+        qDebug("angle between bots %f",angleBetweenRobots);
+    }
     double angle = 0;
     for(int i=0;i<amountOfRobotsFitting;i++)
     {
@@ -36,7 +38,7 @@ void CircleAlgorithm::calculatePoints()
         newDestination->x = point1->x() + cos(angle) * c;
         newDestination->y = point1->y() + sin(angle) * c;
         destinations.append(newDestination);
-        qDebug("new position %d, %d",newDestination->x,newDestination->y);
+        //qDebug("new position %d, %d",newDestination->x,newDestination->y);
 
         angle+=angleBetweenRobots;
     }

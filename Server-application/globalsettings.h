@@ -14,6 +14,8 @@ public:
     int cameraY= 720;
 
     int botDiameter = 100;//mm
+    int botDistanceBetweenWheels = 80;
+    int simulationSpeed = 10;
 
     bool printRobotDetection = 0;
     bool printSwarmAlgoritme = 0;
