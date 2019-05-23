@@ -18,7 +18,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->graphicsView_CameraRaw->setScene(cameraScene);
     dataScene->addRect(0,0,globalSettings.fieldSizeX,globalSettings.fieldSizeY);
 
-    for(int i =0;i<16;i++){
+    for(int i =0;i<8;i++){
         int x = qrand() % globalSettings.fieldSizeX;
         int y = qrand() % globalSettings.fieldSizeY;
         int a = qrand() % 360;

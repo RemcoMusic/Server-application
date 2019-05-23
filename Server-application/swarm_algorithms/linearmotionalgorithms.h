@@ -59,6 +59,7 @@ private:
     void filterPointAvailabilities();
     bool swapOptimize();
     int getHighestDistanceIndex();
+    void runCollisionAvoidance();
 };
 
 #endif // LINEARMOTIONALGORITHMS_H
