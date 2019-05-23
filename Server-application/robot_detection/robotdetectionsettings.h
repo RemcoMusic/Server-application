@@ -55,7 +55,7 @@ public:
     int greenHigherBSaturation;
     int greenHigherBValue;
 
-    QList<Hsv> HSVColorValues; //Every 3 items in the list is 1 HSV color will be total of 12
+    QList<Hsv*> HSVColorValues; //Every 3 items in the list is 1 HSV color will be total of 12
     int erodeObject = 3; //Default 1-20
     int dilateObject = 8; //Default 1-20
     int xyDeviationMilimeter = 0; //Has to be implemented

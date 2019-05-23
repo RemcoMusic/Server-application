@@ -7,8 +7,10 @@
 #include <algrorithmvisualisation.h>
 #include "robotlocation.h"
 #include "robotlocationmanager.h"
+#include <QTime>
 #include <QDebug>
-
+#include <robotdetectionsettings.h>
+#include <QObject>
 
 extern QGraphicsScene *dataScene; //forward declaration (made in cpp)
 
@@ -26,14 +28,20 @@ public:
     ~MainWindow();
 
 private slots:
+    void colorSlidersChanged(int c);
     void on_pushButton_clicked();
+
+    void on_colorComboBox_currentIndexChanged(int index);
+
 
 public slots:
     void updateGui();
 private:
     //QGraphicsScene *dataScene;
-    QGraphicsScene *cameraScene;
+    //QGraphicsScene *cameraScene;
+    QTime *fpsTimer;
     Ui::MainWindow *ui;
+    bool flipFlop = true;
 };
 
 #endif // MAINWINDOW_H
