@@ -31,6 +31,9 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->lcdNumberHue->setPalette(Qt::red);
     ui->lcdNumberSaturation->setPalette(Qt::red);
     ui->lcdNumberVDinges->setPalette(Qt::red);
+    ui->lcdNumberErode->setPalette(Qt::green);
+    ui->lcdNumberDilate->setPalette(Qt::green);
+    ui->lcdNumberDeviation->setPalette(Qt::green);
 
 
     connect(ui->sliderHue, SIGNAL(valueChanged(int)),this, SLOT(colorSlidersChanged(int)));
@@ -137,4 +140,20 @@ void MainWindow::on_colorComboBox_currentIndexChanged(int index)
     ui->sliderVDinges->setValue(robotDetectionSettings.HSVColorValues.at(index)->v);
     flipFlop = true;
 
+}
+
+void MainWindow::on_sliderDilate_valueChanged(int value)
+{
+    robotDetectionSettings.dilateObject = value;
+}
+
+
+void MainWindow::on_sliderDeviation_valueChanged(int value)
+{
+    robotDetectionSettings.xyDeviationMilimeter = value;
+}
+
+void MainWindow::on_sliderErode_valueChanged(int value)
+{
+    robotDetectionSettings.erodeObject = value;
 }

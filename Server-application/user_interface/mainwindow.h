@@ -34,6 +34,13 @@ private slots:
     void on_colorComboBox_currentIndexChanged(int index);
 
 
+    void on_sliderDilate_valueChanged(int value);
+
+
+    void on_sliderDeviation_valueChanged(int value);
+
+    void on_sliderErode_valueChanged(int value);
+
 public slots:
     void updateGui();
 private:
