@@ -18,7 +18,7 @@ void robotDetection::run()
 
 int robotDetection::detectSomething()
 {
-    cv::VideoCapture cap(1);
+    cv::VideoCapture cap(0);
     cv::Mat originalFrame;
     cv::Mat threshold;
     cv::Mat HSV;
@@ -73,42 +73,26 @@ void robotDetection::trackFilteredObject(cv::Mat threshold,cv::Mat HSV, cv::Mat 
                 //iteration and compare it to the area in the next iteration.
                 if(area>100)
                 {
-                    if(robotList.isEmpty()) {
-                        robotList.insert(0,"ID_1");
-                        robotXcoordinates.insert(0, moment.m10/area);
-                        robotYcoordinates.insert(0, moment.m01/area);
-                    }else {
-//                          for(int i =0;i<robotLocationManager.robots.size();
-//                                RobotLocation* ptr = robotLocationManager.robots.at(i);
-//                                if(ptr->type == RobotLocation::RobotType::REAL){
-//                                }
-//                            }
-                        for (int i = 0; i < robotList.size(); i++) {
-                            if (robotXcoordinates.at(i) >= (moment.m10/area - 30) && robotXcoordinates.at(i) <= (moment.m10/area + 30)) {
-                                if(robotYcoordinates.at(i) >= (moment.m01/area -30) && robotYcoordinates.at(i) <= (moment.m01/area + 30)) {
+                    for(int i =0;i<robotLocationManager.robots.size(); i++) {
+                        RobotLocation* ptr = robotLocationManager.robots.at(i);
+                        if(ptr->type == RobotLocation::RobotType::REAL){
+
+
+                            if (ptr->x >= (moment.m10/area - 30) && ptr->x <= (moment.m10/area + 30)) {
+                                if(ptr->y >= (moment.m01/area -30) && ptr->y <= (moment.m01/area + 30)) {
                                     newRobot = false;
-                                    robotXcoordinates.replace(i, moment.m10/area);
-                                    robotYcoordinates.replace(i, moment.m01/area);
+                                    ptr->x=moment.m10/area;
+                                    ptr->y=moment.m01/area;
+//                                    robotXcoordinates.replace(i, moment.m10/area);
+//                                    robotYcoordinates.replace(i, moment.m01/area);
                                     break;
-                              }
+                                }
                             }
                         }
-                        if (newRobot) {
-                            emit makeANewRobot(500,500);
-//                          RobotLocation *newFoundRobot = new RobotLocation();
-//                          newFoundRobot->x = moment.m10/area;
-//                          newFoundRobot->y = moment.m01/area;
-//                          newFoundRobot->type = RobotLocation::RobotType::REAL;
-//                          robotLocationManager.robots.append(newFoundRobot);
-
-                            int x = robotList.size()+1;
-                            QString f = "ID_";
-                            f += QString::number(x);
-                            robotList.insert(index + 1, f);
-                            robotXcoordinates.insert(index + 1, moment.m10/area);
-                            robotYcoordinates.insert(index + 1, moment.m01/area);
-                            newRobot = true;
-                        }
+                    }
+                    if (newRobot) {
+                        emit makeANewRobot(moment.m10/area,moment.m01/area);
+                        newRobot = true;
                     }
                     objectFound = true;
                 }
@@ -127,7 +111,7 @@ void robotDetection::drawObjects(cv::Mat &frame) {
     for(int i =0; i<robotList.size(); i++) {
         cv::circle(frame,cv::Point(robotXcoordinates.at(i),robotYcoordinates.at(i)),10,cv::Scalar(0,0,255));
         cv::putText(frame,std::to_string(robotXcoordinates.at(i))+ " , " + std::to_string(robotYcoordinates.at(i)),
-                cv::Point(robotXcoordinates.at(i),robotYcoordinates.at(i)+10),1,1,cv::Scalar(0,255,0));
+                    cv::Point(robotXcoordinates.at(i),robotYcoordinates.at(i)+10),1,1,cv::Scalar(0,255,0));
         cv::putText(frame,robotList.at(i).toLocal8Bit().constData(),cv::Point(robotXcoordinates.at(i),robotYcoordinates.at(i)-15),1,2,cv::Scalar(0,0,255));
     }
 }
@@ -162,8 +146,8 @@ cv::Mat robotDetection::detectColors(cv::Mat frame) {
 
     inRange(frame, cv::Scalar(robotDetectionSettings.blueLowerBHue, robotDetectionSettings.blueLowerBSaturation, robotDetectionSettings.blueLowerBValue),
             cv::Scalar(robotDetectionSettings.blueHigherBHue, robotDetectionSettings.blueHigherBSaturation, robotDetectionSettings.blueHigherBValue), blueColorFrame);
-//    inRange(frame, cv::Scalar(robotDetectionSettings.greenLowerBHue, robotDetectionSettings.greenLowerBSaturation, robotDetectionSettings.greenLowerBValue),
-//            cv::Scalar(robotDetectionSettings.greenHigherBHue, robotDetectionSettings.greenHigherBSaturation, robotDetectionSettings.greenHigherBValue), greenColorFrame);
+    //    inRange(frame, cv::Scalar(robotDetectionSettings.greenLowerBHue, robotDetectionSettings.greenLowerBSaturation, robotDetectionSettings.greenLowerBValue),
+    //            cv::Scalar(robotDetectionSettings.greenHigherBHue, robotDetectionSettings.greenHigherBSaturation, robotDetectionSettings.greenHigherBValue), greenColorFrame);
 
     cv::addWeighted(low, 1.0, high, 1.0, 0.0, redDetectedColor);
     cv::addWeighted(redDetectedColor, 1.0, blueColorFrame, 1.0, 0.0, allDetectedColors);
