@@ -13,14 +13,39 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    cameraScene = new QGraphicsScene(this);
+    //cameraScene = new QGraphicsScene(this);
     dataScene = new QGraphicsScene(this);
 
 
     ui->graphicsView_Data->setScene(dataScene);
     ui->graphicsView_data_large->setScene(dataScene);
-    ui->graphicsView_CameraRaw->setScene(cameraScene);
+//    ui->graphicsView_CameraRaw->setScene(cameraScene);
+//    ui->graphicsView_CameraRaw_large->setScene(cameraScene);
     dataScene->addRect(0,0,globalSettings.fieldSizeX,globalSettings.fieldSizeY);
+
+
+    fpsTimer = new QTime();
+    fpsTimer->start();
+
+    ui->fpsNumber->setPalette(Qt::red);
+    ui->lcdNumberHue->setPalette(Qt::red);
+    ui->lcdNumberSaturation->setPalette(Qt::red);
+    ui->lcdNumberVDinges->setPalette(Qt::red);
+    ui->lcdNumberErode->setPalette(Qt::green);
+    ui->lcdNumberDilate->setPalette(Qt::green);
+    ui->lcdNumberDeviation->setPalette(Qt::green);
+
+
+    connect(ui->sliderHue, SIGNAL(valueChanged(int)),this, SLOT(colorSlidersChanged(int)));
+    connect(ui->sliderSaturation, SIGNAL(valueChanged(int)),this, SLOT(colorSlidersChanged(int)));
+    connect(ui->sliderVDinges, SIGNAL(valueChanged(int)),this, SLOT(colorSlidersChanged(int)));
+
+    connect(ui->sliderHue, SIGNAL(valueChanged(int)),ui->lcdNumberHue, SLOT(display(int)));
+    connect(ui->sliderSaturation, SIGNAL(valueChanged(int)),ui->lcdNumberSaturation, SLOT(display(int)));
+    connect(ui->sliderVDinges, SIGNAL(valueChanged(int)),ui->lcdNumberVDinges, SLOT(display(int)));
+
+    //on_colorComboBox_currentIndexChanged(0);
+
 
     for(int i =0;i<20;i++){
         int x = qrand() % globalSettings.fieldSizeX;
@@ -48,6 +73,8 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
+
+
 void MainWindow::on_pushButton_clicked()
 {
     int width = globalSettings.fieldSizeX;
@@ -63,6 +90,70 @@ void MainWindow::on_pushButton_clicked()
 
 void MainWindow::updateGui()
 {
+    int t = fpsTimer->elapsed();
+    fpsTimer->restart();
+    int fps = (double)1000.0/(double)t;
+    ui->fpsNumber->display(fps);
+
     qDebug() << "update Gui called" << endl;
+    QImage img((uchar*)robotDetectionSettings.processedFrame.data, robotDetectionSettings.processedFrame.cols, robotDetectionSettings.processedFrame.rows, QImage::Format_RGB888);
+
+    QPixmap p = QPixmap::fromImage(img);
+    int w = ui->cameraFeedLabel->width();
+    int h = ui->cameraFeedLabel->height();
+    int wl = ui->cameraFeedLabel_Large->width()-1;   //else it will keep expanding ????
+    int hl = ui->cameraFeedLabel_Large->height()-1;  //else it will keep expanding ????
+
+    // set a scaled pixmap to a w x h window keeping its aspect ratio
+    ui->cameraFeedLabel->setPixmap(p.scaled(w,h,Qt::KeepAspectRatio));
+    ui->cameraFeedLabel_Large->setPixmap(p.scaled(wl,hl,Qt::KeepAspectRatio));
+    on_pushButton_clicked(); // resize the scenes
+
+
+
     dataScene->update();
+}
+void MainWindow::colorSlidersChanged(int c)
+{
+
+    if(flipFlop){
+        int currentColor = ui->colorComboBox->currentIndex();
+        int h = ui->sliderHue->value();
+        int s = ui->sliderSaturation->value();
+        int v = ui->sliderVDinges->value();
+
+        robotDetectionSettings.HSVColorValues.at(currentColor)->h = h;
+        robotDetectionSettings.HSVColorValues.at(currentColor)->s = s;
+        robotDetectionSettings.HSVColorValues.at(currentColor)->v = v;
+    }
+
+
+}
+
+void MainWindow::on_colorComboBox_currentIndexChanged(int index)
+{
+    //update new sliders
+    qDebug() << "comboBox index: " << index;
+    flipFlop = false;
+    ui->sliderHue->setValue(robotDetectionSettings.HSVColorValues.at(index)->h);
+    ui->sliderSaturation->setValue(robotDetectionSettings.HSVColorValues.at(index)->s);
+    ui->sliderVDinges->setValue(robotDetectionSettings.HSVColorValues.at(index)->v);
+    flipFlop = true;
+
+}
+
+void MainWindow::on_sliderDilate_valueChanged(int value)
+{
+    robotDetectionSettings.dilateObject = value;
+}
+
+
+void MainWindow::on_sliderDeviation_valueChanged(int value)
+{
+    robotDetectionSettings.xyDeviationMilimeter = value;
+}
+
+void MainWindow::on_sliderErode_valueChanged(int value)
+{
+    robotDetectionSettings.erodeObject = value;
 }

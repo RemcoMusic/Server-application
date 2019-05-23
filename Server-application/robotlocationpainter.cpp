@@ -3,7 +3,7 @@
 #define toDeg(angleRadians) ((angleRadians) * 180.0 / M_PI)
 QRectF RobotLocation::boundingRect() const
 {
-    return QRectF(0,0,2*globalSettings.botDiameter,2*globalSettings.botDiameter);
+    return QRectF(0,0,globalSettings.botDiameter,globalSettings.botDiameter);
 }
 
 void RobotLocation::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
