@@ -13,7 +13,9 @@ public:
     QPoint *point1 = new QPoint(500,500);
     QPoint *point2 = new QPoint(800,500);
 private:
-    void calculatePoints();
+    void calculateDestinationsCenterOuter();
+    void calculateDestinationsOuterOuter();
+    void calculateDestinationsOuterAngle();
 };
 
 #endif // CIRCLEALGORITHM_H

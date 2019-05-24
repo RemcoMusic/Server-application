@@ -6,24 +6,57 @@ CircleAlgorithm::CircleAlgorithm()
     algorithmDiscription.discription = "bots drive in a circle defined by red objects";
     algorithmDiscription.minimalAmountOfBots = 1;
     algorithmDiscription.maximalAmountOfBots = 100;
-    calculatePoints();
 }
 void CircleAlgorithm::update()
 {
-    calculatePoints();
+    LinearMotionAlgorithms::generateRobotList();
+    destinations.clear();
+    if(swarmAlgorithmsSettings.inputSource == SwarmAlgorithmsSettings::AlgorithmInputSource::NONE)
+    {
+        calculateDestinationsCenterOuter();
+    }
+    else if(swarmAlgorithmsSettings.inputSource == SwarmAlgorithmsSettings::AlgorithmInputSource::ALTERNATIVE_SHAPE)
+    {
+        calculateDestinationsCenterOuter();
+    }
+    else if(swarmAlgorithmsSettings.inputSource == SwarmAlgorithmsSettings::AlgorithmInputSource::HAND_GESTURE)
+    {
+        calculateDestinationsCenterOuter();
+    }
+    else if(swarmAlgorithmsSettings.inputSource == SwarmAlgorithmsSettings::AlgorithmInputSource::REAL_OBJECTS_CENTER_OUTER)
+    {
+        calculateDestinationsCenterOuter();
+    }
+    else if(swarmAlgorithmsSettings.inputSource == SwarmAlgorithmsSettings::AlgorithmInputSource::REAL_OBJECTS_OUTER_OUTER)
+    {
+        calculateDestinationsOuterOuter();
+    }
+
     LinearMotionAlgorithms::update();
 }
-void CircleAlgorithm::calculatePoints()
+void CircleAlgorithm::calculateDestinationsOuterAngle()
 {
-    destinations.clear();
+
+}
+void CircleAlgorithm::calculateDestinationsOuterOuter()
+{
+
+}
+void CircleAlgorithm::calculateDestinationsCenterOuter()
+{
     //calculate distance between markers
     int deltaX = abs(point1->rx() - point2->rx());//pytagoras A
     int deltaY = abs(point1->ry() - point2->ry());//pytagoras b
     int c = sqrt(deltaX*deltaX + deltaY*deltaY);//pytagoras C, distance between points
+
     double circumference = (2 * c * M_PI);
     int amountOfRobotsFitting = circumference/swarmAlgorithmsSettings.distanceBetweenRobots;
-    int distanceBetweenBots = circumference/amountOfRobotsFitting;
-    double angleBetweenRobots = 2 * M_PI/amountOfRobotsFitting;
+
+    qDebug("%d",data.swarmRobots.size());
+    int amountOfRobotsUsing = std::min(amountOfRobotsFitting, data.swarmRobots.size());
+
+    int distanceBetweenBots = circumference/amountOfRobotsUsing;
+    double angleBetweenRobots = 2 * M_PI/amountOfRobotsUsing;
     if(swarmAlgorithmsSettings.debugLinearMotionSources)
     {
         qDebug("distance between points %d",c);
@@ -32,7 +65,7 @@ void CircleAlgorithm::calculatePoints()
         qDebug("angle between bots %f",angleBetweenRobots);
     }
     double angle = 0;
-    for(int i=0;i<amountOfRobotsFitting;i++)
+    for(int i=0;i<amountOfRobotsUsing;i++)
     {
         Destination *newDestination = new Destination;
         newDestination->x = point1->x() + cos(angle) * c;

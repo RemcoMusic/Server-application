@@ -36,6 +36,22 @@ void LinearMotionAlgorithms::update()
     connectDestinationsToRobots();
     runCollisionAvoidance();
 }
+void LinearMotionAlgorithms::generateRobotList()
+{
+    data.swarmRobots.clear();
+    QListIterator<RobotLocation*> i(robotLocationManager.robots);
+    while (i.hasNext())
+    {
+        RobotLocation *currentRobot = i.next();
+        if(currentRobot->group == robotGroup)
+        {
+            if(currentRobot->type == RobotLocation::RobotType::SIMULATED){
+                data.swarmRobots.append(currentRobot);
+            }
+        }
+
+    }
+}
 void LinearMotionAlgorithms::runCollisionAvoidance()
 {
     //connectDestinationsToRobots must run before this, otherwise data.swarmRobots is empty
@@ -335,41 +351,13 @@ void LinearMotionAlgorithms::connectDestinationsToRobots()
 {
     //std::cout << "connect destinations to robots algorithm" << std::endl;
     //complex algorithm to connect the destination points to the robots with the shortest maximal path
-    //brute force algorithm has o(n!) complexity, this algorithm works with elemination combinations
+    //brute force algorithm has o(n!) complexity, this algorithm works with taking a random combination and optimizing it by swapping combinations
 
-    //first make list of robots of this specific group
-    data.swarmRobots.clear();
-    data.amountOfDestinations = destinations.size();
-    {
-        int robotIndex = 0;
-        QListIterator<RobotLocation*> i(robotLocationManager.robots);
-        while (i.hasNext())
-        {
-            RobotLocation *currentRobot = i.next();
-            if(currentRobot->group == robotGroup)
-            {
-                if(currentRobot->type == RobotLocation::RobotType::SIMULATED){
-                    data.swarmRobots.append(currentRobot);
-                    robotIndex++;
-                    //if there are more robots than destinations the algorithm will crash
-                    //derived class should handle this, this is only a protection
-                    if(robotIndex >= data.amountOfDestinations)
-                    {
-                        break;
-                    }
-                }
-            }
 
-        }
-        QListIterator<Destination*> destinationIterator(destinations);
-        while (destinationIterator.hasNext())
-        {
-            destinationIterator.next()->robot = nullptr;
-        }
-    }
     //make a table with the distances between robots and points
     //this table caches the distances, adding a item from a other thread may cause problems
     data.amountOfRobots = data.swarmRobots.size();
+    data.amountOfDestinations = destinations.size();
 
     allocateTable();
 

@@ -16,21 +16,23 @@ public:
     bool allVisualisationEnabled = false;
     bool experimentalVisualisationEnbaled = false;//for new feature testing
 
-    bool debugLinearMotion = true;
-    bool debugLinearMotionVerbose = true;
+    bool debugLinearMotion = false;
+    bool debugLinearMotionVerbose = false;
     bool debugLinearMotionSources = false;
 
     int distanceBetweenRobots=170;//distance between the destinations of the robots,
 
-    enum class algorithmInputSource
+    enum class AlgorithmInputSource
     {
         NONE = 0, //no user input, just a default shape
         ALTERNATIVE_SHAPE = 1, //no user input, just a other size shape
-        REAL_OBJECTS = 2, //with objects like red balls
-        REAL_AND_SIMULATED_OJECTS = 3, //also allow simulated balls
+        REAL_OBJECTS_CENTER_OUTER = 2, //with objects like red balls
+        REAL_OBJECTS_OUTER_OUTER = 3, //with objects like red balls
         HAND_GESTURE = 4, //by hand gestures(hand object)
-        ROBOT_MOVEMENT = 5 //by displacing the robot, displaced robot is the orientation for the algorithm
-    }inputSource;
+        ROBOT_MOVEMENT = 5, //by displacing the robot, displaced robot is the orientation for the algorithm
+        ROBOT_MOVEMENT_WITH_ANGLE = 6 //by displacing the robot, displaced robot is the orientation for the algorithm
+    }inputSource = AlgorithmInputSource::NONE;
+    bool algorithmAllowSimulatedObject = true;
 
     int robotSpeed = 50;//10-100
     bool dynamicSpeed = true; // with dynamic robot speed depents op the other robot, they will arive on the same time
