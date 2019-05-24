@@ -9,65 +9,62 @@
 
 robotDetection::robotDetection()
 {
-
         Hsv* temporaryRL = new Hsv();
         temporaryRL->c = ColorNames::RED_LOW;
-        temporaryRL->h = 10;
-        temporaryRL->s = 10;
-        temporaryRL->v = 10;
+        temporaryRL->h = 160;
+        temporaryRL->s = 100;
+        temporaryRL->v = 100;
         robotDetectionSettings.HSVColorValues.append(temporaryRL);
 
         Hsv* temporaryRH = new Hsv();
         temporaryRH->c = ColorNames::RED_HIGH;
-        temporaryRH->h = 20;
-        temporaryRH->s = 20;
-        temporaryRH->v = 20;
+        temporaryRH->h = 179;
+        temporaryRH->s = 255;
+        temporaryRH->v = 255;
         robotDetectionSettings.HSVColorValues.append(temporaryRH);
 
         Hsv* temporaryBL = new Hsv();
         temporaryBL->c = ColorNames::BLUE_LOW;
-        temporaryBL->h = 30;
-        temporaryBL->s = 30;
-        temporaryBL->v = 30;
+        temporaryBL->h = 75;
+        temporaryBL->s = 100;
+        temporaryBL->v = 40;
         robotDetectionSettings.HSVColorValues.append(temporaryBL);
 
         Hsv* temporaryBH = new Hsv();
         temporaryBH->c = ColorNames::BLUE_HIGH;
-        temporaryBH->h = 40;
-        temporaryBH->s = 40;
-        temporaryBH->v = 40;
+        temporaryBH->h = 130;
+        temporaryBH->s = 255;
+        temporaryBH->v = 255;
         robotDetectionSettings.HSVColorValues.append(temporaryBH);
 
         Hsv* temporaryGL = new Hsv();
         temporaryGL->c = ColorNames::GREEN_LOW;
-        temporaryGL->h = 50;
-        temporaryGL->s = 50;
-        temporaryGL->v = 50;
+        temporaryGL->h = 30;
+        temporaryGL->s = 100;
+        temporaryGL->v = 100;
         robotDetectionSettings.HSVColorValues.append(temporaryGL);
 
         Hsv* temporaryGH = new Hsv();
         temporaryGH->c = ColorNames::GREEN_HIGH;
-        temporaryGH->h = 100;
-        temporaryGH->s = 100;
-        temporaryGH->v = 100;
+        temporaryGH->h = 75;
+        temporaryGH->s = 255;
+        temporaryGH->v = 255;
         robotDetectionSettings.HSVColorValues.append(temporaryGH);
-        robotDetectionSettings.HSVColorValues.at(ColorNames::RED_LOW)->h; // HIER KIJKEN
-
 }
 
-void robotDetection::run()
-{
-    detectSomething(); //make sure it has an infinite loop - tyvm will do
+void robotDetection::run() {
+    startDetecting();
 }
 
-int robotDetection::detectSomething()
-{
+int robotDetection::startDetecting() {
     cv::VideoCapture cap(0);
     cv::Mat originalFrame;
     cv::Mat threshold;
     cv::Mat HSV;
     cv::Mat RGB;
-
+    cv::Mat R;
+    cv::Mat G;
+    cv::Mat B;
 
     if(!cap.isOpened()) {
         return -1;
@@ -76,25 +73,80 @@ int robotDetection::detectSomething()
     for(;;) {
         cap >> originalFrame;
         cv::cvtColor(originalFrame,HSV,cv::COLOR_BGR2HSV);
-        threshold = detectColors(HSV);
-        morphOps(threshold);
-        trackFilteredObject(threshold,HSV,originalFrame);
 
-        imshow("Thresholded Frame", threshold);
+        threshold = detectColors(HSV, "Green");
+        morphOps(threshold);
+        cv::cvtColor(threshold,G, cv::COLOR_BGR2RGB);
+        robotDetectionSettings.processedGreenFrame = G;
+        detectNewRobots(threshold,originalFrame);
+
+        threshold = detectColors(HSV, "Red");
+        morphOps(threshold);
+        cv::cvtColor(threshold,R, cv::COLOR_BGR2RGB);
+        robotDetectionSettings.processedRedFrame = R;
+        trackFilteredObject(threshold,originalFrame);
+
+        threshold = detectColors(HSV,"Blue");
+        morphOps(threshold);
+        cv::cvtColor(threshold,B, cv::COLOR_BGR2RGB);
+        robotDetectionSettings.processedBlueFrame = B;
+
         imshow("Color detection", originalFrame);
+        imshow("Thresholded Frame", threshold);
+
         cv::cvtColor(originalFrame,RGB, cv::COLOR_BGR2RGB);
         robotDetectionSettings.processedFrame = RGB;
 
         emit newFrameFinished();
         if(cv::waitKey(30) >= 0) break;
     }
-
     return 0;
 }
 
-void robotDetection::trackFilteredObject(cv::Mat threshold,cv::Mat HSV, cv::Mat &originalFrame)
-{
+void robotDetection::detectNewRobots(cv::Mat threshold, cv::Mat &originalFrame) {
     bool newRobot = true;
+    cv::Mat temp;
+    threshold.copyTo(temp);
+    std::vector< std::vector<cv::Point> > contours;
+    std::vector<cv::Vec4i> hierarchy;
+    cv::findContours(temp,contours,hierarchy,cv::RETR_CCOMP,cv::CHAIN_APPROX_SIMPLE );
+    bool objectFound = false;
+    if (hierarchy.size() > 0 && hierarchy.size()<50) {
+        for (int index = 0; index >= 0; index = hierarchy[index][0]) {
+            cv::Moments moment = moments((cv::Mat)contours[index]);
+            double area = moment.m00;
+            if(area>100) {
+                for(int i =0;i<robotLocationManager.robots.size(); i++) {
+                    RobotLocation* ptr = robotLocationManager.robots.at(i);
+                    if(ptr->type == RobotLocation::RobotType::REAL){
+                        if (ptr->x >= (moment.m10/area - 30) && ptr->x <= (moment.m10/area + 30)) {
+                            if(ptr->y >= (moment.m01/area -30) && ptr->y <= (moment.m01/area + 30)) {
+                                newRobot = false;
+                                ptr->x=moment.m10/area;
+                                ptr->y=moment.m01/area;
+                                break;
+                            }
+                        }
+                    }
+                }
+                if (newRobot) {
+                    if (robotDetectionSettings.enableDetection) {
+                        emit makeANewRobot(moment.m10/area,moment.m01/area);
+                        newRobot = true;
+                    }
+                }
+                objectFound = true;
+            }
+            else objectFound = false;
+        }
+        if(objectFound)
+        {
+            drawObjects(originalFrame);
+        }
+    }
+}
+
+void robotDetection::trackFilteredObject(cv::Mat threshold, cv::Mat &originalFrame) {
     cv::Mat temp;
     threshold.copyTo(temp);
     //these two vectors needed for output of findContours
@@ -102,8 +154,6 @@ void robotDetection::trackFilteredObject(cv::Mat threshold,cv::Mat HSV, cv::Mat 
     std::vector<cv::Vec4i> hierarchy;
     //find contours of filtered image using openCV findContours function
     cv::findContours(temp,contours,hierarchy,cv::RETR_CCOMP,cv::CHAIN_APPROX_SIMPLE );
-    //use moments method to find our filtered object
-    double refArea = 0;
     bool objectFound = false;
     if (hierarchy.size() > 0) {
         int numObjects = hierarchy.size();
@@ -118,58 +168,59 @@ void robotDetection::trackFilteredObject(cv::Mat threshold,cv::Mat HSV, cv::Mat 
                 //if the area is the same as the 3/2 of the image size, probably just a bad filter
                 //we only want the object with the largest area so we safe a reference area each
                 //iteration and compare it to the area in the next iteration.
-                if(area>100)
-                {
+                if(area>100) {
                     for(int i =0;i<robotLocationManager.robots.size(); i++) {
                         RobotLocation* ptr = robotLocationManager.robots.at(i);
-                        if(ptr->type == RobotLocation::RobotType::REAL){
-
-
-                            if (ptr->x >= (moment.m10/area - 30) && ptr->x <= (moment.m10/area + 30)) {
-                                if(ptr->y >= (moment.m01/area -30) && ptr->y <= (moment.m01/area + 30)) {
-                                    newRobot = false;
-                                    ptr->x=moment.m10/area;
-                                    ptr->y=moment.m01/area;
-//                                    robotXcoordinates.replace(i, moment.m10/area);
-//                                    robotYcoordinates.replace(i, moment.m01/area);
-                                    break;
+                        if(ptr->type == RobotLocation::RobotType::REAL) {
+                            if(ptr->sharedData.status == robotStatus::NORMAL) {
+                                if (ptr->x >= (moment.m10/area - 30) && ptr->x <= (moment.m10/area + 30)) {
+                                    if(ptr->y >= (moment.m01/area -30) && ptr->y <= (moment.m01/area + 30)) {
+                                        ptr->x=moment.m10/area;
+                                        ptr->y=moment.m01/area;
+                                        objectFound = true;
+                                        break;
+                                    }
                                 }
                             }
                         }
                     }
-                    if (newRobot) {
-                        emit makeANewRobot(moment.m10/area,moment.m01/area);
-                        newRobot = true;
-                    }
-                    objectFound = true;
-                }
-                else objectFound = false;
+                } else objectFound = false;
             }
-            if(objectFound ==true)
-            {
+            if(objectFound ==true) {
                 drawObjects(originalFrame);
             }
         }
     }
 }
 
-void robotDetection::drawObjects(cv::Mat &frame) {
-
-    for(int i =0; i<robotList.size(); i++) {
-        cv::circle(frame,cv::Point(robotXcoordinates.at(i),robotYcoordinates.at(i)),10,cv::Scalar(0,0,255));
-        cv::putText(frame,std::to_string(robotXcoordinates.at(i))+ " , " + std::to_string(robotYcoordinates.at(i)),
-                    cv::Point(robotXcoordinates.at(i),robotYcoordinates.at(i)+10),1,1,cv::Scalar(0,255,0));
-        cv::putText(frame,robotList.at(i).toLocal8Bit().constData(),cv::Point(robotXcoordinates.at(i),robotYcoordinates.at(i)-15),1,2,cv::Scalar(0,0,255));
+cv::Mat robotDetection::detectColors(cv::Mat frame, QString color) {
+    if(color == "Red") {
+        cv::Mat redDetectedColor;
+        inRange(frame, cv::Scalar(robotDetectionSettings.HSVColorValues.at(ColorNames::RED_LOW)->h, robotDetectionSettings.HSVColorValues.at(ColorNames::RED_LOW)->s,
+                                  robotDetectionSettings.HSVColorValues.at(ColorNames::RED_LOW)->v),
+                cv::Scalar(robotDetectionSettings.HSVColorValues.at(ColorNames::RED_HIGH)->h, robotDetectionSettings.HSVColorValues.at(ColorNames::RED_HIGH)->s,
+                           robotDetectionSettings.HSVColorValues.at(ColorNames::RED_HIGH)->v), redDetectedColor);
+        return redDetectedColor;
+    } else if(color == "Green") {
+        cv::Mat greenDetectedColor;
+        inRange(frame, cv::Scalar(robotDetectionSettings.HSVColorValues.at(ColorNames::GREEN_LOW)->h, robotDetectionSettings.HSVColorValues.at(ColorNames::GREEN_LOW)->s,
+                                  robotDetectionSettings.HSVColorValues.at(ColorNames::GREEN_LOW)->v),
+                cv::Scalar(robotDetectionSettings.HSVColorValues.at(ColorNames::GREEN_HIGH)->h, robotDetectionSettings.HSVColorValues.at(ColorNames::GREEN_HIGH)->s,
+                           robotDetectionSettings.HSVColorValues.at(ColorNames::GREEN_HIGH)->v), greenDetectedColor);
+        return greenDetectedColor;
+    } else if(color == "Blue") {
+        cv::Mat blueDetectedColor;
+        inRange(frame, cv::Scalar(robotDetectionSettings.HSVColorValues.at(ColorNames::BLUE_LOW)->h, robotDetectionSettings.HSVColorValues.at(ColorNames::BLUE_LOW)->s,
+                                  robotDetectionSettings.HSVColorValues.at(ColorNames::BLUE_LOW)->v),
+                cv::Scalar(robotDetectionSettings.HSVColorValues.at(ColorNames::BLUE_HIGH)->h, robotDetectionSettings.HSVColorValues.at(ColorNames::BLUE_HIGH)->s,
+                           robotDetectionSettings.HSVColorValues.at(ColorNames::BLUE_HIGH)->v), blueDetectedColor);
+        return blueDetectedColor;
     }
 }
 
 void robotDetection::morphOps(cv::Mat &thresh) {
-
-    //create structuring element that will be used to "dilate" and "erode" image.
-    //the element chosen here is a 3px by 3px rectangle
-    cv::Mat erodeElement = getStructuringElement(cv::MORPH_RECT, cv::Size(3,3));
-    //dilate with larger element so make sure object is nicely visible
-    cv::Mat dilateElement = getStructuringElement(cv::MORPH_RECT, cv::Size(8,8));
+    cv::Mat erodeElement = getStructuringElement(cv::MORPH_RECT, cv::Size(robotDetectionSettings.erodeObject,robotDetectionSettings.erodeObject));
+    cv::Mat dilateElement = getStructuringElement(cv::MORPH_RECT, cv::Size(robotDetectionSettings.dilateObject,robotDetectionSettings.dilateObject));
 
     erode(thresh,thresh,erodeElement);
     erode(thresh,thresh,erodeElement);
@@ -178,25 +229,15 @@ void robotDetection::morphOps(cv::Mat &thresh) {
     dilate(thresh,thresh,dilateElement);
 }
 
-cv::Mat robotDetection::detectColors(cv::Mat frame) {
-
-    cv::Mat allDetectedColors;
-    cv::Mat redDetectedColor;
-    cv::Mat blueColorFrame;
-    cv::Mat low;
-    cv::Mat high;
-
-    inRange(frame, cv::Scalar(robotDetectionSettings.redLowerBHue, robotDetectionSettings.redLowerBSaturation, robotDetectionSettings.redLowerBValue),
-            cv::Scalar(robotDetectionSettings.redLowerBHue2, robotDetectionSettings.redLowerBSaturation2, robotDetectionSettings.redLowerBValue2), low);
-    inRange(frame, cv::Scalar(robotDetectionSettings.redHigherBHue, robotDetectionSettings.redHigherBSaturation, robotDetectionSettings.redHigherBValue),
-            cv::Scalar(robotDetectionSettings.redHigherBHue2, robotDetectionSettings.redHigherBSaturation2, robotDetectionSettings.redHigherBValue2), high);
-
-    inRange(frame, cv::Scalar(robotDetectionSettings.blueLowerBHue, robotDetectionSettings.blueLowerBSaturation, robotDetectionSettings.blueLowerBValue),
-            cv::Scalar(robotDetectionSettings.blueHigherBHue, robotDetectionSettings.blueHigherBSaturation, robotDetectionSettings.blueHigherBValue), blueColorFrame);
-    //    inRange(frame, cv::Scalar(robotDetectionSettings.greenLowerBHue, robotDetectionSettings.greenLowerBSaturation, robotDetectionSettings.greenLowerBValue),
-    //            cv::Scalar(robotDetectionSettings.greenHigherBHue, robotDetectionSettings.greenHigherBSaturation, robotDetectionSettings.greenHigherBValue), greenColorFrame);
-
-    cv::addWeighted(low, 1.0, high, 1.0, 0.0, redDetectedColor);
-    cv::addWeighted(redDetectedColor, 1.0, blueColorFrame, 1.0, 0.0, allDetectedColors);
-    return allDetectedColors;
+void robotDetection::drawObjects(cv::Mat &frame) {
+    for(int i =0; i<robotLocationManager.robots.size(); i++) {
+        RobotLocation* ptr = robotLocationManager.robots.at(i);
+        if(ptr->type == RobotLocation::RobotType::REAL) {
+            cv::circle(frame,cv::Point(ptr->x,ptr->y),10,cv::Scalar(0,0,255));
+            cv::putText(frame,std::to_string(ptr->x)+ " , " + std::to_string(ptr->y),
+                        cv::Point(ptr->x,ptr->y+10),1,1,cv::Scalar(0,255,0));
+            std::string str =std::to_string(i);
+            cv::putText(frame,str,cv::Point(ptr->x,ptr->y-15),1,2,cv::Scalar(0,0,255));
+        }
+    }
 }
