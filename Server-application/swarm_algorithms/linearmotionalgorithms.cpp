@@ -4,12 +4,33 @@
 LinearMotionAlgorithms::LinearMotionAlgorithms()
 {
 }
+
+#define sign(a) ( ( (a) < 0 )  ?  -1   : ( (a) > 0 ) )
+
 inline uint16_t distanceBetweenPoints(int x1, int y1, int x2, int y2)
 {
     int deltaX = x1 - x2;//pytagoras A
     int deltaY = y1 - y2;//pytagoras b
     return sqrt(deltaX*deltaX + deltaY*deltaY);//pytagoras C, distance between points
 }
+
+double map(double x, double x1, double x2, double y1, double y2)
+{
+ return (x - x1) * (y2 - y1) / (x2 - x1) + y1;
+}
+bool isMoving(RobotLocation* robot)
+{
+    if(distanceBetweenPoints(robot->x,robot->y,robot->destinationX, robot->destinationY) < 50)
+    {
+        return false;
+    }
+    if(robot->speed < 0.5)
+    {
+        return false;
+    }
+    return true;
+}
+
 void LinearMotionAlgorithms::update()
 {
     connectDestinationsToRobots();
@@ -27,26 +48,82 @@ void LinearMotionAlgorithms::runCollisionAvoidance()
         while (robotIterator2.hasNext())
         {
             RobotLocation *robot2 = robotIterator2.next();
-            if(robot1 == robot2)continue;
+
+            //don't compare the same robots, don't compare robots 2 times
+            if(robot1 == robot2)break;
 
             //calculate distance from center to center
             int distance = distanceBetweenPoints(robot1->x, robot1->y, robot2->x, robot2->y);
-            if(distance < 100)
+            if(distance < 130)//collision
             {
-                std::cout << "collision" << std::endl;
-                int robotsAngle = atan2(robot1->x - robot2->x, robot1->y - robot2->y);
+                robot1->myColor = Qt::green;
+                robot2->myColor = Qt::green;
+                //calculate the angle between both robots
+                double robot1Angle = atan2(robot2->y - robot1->y, robot2->x - robot1->x);
+                if(robot1Angle < 0) robot1Angle += 2*M_PI;
 
-                int robot1AngleDifference = robot1->angle - robotsAngle;
-                if(robot1AngleDifference > M_PI)robot1AngleDifference-= 2* M_PI;
-                if(robot1AngleDifference < -M_PI)robot1AngleDifference += 2* M_PI;
+                //also calculate it seen from the other robot
+                double robot2Angle = robot1Angle - M_PI;
+                if(robot2Angle < 0) robot2Angle += 2*M_PI;
 
-                int robot2AngleDifference = robot2->angle - robotsAngle;
-                if(robot2AngleDifference > M_PI)robot2AngleDifference-= 2* M_PI;
-                if(robot2AngleDifference < -M_PI)robot2AngleDifference += 2* M_PI;
+                //calculate how much the robot angle differs from the angle between the robots
+                double robot1AngleDifference = robot1->angle - robot1Angle;
+                if(robot1AngleDifference < 0) robot1AngleDifference += 2 * M_PI;
+                if(robot1AngleDifference >  M_PI) robot1AngleDifference -= 2 * M_PI ;
 
+                //calculate it also for the other robot
+                double robot2AngleDifference = robot2->angle - robot2Angle;
+                if(robot2AngleDifference < 0) robot2AngleDifference += 2 * M_PI;
+                if(robot2AngleDifference >  M_PI) robot2AngleDifference -= 2 * M_PI;
+
+                //std::cout << robot1Angle * 57 << "           " <<  robot1AngleDifference *57<< "   "<<robot2AngleDifference *57 << "         "<<robot2Angle * 57<< std::endl;
+
+                if(isMoving(robot1) && (!isMoving(robot2)))
+                {
+                    robot1->myColor = Qt::blue;
+                    if(abs(robot1AngleDifference) < 0.6*M_PI)
+                    {
+                        int sign = sign(robot1AngleDifference);
+                        double robot1AngleGoal = robot1Angle + sign * 0.6*M_PI;
+                        robot1->destinationY = robot1->y + sin(robot1AngleGoal) * 1000.0;
+                        robot1->destinationX = robot1->x + cos(robot1AngleGoal) * 1000.0;
+                    }
+                }
+                if(isMoving(robot2) && (!isMoving(robot1)))
+                {
+                    robot2->myColor = Qt::blue;
+                    if(abs(robot2AngleDifference) < 0.6*M_PI)
+                    {
+                        int sign = sign(robot2AngleDifference);
+                        double robot2AngleGoal = robot2Angle + sign * 0.6*M_PI;
+                        robot2->destinationY = robot2->y + sin(robot2AngleGoal) * 1000.0;
+                        robot2->destinationX = robot2->x + cos(robot2AngleGoal) * 1000.0;
+                    }
+                }
+                if(isMoving(robot1) && (isMoving(robot2)))
+                {
+                    if(abs(robot1AngleDifference)+abs(robot2AngleDifference ) < 1.2*M_PI)
+                    {
+                        robot1->myColor = Qt::cyan;
+                        robot2->myColor = Qt::cyan;
+                        int sign = sign(robot1AngleDifference);
+                        double robot1AngleGoal = robot1Angle + sign * 0.6*M_PI;
+                        robot1->destinationY = robot1->y + sin(robot1AngleGoal) * 1000.0;
+                        robot1->destinationX = robot1->x + cos(robot1AngleGoal) * 1000.0;
+
+                        double robot2AngleGoal = robot2Angle + sign * 0.6*M_PI;
+                        robot2->destinationY = robot2->y + sin(robot2AngleGoal) * 1000.0;
+                        robot2->destinationX = robot2->x + cos(robot2AngleGoal) * 1000.0;
+                    }
+                }
 
             }
+            else {
+                robot1->myColor = Qt::yellow;
+                robot2->myColor = Qt::yellow;
+            }
         }
+
     }
 }
 
@@ -101,13 +178,48 @@ void LinearMotionAlgorithms::calculateTable()
         robotIndex++;
     }
 }
+void LinearMotionAlgorithms::optimizeEmptyDestinations()
+{
+    bool destinationUsed[data.amountOfDestinations];
+    for(int destination=0;destination<data.amountOfDestinations;destination++)
+    {
+        destinationUsed[destination] = false;
+    }
+    for(int row=0;row<data.amountOfRobots;row++)
+    {
+        destinationUsed[data.rowResultIndex[row]] = true;
+    }
 
+    for(int row=0;row<data.amountOfRobots;row++)
+    {
+        int currentDistance = data.distanceTable[row][data.rowResultIndex[row]];
+        for(int i=0;i<data.amountOfDestinations;i++)
+        {
+            if(destinationUsed[i] == false)
+            {
+                if(currentDistance > data.distanceTable[row][i])
+                {
+                    destinationUsed[i] = true;
+                    destinationUsed[data.rowResultIndex[row]] = false;
+                    data.rowResultIndex[row] = (uint8_t)i;
+                }
+            }
+        }
+    }
+
+}
 bool LinearMotionAlgorithms::swapOptimize()
 {
     //unfortunetly the perfect solution will not alwast be found in the given amount of computing power
     //as result sometimes lines will cross
     //this method is a optimalisation to optimze and find that crossing lines
     //by simply comparing every row to every row, when swapping the 2 rows is better it will swap
+
+    if(swarmAlgorithmsSettings.useAllDestinationsWhenLessRobots)
+    {
+        optimizeEmptyDestinations();
+    }
+
     bool succes = false;
     for(int row1=0;row1<data.amountOfRobots;row1++)
     {
@@ -155,6 +267,7 @@ bool LinearMotionAlgorithms::swapOptimize()
             }
         }
     }
+
     return succes;
 }
 
@@ -226,7 +339,9 @@ void LinearMotionAlgorithms::connectDestinationsToRobots()
 
     //first make list of robots of this specific group
     data.swarmRobots.clear();
+    data.amountOfDestinations = destinations.size();
     {
+        int robotIndex = 0;
         QListIterator<RobotLocation*> i(robotLocationManager.robots);
         while (i.hasNext())
         {
@@ -235,8 +350,16 @@ void LinearMotionAlgorithms::connectDestinationsToRobots()
             {
                 if(currentRobot->type == RobotLocation::RobotType::SIMULATED){
                     data.swarmRobots.append(currentRobot);
+                    robotIndex++;
+                    //if there are more robots than destinations the algorithm will crash
+                    //derived class should handle this, this is only a protection
+                    if(robotIndex >= data.amountOfDestinations)
+                    {
+                        break;
+                    }
                 }
             }
+
         }
         QListIterator<Destination*> destinationIterator(destinations);
         while (destinationIterator.hasNext())
@@ -246,7 +369,6 @@ void LinearMotionAlgorithms::connectDestinationsToRobots()
     }
     //make a table with the distances between robots and points
     //this table caches the distances, adding a item from a other thread may cause problems
-    data.amountOfDestinations = destinations.size();
     data.amountOfRobots = data.swarmRobots.size();
 
     allocateTable();
@@ -258,10 +380,11 @@ void LinearMotionAlgorithms::connectDestinationsToRobots()
     //generate the table of distances between all combinations of robots and points
     calculateTable();
 
-    for(int i=0;i<data.amountOfRobots;i++)
+    for(int i = 0;i < std::min(data.amountOfRobots,data.amountOfDestinations);i++)
     {
         data.rowResultIndex[i] = i;
     }
+
     int lowestHighest=UINT16_MAX;
     for(int i=0;i<5;i++)
     {
@@ -308,11 +431,12 @@ void LinearMotionAlgorithms::connectDestinationsToRobots()
                     {
                         speed = 1;
                     }
-                    currentDestination->robot->speed = speed * 10 + 1;
+                    currentDestination->robot->speed = speed * 6 + 1;
                 }
                 else {
-                    currentDestination->robot->speed = 10;
+                    currentDestination->robot->speed = 6;
                 }
+
                 currentDestination->robot->destinationX = currentDestination->x;
                 currentDestination->robot->destinationY = currentDestination->y;
             }

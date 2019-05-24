@@ -8,36 +8,39 @@ SwarmSimulation::SwarmSimulation()
 {
 
 }
-double map(double x, double x1, double x2, double y1, double y2)
+static double map(double x, double x1, double x2, double y1, double y2)
 {
  return (x - x1) * (y2 - y1) / (x2 - x1) + y1;
 }
 void SwarmSimulation::moveRobot(RobotLocation *robot)
 {
-//    double deltaX = robot->destinationX - robot->x;
-//    double deltaY = robot->destinationY - robot->y;
+    double deltaX = robot->destinationX - robot->x;
+    double deltaY = robot->destinationY - robot->y;
 
-//    if((abs(deltaX) <= 1) && (abs(deltaY) <= 1))return;//already on location
+    if((abs(deltaX) <= 1) && (abs(deltaY) <= 1))return;//already on location
 
-//    double goalAngle = atan2(deltaY,deltaX);
-//    while(goalAngle <0) goalAngle += M_PI * 2;
+    double goalAngle = atan2(deltaY,deltaX);
+    while(goalAngle <0) goalAngle += M_PI * 2;
 
-//    double currentAngle = (robot->angle - 90) * (M_PI / 180);
-//    while(currentAngle < 0) currentAngle += M_PI * 2;
+    double currentAngle = robot->angle;
+    while(currentAngle < 0) currentAngle += M_PI * 2;
 
-//    if(currentAngle - goalAngle > 0)
-//    {
-//        currentAngle -= std::min(currentAngle - goalAngle, 0.1);
-//    }
-//    else if(currentAngle - goalAngle < 0)
-//    {
-//        currentAngle += std::min(goalAngle - currentAngle, 0.1);
-//    }
-//    qDebug("%f , %f",currentAngle,goalAngle);
+    if(currentAngle - goalAngle > 0)
+    {
+        currentAngle -= std::min(currentAngle - goalAngle, 0.1);
+    }
+    else if(currentAngle - goalAngle < 0)
+    {
+        currentAngle += std::min(goalAngle - currentAngle, 0.1);
+    }
 
-//    robot->x = robot->x + std::fmin(cos(goalAngle) * robot->speed * swarmSimulationSettings.maxSpeed, abs(deltaX));
-//    robot->y = robot->y + std::fmin(sin(goalAngle) * robot->speed * swarmSimulationSettings.maxSpeed, abs(deltaY));
-//    robot->angle = (int)(currentAngle * (180/M_PI) + 450) % 360;
+    robot->x = robot->x + std::fmin(cos(goalAngle) * robot->speed * swarmSimulationSettings.maxSpeed, abs(deltaX));
+    robot->y = robot->y + std::fmin(sin(goalAngle) * robot->speed * swarmSimulationSettings.maxSpeed, abs(deltaY));
+    robot->angle = currentAngle;
+}
+void SwarmSimulation::moveRobotRealistic(RobotLocation *robot)
+{
+
 
 
     double deltaX = robot->destinationX - robot->x;
@@ -66,6 +69,7 @@ void SwarmSimulation::moveRobot(RobotLocation *robot)
     }
     double left = 0;
     double right = 0;
+    double rideAngle = 0.3*M_PI;
     if(abs(difference) < 0.1 * M_PI)
     {
         left = maxSpeed;
@@ -74,14 +78,14 @@ void SwarmSimulation::moveRobot(RobotLocation *robot)
     else if(difference > 0)
     {
         left = maxSpeed;
-        if(difference > 0.5 * M_PI)
+        if(difference > rideAngle)
         {
             if(distanceFromDestination > 100)
             {
-                right = map(difference,0,0.5 * M_PI,-maxSpeed,0);
+                right = map(difference,0,rideAngle,-maxSpeed,0);
             }
             else {
-                right = map(difference,0,0.5 * M_PI,-maxSpeed,-maxSpeed/2);
+                right = map(difference,0,rideAngle,-maxSpeed,-maxSpeed/2);
             }
 
         }
@@ -92,14 +96,14 @@ void SwarmSimulation::moveRobot(RobotLocation *robot)
     else if(difference < 0)
     {
         right = maxSpeed;
-        if(difference > -0.5 * M_PI)
+        if(difference > -rideAngle)
         {
             if(distanceFromDestination > 100)
             {
-                left = map(difference,-0.5 * M_PI,0,-maxSpeed, 0);
+                left = map(difference,-rideAngle,0,-maxSpeed, 0);
             }
             else {
-                left = map(difference,-0.5 * M_PI,0,-maxSpeed, -maxSpeed/2);
+                left = map(difference,-rideAngle,0,-maxSpeed, -maxSpeed/2);
             }
         }
         else {
@@ -107,27 +111,28 @@ void SwarmSimulation::moveRobot(RobotLocation *robot)
         }
     }
 
-    double acceleration= 5;
+    double acceleration = 5;
     if(left > robot->currentSpeedLeft)
     {
-        robot->currentSpeedLeft+= acceleration;
+        robot->currentSpeedLeft+= std::min(acceleration,left - robot->currentSpeedLeft);
     }
     if(left < robot->currentSpeedLeft)
     {
-        robot->currentSpeedLeft-= acceleration;
+        robot->currentSpeedLeft-= std::min(acceleration, robot->currentSpeedLeft - left);
     }
     if(right > robot->currentSpeedRight)
     {
-        robot->currentSpeedRight+= acceleration;
+        robot->currentSpeedRight+= std::min(acceleration,right - robot->currentSpeedRight);
     }
     if(right < robot->currentSpeedRight)
     {
-        robot->currentSpeedRight-= acceleration;
+        robot->currentSpeedRight-= std::min(acceleration, robot->currentSpeedRight - right);
     }
     moveWheels(robot->currentSpeedLeft, robot->currentSpeedRight, robot);
 }
 void SwarmSimulation::moveWheels(double Vl, double Vr, RobotLocation* robot)
 {
+    //http://www.cs.columbia.edu/~allen/F17/NOTES/icckinematics.pdfs
     //calculations from https://www.robotc.net/wikiarchive/File:Differential_Steering_Graphic_2_wheels.png
     //https://www.robotc.net/wikiarchive/Tutorials/Arduino_Projects/Additional_Info/Turning_Calculations
     double l = globalSettings.botDistanceBetweenWheels;
@@ -170,7 +175,7 @@ void SwarmSimulation::moveWheels(double Vl, double Vr, RobotLocation* robot)
 }
 void SwarmSimulation::startSimulation()
 {
-    qDebug() << "start simulation called" << endl;
+    //qDebug() << "start simulation called" << endl;
     deltaT = (double)(clock() - lastTime)/CLOCKS_PER_SEC;
     deltaT = std::fmax(deltaT, 0.1);
     lastTime = clock();
@@ -180,7 +185,13 @@ void SwarmSimulation::startSimulation()
         RobotLocation *currentRobot = i.next();
         if(currentRobot->type == RobotLocation::RobotType::SIMULATED)
         {
-             moveRobot(currentRobot);
+            if(swarmSimulationSettings.realisticSimulationEnabled)
+            {
+                moveRobotRealistic(currentRobot);
+            }
+            else {
+                moveRobot(currentRobot);
+            }
         }
     }
 
