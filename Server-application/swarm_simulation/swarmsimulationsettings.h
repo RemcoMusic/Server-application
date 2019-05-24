@@ -8,7 +8,7 @@ class SwarmSimulationSettings
 public:
     SwarmSimulationSettings();
     int maxSpeed = 2;
-    int realisticSimulationEnabled = true;
+    int realisticSimulationEnabled = false;
     int acceleartionControlEnabled = true;
     int badMotorsEnbabled = true;
 };

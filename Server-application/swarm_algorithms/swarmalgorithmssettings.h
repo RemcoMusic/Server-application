@@ -16,8 +16,8 @@ public:
     bool allVisualisationEnabled = false;
     bool experimentalVisualisationEnbaled = false;//for new feature testing
 
-    bool debugLinearMotion = false;
-    bool debugLinearMotionVerbose = false;
+    bool debugLinearMotion = true;
+    bool debugLinearMotionVerbose = true;
     bool debugLinearMotionSources = false;
 
     int distanceBetweenRobots=170;//distance between the destinations of the robots,

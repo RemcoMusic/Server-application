@@ -178,7 +178,36 @@ void LinearMotionAlgorithms::calculateTable()
         robotIndex++;
     }
 }
+void LinearMotionAlgorithms::optimizeEmptyDestinations()
+{
+    bool destinationUsed[data.amountOfDestinations];
+    for(int destination=0;destination<data.amountOfDestinations;destination++)
+    {
+        destinationUsed[destination] = false;
+    }
+    for(int row=0;row<data.amountOfRobots;row++)
+    {
+        destinationUsed[data.rowResultIndex[row]] = true;
+    }
 
+    for(int row=0;row<data.amountOfRobots;row++)
+    {
+        int currentDistance = data.distanceTable[row][data.rowResultIndex[row]];
+        for(int i=0;i<data.amountOfDestinations;i++)
+        {
+            if(destinationUsed[i] == false)
+            {
+                if(currentDistance > data.distanceTable[row][i])
+                {
+                    destinationUsed[i] = true;
+                    destinationUsed[data.rowResultIndex[row]] = false;
+                    data.rowResultIndex[row] = (uint8_t)i;
+                }
+            }
+        }
+    }
+
+}
 bool LinearMotionAlgorithms::swapOptimize()
 {
     //unfortunetly the perfect solution will not alwast be found in the given amount of computing power
@@ -232,6 +261,7 @@ bool LinearMotionAlgorithms::swapOptimize()
             }
         }
     }
+    optimizeEmptyDestinations();
     return succes;
 }
 
@@ -303,7 +333,9 @@ void LinearMotionAlgorithms::connectDestinationsToRobots()
 
     //first make list of robots of this specific group
     data.swarmRobots.clear();
+    data.amountOfDestinations = destinations.size();
     {
+        int robotIndex = 0;
         QListIterator<RobotLocation*> i(robotLocationManager.robots);
         while (i.hasNext())
         {
@@ -312,8 +344,16 @@ void LinearMotionAlgorithms::connectDestinationsToRobots()
             {
                 if(currentRobot->type == RobotLocation::RobotType::SIMULATED){
                     data.swarmRobots.append(currentRobot);
+                    robotIndex++;
+                    //if there are more robots than destinations the algorithm will crash
+                    //derived class should handle this, this is only a protection
+                    if(robotIndex >= data.amountOfDestinations)
+                    {
+                        break;
+                    }
                 }
             }
+
         }
         QListIterator<Destination*> destinationIterator(destinations);
         while (destinationIterator.hasNext())
@@ -323,7 +363,6 @@ void LinearMotionAlgorithms::connectDestinationsToRobots()
     }
     //make a table with the distances between robots and points
     //this table caches the distances, adding a item from a other thread may cause problems
-    data.amountOfDestinations = destinations.size();
     data.amountOfRobots = data.swarmRobots.size();
 
     allocateTable();
@@ -335,10 +374,11 @@ void LinearMotionAlgorithms::connectDestinationsToRobots()
     //generate the table of distances between all combinations of robots and points
     calculateTable();
 
-    for(int i=0;i<data.amountOfRobots;i++)
+    for(int i = 0;i < std::min(data.amountOfRobots,data.amountOfDestinations);i++)
     {
         data.rowResultIndex[i] = i;
     }
+    printTable();
     int lowestHighest=UINT16_MAX;
     for(int i=0;i<5;i++)
     {
