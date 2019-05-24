@@ -62,6 +62,9 @@ int robotDetection::startDetecting() {
     cv::Mat threshold;
     cv::Mat HSV;
     cv::Mat RGB;
+    cv::Mat R;
+    cv::Mat G;
+    cv::Mat B;
 
     if(!cap.isOpened()) {
         return -1;
@@ -73,20 +76,20 @@ int robotDetection::startDetecting() {
 
         threshold = detectColors(HSV, "Green");
         morphOps(threshold);
-        cv::cvtColor(threshold,RGB, cv::COLOR_BGR2RGB);
-        robotDetectionSettings.processedGreenFrame = RGB;
+        cv::cvtColor(threshold,G, cv::COLOR_BGR2RGB);
+        robotDetectionSettings.processedGreenFrame = G;
         detectNewRobots(threshold,originalFrame);
 
         threshold = detectColors(HSV, "Red");
         morphOps(threshold);
-        cv::cvtColor(threshold,RGB, cv::COLOR_BGR2RGB);
-        robotDetectionSettings.processedRedFrame = RGB;
+        cv::cvtColor(threshold,R, cv::COLOR_BGR2RGB);
+        robotDetectionSettings.processedRedFrame = R;
         trackFilteredObject(threshold,originalFrame);
 
         threshold = detectColors(HSV,"Blue");
         morphOps(threshold);
-        cv::cvtColor(threshold,RGB, cv::COLOR_BGR2RGB);
-        robotDetectionSettings.processedBlueFrame = RGB;
+        cv::cvtColor(threshold,B, cv::COLOR_BGR2RGB);
+        robotDetectionSettings.processedBlueFrame = B;
 
         imshow("Color detection", originalFrame);
         imshow("Thresholded Frame", threshold);
