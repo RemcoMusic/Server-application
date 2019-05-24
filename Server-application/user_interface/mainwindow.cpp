@@ -96,21 +96,40 @@ void MainWindow::updateGui()
     ui->fpsNumber->display(fps);
 
     qDebug() << "update Gui called" << endl;
-    QImage img((uchar*)robotDetectionSettings.processedFrame.data, robotDetectionSettings.processedFrame.cols, robotDetectionSettings.processedFrame.rows, QImage::Format_RGB888);
 
+    QImage img((uchar*)robotDetectionSettings.processedFrame.data, robotDetectionSettings.processedFrame.cols, robotDetectionSettings.processedFrame.rows, QImage::Format_RGB888);
     QPixmap p = QPixmap::fromImage(img);
     int w = ui->cameraFeedLabel->width();
     int h = ui->cameraFeedLabel->height();
     int wl = ui->cameraFeedLabel_Large->width()-1;   //else it will keep expanding ????
     int hl = ui->cameraFeedLabel_Large->height()-1;  //else it will keep expanding ????
-
     // set a scaled pixmap to a w x h window keeping its aspect ratio
     ui->cameraFeedLabel->setPixmap(p.scaled(w,h,Qt::KeepAspectRatio));
     ui->cameraFeedLabel_Large->setPixmap(p.scaled(wl,hl,Qt::KeepAspectRatio));
+
+
+
+    QImage imgr((uchar*)robotDetectionSettings.processedRedFrame.data, robotDetectionSettings.processedRedFrame.cols, robotDetectionSettings.processedRedFrame.rows, QImage::Format_RGB888);
+    QPixmap pr = QPixmap::fromImage(imgr);
+    int wr = ui->cameraRedFeed->width();
+    int hr = ui->cameraRedFeed->height();
+    ui->cameraRedFeed->setPixmap(pr.scaled(wr,hr,Qt::KeepAspectRatio));
+
+    QImage imgg((uchar*)robotDetectionSettings.processedGreenFrame.data, robotDetectionSettings.processedGreenFrame.cols, robotDetectionSettings.processedGreenFrame.rows, QImage::Format_RGB888);
+    QPixmap pg = QPixmap::fromImage(imgg);
+    int wg = ui->cameraGreenFeed->width();
+    int hg = ui->cameraGreenFeed->height();
+    ui->cameraGreenFeed->setPixmap(pg.scaled(wg,hg,Qt::KeepAspectRatio));
+
+    QImage imgb((uchar*)robotDetectionSettings.processedBlueFrame.data, robotDetectionSettings.processedBlueFrame.cols, robotDetectionSettings.processedBlueFrame.rows, QImage::Format_RGB888);
+    QPixmap pb = QPixmap::fromImage(imgb);
+    int wb = ui->cameraBlueFeed->width();
+    int hb = ui->cameraBlueFeed->height();
+    ui->cameraBlueFeed->setPixmap(pb.scaled(wb,hb,Qt::KeepAspectRatio));
+
+
+
     on_pushButton_clicked(); // resize the scenes
-
-
-
     dataScene->update();
 }
 void MainWindow::colorSlidersChanged(int c)
