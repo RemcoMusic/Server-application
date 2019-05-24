@@ -11,7 +11,7 @@ public:
     CircleAlgorithm();
     void update();
     QPoint *point1 = new QPoint(500,500);
-    QPoint *point2 = new QPoint(900,500);
+    QPoint *point2 = new QPoint(800,500);
 private:
     void calculatePoints();
 };

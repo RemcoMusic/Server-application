@@ -16,11 +16,11 @@ public:
     bool allVisualisationEnabled = false;
     bool experimentalVisualisationEnbaled = false;//for new feature testing
 
-    bool debugLinearMotion = false;
-    bool debugLinearMotionVerbose = false;
+    bool debugLinearMotion = true;
+    bool debugLinearMotionVerbose = true;
     bool debugLinearMotionSources = false;
 
-    int distanceBetweenRobots=120;//distance between the destinations of the robots,
+    int distanceBetweenRobots=170;//distance between the destinations of the robots,
 
     enum class algorithmInputSource
     {
@@ -37,6 +37,8 @@ public:
     bool useLineAlgorithmHysteresis = true;
     int lineAlgorithmPerformanceLevel = 5;//0-10;
 
+    bool useAllDestinationsWhenLessRobots = true;
+
     bool enableCollisionAvoidance = true;
     int collisionDistance = 100;
     int collisionAggression = 5;//0-10
@@ -44,8 +46,6 @@ public:
     //en verder
     //update rate
     //kiezen van algorithmes en informatie weergeven
-
-
 
 };
 extern SwarmAlgorithmsSettings swarmAlgorithmsSettings;

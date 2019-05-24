@@ -60,5 +60,4 @@ void RobotLocationManager::makeNewRealRobot(int x, int y)
     //Ui::ui->dataSene->addItem(newRobot);
     dataScene->addItem(newRobot);
     qDebug() << "MADE A NEW ROBOT";
-
 }

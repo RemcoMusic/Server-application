@@ -48,6 +48,7 @@ private:
     int getHighestDistanceIndex();
     void runCollisionAvoidance();
 
+    void optimizeEmptyDestinations();
 };
 
 #endif // LINEARMOTIONALGORITHMS_H
