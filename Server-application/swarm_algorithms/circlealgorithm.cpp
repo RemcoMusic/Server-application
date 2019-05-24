@@ -15,10 +15,6 @@ void CircleAlgorithm::update()
     {
         calculateDestinationsCenterOuter();
     }
-    else if(swarmAlgorithmsSettings.inputSource == SwarmAlgorithmsSettings::AlgorithmInputSource::ALTERNATIVE_SHAPE)
-    {
-        calculateDestinationsCenterOuter();
-    }
     else if(swarmAlgorithmsSettings.inputSource == SwarmAlgorithmsSettings::AlgorithmInputSource::HAND_GESTURE)
     {
         calculateDestinationsCenterOuter();
