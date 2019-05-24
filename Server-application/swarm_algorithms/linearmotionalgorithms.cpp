@@ -214,6 +214,12 @@ bool LinearMotionAlgorithms::swapOptimize()
     //as result sometimes lines will cross
     //this method is a optimalisation to optimze and find that crossing lines
     //by simply comparing every row to every row, when swapping the 2 rows is better it will swap
+
+    if(swarmAlgorithmsSettings.useAllDestinationsWhenLessRobots)
+    {
+        optimizeEmptyDestinations();
+    }
+
     bool succes = false;
     for(int row1=0;row1<data.amountOfRobots;row1++)
     {
@@ -261,7 +267,7 @@ bool LinearMotionAlgorithms::swapOptimize()
             }
         }
     }
-    optimizeEmptyDestinations();
+
     return succes;
 }
 
@@ -378,7 +384,7 @@ void LinearMotionAlgorithms::connectDestinationsToRobots()
     {
         data.rowResultIndex[i] = i;
     }
-    printTable();
+
     int lowestHighest=UINT16_MAX;
     for(int i=0;i<5;i++)
     {

@@ -37,6 +37,8 @@ public:
     bool useLineAlgorithmHysteresis = true;
     int lineAlgorithmPerformanceLevel = 5;//0-10;
 
+    bool useAllDestinationsWhenLessRobots = true;
+
     bool enableCollisionAvoidance = true;
     int collisionDistance = 100;
     int collisionAggression = 5;//0-10
