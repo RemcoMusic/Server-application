@@ -24,7 +24,7 @@ public:
 
     enum class AlgorithmInputSource
     {
-        NONE = 0, //only distanceBetweenRobots as user input
+        NONE = 0, //only distanceBetweenRobots as user input    
         REAL_OBJECTS_CENTER_OUTER = 1, //with objects like red balls
         REAL_OBJECTS_OUTER_OUTER = 2, //with objects like red balls
         HAND_GESTURE = 3, //by hand gestures(hand object)

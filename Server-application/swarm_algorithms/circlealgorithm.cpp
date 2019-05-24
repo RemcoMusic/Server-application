@@ -40,13 +40,18 @@ void CircleAlgorithm::calculateDestinationsOuterAngle()
 }
 void CircleAlgorithm::calculateDestinationsOuterOuter()
 {
-
+    //this method uses two outer places of the circle, it calculates the center so the center-outer method can do the rest
+    int deltaX = outer2->x() - outer1->x();
+    int deltaY = outer2->y() - outer1->y();
+    center->rx() = outer1->x() + deltaX / 2;
+    center->ry() = outer1->y() + deltaY / 2;
+    calculateDestinationsCenterOuter();
 }
 void CircleAlgorithm::calculateDestinationsCenterOuter()
 {
     //calculate distance between markers
-    int deltaX = abs(point1->rx() - point2->rx());//pytagoras A
-    int deltaY = abs(point1->ry() - point2->ry());//pytagoras b
+    int deltaX = center->rx() - outer1->rx();//pytagoras A
+    int deltaY = center->ry() - outer1->ry();//pytagoras b
     int c = sqrt(deltaX*deltaX + deltaY*deltaY);//pytagoras C, distance between points
 
     double circumference = (2 * c * M_PI);
@@ -68,8 +73,8 @@ void CircleAlgorithm::calculateDestinationsCenterOuter()
     for(int i=0;i<amountOfRobotsUsing;i++)
     {
         Destination *newDestination = new Destination;
-        newDestination->x = point1->x() + cos(angle) * c;
-        newDestination->y = point1->y() + sin(angle) * c;
+        newDestination->x = center->x() + cos(angle) * c;
+        newDestination->y = center->y() + sin(angle) * c;
         destinations.append(newDestination);
         //qDebug("new position %d, %d",newDestination->x,newDestination->y);
 
