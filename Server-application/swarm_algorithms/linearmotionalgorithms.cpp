@@ -233,7 +233,10 @@ bool LinearMotionAlgorithms::swapOptimize()
 
     if(swarmAlgorithmsSettings.useAllDestinationsWhenLessRobots)
     {
-        optimizeEmptyDestinations();
+        if(data.amountOfRobots < data.amountOfDestinations)
+        {
+            optimizeEmptyDestinations();
+        }
     }
 
     bool succes = false;
@@ -354,11 +357,24 @@ void LinearMotionAlgorithms::connectDestinationsToRobots()
     //brute force algorithm has o(n!) complexity, this algorithm works with taking a random combination and optimizing it by swapping combinations
 
 
-    //make a table with the distances between robots and points
-    //this table caches the distances, adding a item from a other thread may cause problems
+
+
     data.amountOfRobots = data.swarmRobots.size();
+    //if there are more robots than destinations the application may crash, this is a fix for that, points are added if needed
+    //this problem should be handled by the derrived class, this is a second protection
+    int index = 0;
+    while(data.amountOfRobots > destinations.size())
+    {
+        Destination* newDestination = new Destination;
+        newDestination->x = swarmAlgorithmsSettings.distanceBetweenRobots/2;
+        newDestination->y = swarmAlgorithmsSettings.distanceBetweenRobots * index;
+        destinations.append(newDestination);
+        index++;
+    }
     data.amountOfDestinations = destinations.size();
 
+    //make a table with the distances between robots and points
+    //this table caches the distances, adding a item from a other thread may cause problems
     allocateTable();
 
     if(swarmAlgorithmsSettings.debugLinearMotionVerbose)
