@@ -42,6 +42,10 @@ void SwarmSimulation::moveRobot(RobotLocation *robot)
 
     robot->x = robot->x + std::fmin(cos(goalAngle) * robot->speed * swarmSimulationSettings.maxSpeed, abs(deltaX));
     robot->y = robot->y + std::fmin(sin(goalAngle) * robot->speed * swarmSimulationSettings.maxSpeed, abs(deltaY));
+
+    while(robot->angle >= 2 * M_PI) robot->angle -=2 * M_PI;
+    while(robot->angle < 0) robot->angle +=2 * M_PI;
+
 }
 void SwarmSimulation::moveRobotRealistic(RobotLocation *robot)
 {

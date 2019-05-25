@@ -188,7 +188,19 @@ void LinearMotionAlgorithms::calculateTable()
         while (destinationIterator.hasNext())
         {
             Destination *currentDestination = destinationIterator.next();
-            data.distanceTable[robotIndex][destinationIndex] = distanceBetweenPoints(currentDestination->x, currentDestination->y, currentRobot->x, currentRobot->y);
+            int rotationTime = 0;
+            if(swarmAlgorithmsSettings.useLineAlgorithmRotationTime)
+            {
+                //calculate the angles and the time to rotate the robot
+                double angleBetween = atan2(currentDestination->y - currentRobot->y, currentDestination->x - currentRobot->x);
+                if(angleBetween < 0) angleBetween += 2*M_PI;
+
+                double differenceInAngle = abs(currentRobot->angle - angleBetween);
+                differenceInAngle = std::fmin(differenceInAngle, 2*M_PI - differenceInAngle);
+
+                rotationTime = differenceInAngle * swarmAlgorithmsSettings.lineAlgorithmRotationWeight;
+            }
+            data.distanceTable[robotIndex][destinationIndex] = rotationTime + distanceBetweenPoints(currentDestination->x, currentDestination->y, currentRobot->x, currentRobot->y);
             destinationIndex++;
         }
         robotIndex++;

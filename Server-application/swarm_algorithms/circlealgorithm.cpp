@@ -15,10 +15,6 @@ void CircleAlgorithm::update()
     {
         calculateDestinationsCenterOuter();
     }
-    else if(swarmAlgorithmsSettings.inputSource == SwarmAlgorithmsSettings::AlgorithmInputSource::ALTERNATIVE_SHAPE)
-    {
-        calculateDestinationsCenterOuter();
-    }
     else if(swarmAlgorithmsSettings.inputSource == SwarmAlgorithmsSettings::AlgorithmInputSource::HAND_GESTURE)
     {
         calculateDestinationsCenterOuter();
@@ -57,7 +53,6 @@ void CircleAlgorithm::calculateDestinationsCenterOuter()
     double circumference = (2 * c * M_PI);
     int amountOfRobotsFitting = circumference/swarmAlgorithmsSettings.distanceBetweenRobots;
 
-    qDebug("%d",data.swarmRobots.size());
     int amountOfRobotsUsing = std::min(amountOfRobotsFitting, data.swarmRobots.size());
 
     int distanceBetweenBots = circumference/amountOfRobotsUsing;

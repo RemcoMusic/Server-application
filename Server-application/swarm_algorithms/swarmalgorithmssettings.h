@@ -35,7 +35,8 @@ public:
 
     int robotSpeed = 50;//10-100
     bool dynamicSpeed = true; // with dynamic robot speed depents op the other robot, they will arive on the same time
-    bool useLineAlgorithmHysteresis = true;
+    bool useLineAlgorithmRotationTime = true;
+    int lineAlgorithmRotationWeight = 10;
     int lineAlgorithmPerformanceLevel = 5;//0-10;
 
     bool useAllDestinationsWhenLessRobots = true;
