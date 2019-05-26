@@ -21,7 +21,8 @@ public:
     QList<Destination*> destinations;
     void update();
 
-private:
+    void generateRobotList();
+protected:
     void connectDestinationsToRobots();
     struct ConnectAlgorithmData
     {

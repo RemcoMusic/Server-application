@@ -16,25 +16,27 @@ public:
     bool allVisualisationEnabled = false;
     bool experimentalVisualisationEnbaled = false;//for new feature testing
 
-    bool debugLinearMotion = true;
-    bool debugLinearMotionVerbose = true;
+    bool debugLinearMotion = false;
+    bool debugLinearMotionVerbose = false;
     bool debugLinearMotionSources = false;
 
-    int distanceBetweenRobots=170;//distance between the destinations of the robots,
+    int distanceBetweenRobots = 170;//distance between the destinations of the robots,
 
-    enum class algorithmInputSource
+    enum class AlgorithmInputSource
     {
-        NONE = 0, //no user input, just a default shape
-        ALTERNATIVE_SHAPE = 1, //no user input, just a other size shape
-        REAL_OBJECTS = 2, //with objects like red balls
-        REAL_AND_SIMULATED_OJECTS = 3, //also allow simulated balls
-        HAND_GESTURE = 4, //by hand gestures(hand object)
-        ROBOT_MOVEMENT = 5 //by displacing the robot, displaced robot is the orientation for the algorithm
-    }inputSource;
+        NONE = 0, //only distanceBetweenRobots as user input
+        REAL_OBJECTS_CENTER_OUTER = 1, //with objects like red balls
+        REAL_OBJECTS_OUTER_OUTER = 2, //with objects like red balls
+        HAND_GESTURE = 3, //by hand gestures(hand object)
+        ROBOT_MOVEMENT = 4, //by displacing the robot, displaced robot is the orientation for the algorithm
+        ROBOT_MOVEMENT_WITH_ANGLE = 5 //by displacing the robot, displaced robot is the orientation for the algorithm
+    }inputSource = AlgorithmInputSource::REAL_OBJECTS_OUTER_OUTER;
+    bool algorithmAllowSimulatedObject = true;
 
     int robotSpeed = 50;//10-100
     bool dynamicSpeed = true; // with dynamic robot speed depents op the other robot, they will arive on the same time
-    bool useLineAlgorithmHysteresis = true;
+    bool useLineAlgorithmRotationTime = true;
+    int lineAlgorithmRotationWeight = 10;
     int lineAlgorithmPerformanceLevel = 5;//0-10;
 
     bool useAllDestinationsWhenLessRobots = true;
