@@ -1,11 +1,4 @@
 #include "robotdetection.h"
-#include <sstream>
-#include <string>
-#include <iostream>
-#include <vector>
-#include <QList>
-#include <QString>
-#include <QtDebug>
 
 robotDetection::robotDetection()
 {
@@ -192,6 +185,50 @@ void robotDetection::trackFilteredObject(cv::Mat threshold, cv::Mat &originalFra
         }
     }
 }
+
+void robotDetection::detectAngleRobots(cv::Mat threshold, cv::Mat &originalFrame) {
+    bool newRobot = true;
+    cv::Mat temp;
+    threshold.copyTo(temp);
+    std::vector< std::vector<cv::Point> > contours;
+    std::vector<cv::Vec4i> hierarchy;
+    cv::findContours(temp,contours,hierarchy,cv::RETR_CCOMP,cv::CHAIN_APPROX_SIMPLE );
+    bool objectFound = false;
+    if (hierarchy.size() > 0 && hierarchy.size()<50) {
+        for (int index = 0; index >= 0; index = hierarchy[index][0]) {
+            cv::Moments moment = moments((cv::Mat)contours[index]);
+            double area = moment.m00;
+            if(area>100) {
+                for(int i =0;i<robotLocationManager.robots.size(); i++) {
+                    RobotLocation* ptr = robotLocationManager.robots.at(i);
+                    if(ptr->type == RobotLocation::RobotType::REAL){
+                        if (ptr->x >= (moment.m10/area - 30) && ptr->x <= (moment.m10/area + 30)) {
+                            if(ptr->y >= (moment.m01/area -30) && ptr->y <= (moment.m01/area + 30)) {
+                                newRobot = false;
+                                ptr->x=moment.m10/area;
+                                ptr->y=moment.m01/area;
+                                break;
+                            }
+                        }
+                    }
+                }
+                if (newRobot) {
+                    if (robotDetectionSettings.enableDetection) {
+                        emit makeANewRobot(moment.m10/area,moment.m01/area);
+                        newRobot = true;
+                    }
+                }
+                objectFound = true;
+            }
+            else objectFound = false;
+        }
+        if(objectFound)
+        {
+            drawObjects(originalFrame);
+        }
+    }
+}
+
 
 cv::Mat robotDetection::detectColors(cv::Mat frame, QString color) {
     if(color == "Red") {
