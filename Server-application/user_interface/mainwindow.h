@@ -11,6 +11,7 @@
 #include <QDebug>
 #include <robotdetectionsettings.h>
 #include <QObject>
+#include "swarmsimulationsettings.h"
 
 extern QGraphicsScene *dataScene; //forward declaration (made in cpp)
 
@@ -40,6 +41,18 @@ private slots:
     void on_sliderDeviation_valueChanged(int value);
 
     void on_sliderErode_valueChanged(int value);
+
+    void on_checkRealSimulation_stateChanged(int arg1);
+
+    void on_checkAccelerationControl_stateChanged(int arg1);
+
+    void on_checkInconsisentMotors_stateChanged(int arg1);
+
+    void on_checkUADWLB_stateChanged(int arg1);
+
+    void on_checkDynamicSpeed_stateChanged(int arg1);
+
+    void on_checkRotationTime_stateChanged(int arg1);
 
 public slots:
     void updateGui();

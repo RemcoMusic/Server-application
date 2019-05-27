@@ -90,13 +90,14 @@ void MainWindow::on_pushButton_clicked()
     repaint();
 
 }
-
+double smoothFps=0;
 void MainWindow::updateGui()
 {
     int t = fpsTimer->elapsed();
     fpsTimer->restart();
     int fps = (double)1000.0/(double)t;
-    ui->fpsNumber->display(fps);
+    smoothFps += 0.1*(fps-smoothFps);
+    ui->fpsNumber->display((int)smoothFps);
 
     QImage img((uchar*)robotDetectionSettings.processedFrame.data, robotDetectionSettings.processedFrame.cols, robotDetectionSettings.processedFrame.rows, QImage::Format_RGB888);
     QPixmap p = QPixmap::fromImage(img);
@@ -192,4 +193,35 @@ void MainWindow::on_sliderDeviation_valueChanged(int value)
 void MainWindow::on_sliderErode_valueChanged(int value)
 {
     robotDetectionSettings.erodeObject = value;
+}
+
+void MainWindow::on_checkRealSimulation_stateChanged(int arg1)
+{
+    qDebug() << arg1;
+    swarmSimulationSettings.realisticSimulationEnabled = arg1;
+}
+
+void MainWindow::on_checkAccelerationControl_stateChanged(int arg1)
+{
+    swarmSimulationSettings.acceleartionControlEnabled = arg1;
+}
+
+void MainWindow::on_checkInconsisentMotors_stateChanged(int arg1)
+{
+    swarmSimulationSettings.badMotorsEnbabled = arg1;
+}
+
+void MainWindow::on_checkUADWLB_stateChanged(int arg1)
+{
+    swarmAlgorithmsSettings.useAllDestinationsWhenLessRobots = arg1;
+}
+
+void MainWindow::on_checkDynamicSpeed_stateChanged(int arg1)
+{
+    swarmAlgorithmsSettings.dynamicSpeed = arg1;
+}
+
+void MainWindow::on_checkRotationTime_stateChanged(int arg1)
+{
+    swarmAlgorithmsSettings.useLineAlgorithmRotationTime = arg1;
 }

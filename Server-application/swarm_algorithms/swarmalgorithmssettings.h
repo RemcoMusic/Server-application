@@ -10,17 +10,17 @@ public:
 
     QList<SwarmAlgorithmBase*> activeAlgorithms;
 
-    int updateIntervalMs=100;
+    int updateIntervalMs=100;  //3
 
-    bool visualisationEnabled = false;
-    bool allVisualisationEnabled = false;
-    bool experimentalVisualisationEnbaled = false;//for new feature testing
+    bool visualisationEnabled = false;  // 2
+    bool allVisualisationEnabled = false;  //2
+    bool experimentalVisualisationEnbaled = false;//for new feature testing  //2
 
-    bool debugLinearMotion = false;
-    bool debugLinearMotionVerbose = false;
-    bool debugLinearMotionSources = false;
+    bool debugLinearMotion = false;  //2
+    bool debugLinearMotionVerbose = false; //2
+    bool debugLinearMotionSources = false; //2
 
-    int distanceBetweenRobots = 170;//distance between the destinations of the robots,
+    int distanceBetweenRobots = 170;//distance between the destinations of the robots, //1
 
     enum class AlgorithmInputSource
     {
@@ -31,23 +31,24 @@ public:
         ROBOT_MOVEMENT = 4, //by displacing the robot, displaced robot is the orientation for the algorithm
         ROBOT_MOVEMENT_WITH_ANGLE = 5 //by displacing the robot, displaced robot is the orientation for the algorithm
     }inputSource = AlgorithmInputSource::REAL_OBJECTS_OUTER_OUTER;
-    bool algorithmAllowSimulatedObject = true;
+    bool algorithmAllowSimulatedObject = true;    //1
 
-    int robotSpeed = 50;//10-100
-    bool dynamicSpeed = true; // with dynamic robot speed depents op the other robot, they will arive on the same time
-    bool useLineAlgorithmRotationTime = true;
-    int lineAlgorithmRotationWeight = 10;
-    int lineAlgorithmPerformanceLevel = 5;//0-10;
+    int robotSpeed = 50;//10-100  //1
+    bool dynamicSpeed = true; // with dynamic robot speed depents op the other robot, they will arive on the same time //1
+    bool useLineAlgorithmRotationTime = true;  //2
+    int lineAlgorithmRotationWeight = 10;      //2
+    int lineAlgorithmPerformanceLevel = 5;//0-10;   //2
 
-    bool useAllDestinationsWhenLessRobots = true;
+    bool useAllDestinationsWhenLessRobots = true;  //2
 
-    bool enableCollisionAvoidance = true;
-    int collisionDistance = 100;
-    int collisionAggression = 5;//0-10
+    bool enableCollisionAvoidance = true;   //1
+    int collisionDistance = 100;            //1
+    int collisionAggression = 5;//0-10      //1
 
     //en verder
     //update rate
     //kiezen van algorithmes en informatie weergeven
+
 
 };
 extern SwarmAlgorithmsSettings swarmAlgorithmsSettings;

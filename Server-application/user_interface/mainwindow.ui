@@ -119,6 +119,77 @@
            </layout>
           </item>
           <item>
+           <layout class="QGridLayout" name="gridLayout_3">
+            <item row="1" column="1">
+             <widget class="QCheckBox" name="checkAccelerationControl">
+              <property name="text">
+               <string>Acceleration Control</string>
+              </property>
+              <property name="checked">
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="0">
+             <widget class="QCheckBox" name="checkInconsisentMotors">
+              <property name="text">
+               <string>Inconsistent Motors</string>
+              </property>
+              <property name="checked">
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="1">
+             <widget class="QCheckBox" name="checkUADWLB">
+              <property name="text">
+               <string>UADWLB</string>
+              </property>
+              <property name="checked">
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="0">
+             <widget class="Line" name="line_2">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="0">
+             <widget class="QCheckBox" name="checkRealSimulation">
+              <property name="text">
+               <string>Real Simulation</string>
+              </property>
+              <property name="checked">
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+            <item row="3" column="0">
+             <widget class="QCheckBox" name="checkDynamicSpeed">
+              <property name="text">
+               <string>Dynamic Speed</string>
+              </property>
+              <property name="checked">
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+            <item row="3" column="1">
+             <widget class="QCheckBox" name="checkRotationTime">
+              <property name="text">
+               <string>Use Rotation Time as Weight</string>
+              </property>
+              <property name="checked">
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item>
            <spacer name="verticalSpacer_2">
             <property name="orientation">
              <enum>Qt::Vertical</enum>
