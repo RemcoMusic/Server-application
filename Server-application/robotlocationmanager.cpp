@@ -55,10 +55,10 @@ void RobotLocationManager::makeNewRealRobot(int x, int y)
     newRobot->x = x;
     newRobot->y = y;
     newRobot->myColor = Qt::red;
+    newRobot->sharedData.status = robotStatus::STARTUP;
     robots.append(newRobot);
     //dataScene.addItem(newRobot);
     //Ui::ui->dataSene->addItem(newRobot);
     dataScene->addItem(newRobot);
     qDebug() << "MADE A NEW ROBOT";
-
 }

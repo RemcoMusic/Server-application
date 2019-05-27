@@ -69,8 +69,16 @@ void RobotConnection::connectionloop()
             }
         }
     }  else{
+        //remove IP from list
+        for(int i = 0; i < IpList.size();i++){
+            if(IpList.at(i) == lastRequestedBotIP){
+                IpList.removeAt(i);
+                qDebug() << " removed bot with ip: " << lastRequestedBotIP << " from the IPList";
+            }
+        }
         //no robot showed up. lets reset and wait for another bot
         lastRequestedBotIP ="0.0.0.0";
+
 
     }
 

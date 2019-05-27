@@ -5,9 +5,7 @@
 #include "swarmalgorithmbase.h"
 #include "robotlocationmanager.h"
 #include "math.h"
-#include <QDebug>
 #include <iostream>
-#include <QTextStream>
 #include <iomanip>
 class LinearMotionAlgorithms : public SwarmAlgorithmBase
 {
@@ -23,7 +21,8 @@ public:
     QList<Destination*> destinations;
     void update();
 
-private:
+    void generateRobotList();
+protected:
     void connectDestinationsToRobots();
     struct ConnectAlgorithmData
     {
@@ -31,12 +30,8 @@ private:
         int amountOfDestinations;
         int amountOfRobots;
         uint16_t **distanceTable = nullptr;
-        uint8_t *collumnMask;
-        uint16_t *rowResult;
         uint8_t *rowResultIndex;
         uint8_t *lastfoundResultIndex;
-        uint8_t* rowAvailabilities;
-        uint8_t* rowOrder;
         uint16_t lastHighestDistance;
         bool locked = false;
     }data;
@@ -44,21 +39,17 @@ private:
     void calculateTable();
     void allocateTable();
     void freeTable();
-    bool findPath();
-    void resetTempData();
     void printTable();
 
-    void optimizeTable();
-    void calculateAvailabilities();
-    void clearOrder();
-    bool optimalisationPossible();
     int getHighestDistance();
-    void moveRobotTo(RobotLocation *robot, Destination *destination, double speed);
 
     int getHighestDistanceOverAll();
     void filterPointAvailabilities();
     bool swapOptimize();
     int getHighestDistanceIndex();
+    void runCollisionAvoidance();
+
+    void optimizeEmptyDestinations();
 };
 
 #endif // LINEARMOTIONALGORITHMS_H

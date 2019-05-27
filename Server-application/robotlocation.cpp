@@ -26,10 +26,11 @@ void RobotLocation::print()
     }
 }
 
-
+double tempAngle;
 void RobotLocation::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
-
+    qDebug("press");
+    tempAngle = angle;
 }
 
 void RobotLocation::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
@@ -37,6 +38,7 @@ void RobotLocation::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
     QPointF p = event->scenePos();
     this->x = p.x();
     this->y = p.y();
+    this->angle = tempAngle;
 }
 
 void RobotLocation::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)

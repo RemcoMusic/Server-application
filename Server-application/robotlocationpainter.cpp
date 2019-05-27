@@ -1,7 +1,9 @@
 #include <robotlocation.h>
+#define toRad(angleDegrees) ((angleDegrees) * M_PI / 180.0)
+#define toDeg(angleRadians) ((angleRadians) * 180.0 / M_PI)
 QRectF RobotLocation::boundingRect() const
 {
-    return QRectF(0,0,2*globalSettings.botDiameter,2*globalSettings.botDiameter);
+    return QRectF(0,0,globalSettings.botDiameter,globalSettings.botDiameter);
 }
 
 void RobotLocation::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
@@ -16,7 +18,7 @@ void RobotLocation::paint(QPainter *painter, const QStyleOptionGraphicsItem *opt
         double d = globalSettings.botDiameter;
 
         painter->translate(0.5*d,0.5*d);
-        painter->rotate(angle);
+        painter->rotate(toDeg(angle)+ 90);
         painter->translate(-0.5*d,-0.5*d);
 
         painter->setPen(pen);
@@ -71,3 +73,5 @@ void RobotLocation::paint(QPainter *painter, const QStyleOptionGraphicsItem *opt
 void RobotLocation::setRotation(int r){
     angle = r;
 }
+
+

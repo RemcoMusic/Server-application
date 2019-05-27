@@ -25,7 +25,7 @@ signals:
 
 private:
     QUdpSocket * socket;
-    QString lastRequestedBotIP;
+    QString lastRequestedBotIP = "0.0.0.0";
     QTime myTimer;
 
 
