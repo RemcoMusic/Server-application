@@ -455,6 +455,7 @@ void LinearMotionAlgorithms::connectDestinationsToRobots()
 
                 currentDestination->robot->destinationX = currentDestination->x;
                 currentDestination->robot->destinationY = currentDestination->y;
+                currentDestination->robot->endAngle = currentDestination->endAngle;
             }
         }
         destinationIndex++;

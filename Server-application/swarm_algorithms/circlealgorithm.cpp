@@ -70,6 +70,7 @@ void CircleAlgorithm::calculateDestinationsCenterOuter()
         Destination *newDestination = new Destination;
         newDestination->x = center->x() + cos(angle) * c;
         newDestination->y = center->y() + sin(angle) * c;
+        newDestination->endAngle = angle;
         destinations.append(newDestination);
         //qDebug("new position %d, %d",newDestination->x,newDestination->y);
 

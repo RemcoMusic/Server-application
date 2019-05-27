@@ -64,6 +64,7 @@ public:
 
     int destinationX = 0;
     int destinationY = 0;
+    double endAngle = 0;
 
     QColor myColor = Qt::yellow;
 
