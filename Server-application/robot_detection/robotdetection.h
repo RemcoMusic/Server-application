@@ -10,6 +10,8 @@
 #include "robotlocation.h"
 #include <QObject>
 #include <QThread>
+#include <QList>
+#include <QPoint>
 #include <QtDebug>
 #include <iostream>
 #include <sstream>
@@ -27,9 +29,12 @@ class robotDetection: public QThread
     private:
         void detectNewRobots(cv::Mat threshold, cv::Mat &originalFrame);
         void trackFilteredObject(cv::Mat threshold, cv::Mat &originalFrame);
+        void detectAngleRobots(cv::Mat threshold, cv::Mat &originalFrame);
         void drawObjects(cv::Mat &frame);
         void morphOps(cv::Mat &thresh);
         cv::Mat detectColors(cv::Mat frame, QString color);
+
+        QList<QPoint> bluePoints;
 
     public slots:
         int startDetecting();

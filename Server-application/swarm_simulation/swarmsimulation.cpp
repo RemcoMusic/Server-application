@@ -17,32 +17,38 @@ void SwarmSimulation::moveRobot(RobotLocation *robot)
     double deltaX = robot->destinationX - robot->x;
     double deltaY = robot->destinationY - robot->y;
 
-    if((abs(deltaX) <= 1) && (abs(deltaY) <= 1))return;//already on location
+    if((abs(deltaX) <= 10) && (abs(deltaY) <= 10))return;//already on location
 
     double goalAngle = atan2(deltaY,deltaX);
-    while(goalAngle <0) goalAngle += M_PI * 2;
 
-    double currentAngle = robot->angle;
-    while(currentAngle < 0) currentAngle += M_PI * 2;
+    if(robot->angle >  M_PI)robot->angle -= 2* M_PI;
+    if(robot->angle < -M_PI)robot->angle+= 2 * M_PI;
 
-    if(currentAngle - goalAngle > 0)
+    double difference = robot->angle - goalAngle;
+    if(difference >  M_PI)difference -= 2* M_PI;
+    if(difference < -M_PI)difference += 2 * M_PI;
+//    if(abs(difference) > 0.6 * M_PI)//0.6 is added for hysteresis
+//    {
+//        robot->angle += M_PI;
+//    }
+    if(difference > 0)
     {
-        currentAngle -= std::min(currentAngle - goalAngle, 0.1);
+        robot->angle -= std::min(robot->angle - goalAngle, 0.1);
     }
-    else if(currentAngle - goalAngle < 0)
+    else if(difference < 0)
     {
-        currentAngle += std::min(goalAngle - currentAngle, 0.1);
+        robot->angle += std::min(goalAngle - robot->angle, 0.1);
     }
 
     robot->x = robot->x + std::fmin(cos(goalAngle) * robot->speed * swarmSimulationSettings.maxSpeed, abs(deltaX));
     robot->y = robot->y + std::fmin(sin(goalAngle) * robot->speed * swarmSimulationSettings.maxSpeed, abs(deltaY));
-    robot->angle = currentAngle;
+
+    while(robot->angle >= 2 * M_PI) robot->angle -=2 * M_PI;
+    while(robot->angle < 0) robot->angle +=2 * M_PI;
+
 }
 void SwarmSimulation::moveRobotRealistic(RobotLocation *robot)
 {
-
-
-
     double deltaX = robot->destinationX - robot->x;
     double deltaY = robot->destinationY - robot->y;
     double distanceFromDestination = sqrt(deltaX*deltaX + deltaY*deltaY);//pythogoras

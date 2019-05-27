@@ -50,7 +50,7 @@ MainWindow::MainWindow(QWidget *parent) :
     //on_colorComboBox_currentIndexChanged(0);
 
 
-    for(int i =0;i<8;i++){
+    for(int i =0;i<10;i++){
         int x = qrand() % globalSettings.fieldSizeX;
         int y = qrand() % globalSettings.fieldSizeY;
         int a = qrand() % 360;
@@ -97,8 +97,6 @@ void MainWindow::updateGui()
     fpsTimer->restart();
     int fps = (double)1000.0/(double)t;
     ui->fpsNumber->display(fps);
-
-    qDebug() << "update Gui called" << endl;
 
     QImage img((uchar*)robotDetectionSettings.processedFrame.data, robotDetectionSettings.processedFrame.cols, robotDetectionSettings.processedFrame.rows, QImage::Format_RGB888);
     QPixmap p = QPixmap::fromImage(img);

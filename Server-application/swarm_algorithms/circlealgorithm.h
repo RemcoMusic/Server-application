@@ -10,10 +10,14 @@ class CircleAlgorithm : public LinearMotionAlgorithms
 public:
     CircleAlgorithm();
     void update();
-    QPoint *point1 = new QPoint(500,500);
-    QPoint *point2 = new QPoint(800,500);
+    QPoint *center = new QPoint(500,500);
+    QPoint *outer1 = new QPoint(200,500);
+    QPoint *outer2 = new QPoint(800,500);
+
 private:
-    void calculatePoints();
+    void calculateDestinationsCenterOuter();
+    void calculateDestinationsOuterOuter();
+    void calculateDestinationsOuterAngle();
 };
 
 #endif // CIRCLEALGORITHM_H
