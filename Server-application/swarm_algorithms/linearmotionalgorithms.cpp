@@ -45,9 +45,7 @@ void LinearMotionAlgorithms::generateRobotList()
         RobotLocation *currentRobot = i.next();
         if(currentRobot->group == robotGroup)
         {
-            if(currentRobot->type == RobotLocation::RobotType::SIMULATED){
-                data.swarmRobots.append(currentRobot);
-            }
+             data.swarmRobots.append(currentRobot);
         }
 
     }
@@ -455,6 +453,7 @@ void LinearMotionAlgorithms::connectDestinationsToRobots()
 
                 currentDestination->robot->destinationX = currentDestination->x;
                 currentDestination->robot->destinationY = currentDestination->y;
+                currentDestination->robot->endAngle = currentDestination->endAngle;
             }
         }
         destinationIndex++;

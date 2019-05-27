@@ -17,6 +17,7 @@ public:
         int x;
         int y;
         RobotLocation* robot;
+        double endAngle;
     };
     QList<Destination*> destinations;
     void update();
