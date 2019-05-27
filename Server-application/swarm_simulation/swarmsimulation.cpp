@@ -161,25 +161,30 @@ void SwarmSimulation::moveRobotRealistic(RobotLocation *robot)
             }
         }
     }
-
-    double acceleration = 5;
-    if(left > robot->currentSpeedLeft)
+    if(swarmSimulationSettings.acceleartionControlEnabled)
     {
-        robot->currentSpeedLeft+= std::min(acceleration,left - robot->currentSpeedLeft);
+        double acceleration = 5;
+        if(left > robot->currentSpeedLeft)
+        {
+            robot->currentSpeedLeft+= std::min(acceleration,left - robot->currentSpeedLeft);
+        }
+        if(left < robot->currentSpeedLeft)
+        {
+            robot->currentSpeedLeft-= std::min(acceleration, robot->currentSpeedLeft - left);
+        }
+        if(right > robot->currentSpeedRight)
+        {
+            robot->currentSpeedRight+= std::min(acceleration,right - robot->currentSpeedRight);
+        }
+        if(right < robot->currentSpeedRight)
+        {
+            robot->currentSpeedRight-= std::min(acceleration, robot->currentSpeedRight - right);
+        }
+        moveWheels(robot->currentSpeedLeft, robot->currentSpeedRight, robot);
     }
-    if(left < robot->currentSpeedLeft)
-    {
-        robot->currentSpeedLeft-= std::min(acceleration, robot->currentSpeedLeft - left);
+    else {
+         moveWheels(left, right, robot);
     }
-    if(right > robot->currentSpeedRight)
-    {
-        robot->currentSpeedRight+= std::min(acceleration,right - robot->currentSpeedRight);
-    }
-    if(right < robot->currentSpeedRight)
-    {
-        robot->currentSpeedRight-= std::min(acceleration, robot->currentSpeedRight - right);
-    }
-    moveWheels(robot->currentSpeedLeft, robot->currentSpeedRight, robot);
 }
 void SwarmSimulation::moveWheels(double Vl, double Vr, RobotLocation* robot)
 {
