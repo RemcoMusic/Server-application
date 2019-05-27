@@ -19,9 +19,10 @@ public:
 public slots:
     void readyRead();
     void connectionloop();
-    void updateRobots();
+
 signals:
     void done();
+
 
 private:
     QUdpSocket * socket;
@@ -31,6 +32,7 @@ private:
 
     void processIP(QString ip);
     void turnRobotOn(QString ip);
+    void updateRobots();
 
 
 };

@@ -81,7 +81,7 @@ void RobotConnection::connectionloop()
 
 
     }
-
+    updateRobots();
     emit done();
 }
 
