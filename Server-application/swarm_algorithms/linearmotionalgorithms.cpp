@@ -70,8 +70,6 @@ void LinearMotionAlgorithms::runCollisionAvoidance()
             int distance = distanceBetweenPoints(robot1->x, robot1->y, robot2->x, robot2->y);
             if(distance < 130)//collision
             {
-                robot1->myColor = Qt::green;
-                robot2->myColor = Qt::green;
                 //calculate the angle between both robots
                 double robot1Angle = atan2(robot2->y - robot1->y, robot2->x - robot1->x);
                 if(robot1Angle < 0) robot1Angle += 2*M_PI;
@@ -94,7 +92,6 @@ void LinearMotionAlgorithms::runCollisionAvoidance()
 
                 if(isMoving(robot1) && (!isMoving(robot2)))
                 {
-                    robot1->myColor = Qt::blue;
                     if(abs(robot1AngleDifference) < 0.6*M_PI)
                     {
                         int sign = sign(robot1AngleDifference);
@@ -105,7 +102,6 @@ void LinearMotionAlgorithms::runCollisionAvoidance()
                 }
                 if(isMoving(robot2) && (!isMoving(robot1)))
                 {
-                    robot2->myColor = Qt::blue;
                     if(abs(robot2AngleDifference) < 0.6*M_PI)
                     {
                         int sign = sign(robot2AngleDifference);
@@ -118,8 +114,7 @@ void LinearMotionAlgorithms::runCollisionAvoidance()
                 {
                     if(abs(robot1AngleDifference)+abs(robot2AngleDifference ) < 1.2*M_PI)
                     {
-                        robot1->myColor = Qt::cyan;
-                        robot2->myColor = Qt::cyan;
+
                         int sign = sign(robot1AngleDifference);
                         double robot1AngleGoal = robot1Angle + sign * 0.6*M_PI;
                         robot1->destinationY = robot1->y + sin(robot1AngleGoal) * 1000.0;
@@ -133,8 +128,7 @@ void LinearMotionAlgorithms::runCollisionAvoidance()
 
             }
             else {
-                robot1->myColor = Qt::yellow;
-                robot2->myColor = Qt::yellow;
+
             }
         }
 
