@@ -3,7 +3,7 @@
 
 #include <QObject>
 #include "swarmalgorithmbase.h"
-#include "robotlocationmanager.h"
+#include "locationmanager.h"
 #include "math.h"
 #include <iostream>
 #include <iomanip>

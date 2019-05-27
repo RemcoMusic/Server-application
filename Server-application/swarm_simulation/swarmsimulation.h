@@ -4,12 +4,12 @@
 #include <QObject>
 #include <QDebug>
 #include "robotlocation.h"
-#include "robotlocationmanager.h"
+#include "locationmanager.h"
 #include <math.h>
 #include <QGenericMatrix>
 #include <swarmalgorithmbase.h>
 #include <time.h>
-extern RobotLocationManager robotLocationManager;
+extern LocationManager locationManager;
 class SwarmSimulation: public QObject
 {
     Q_OBJECT

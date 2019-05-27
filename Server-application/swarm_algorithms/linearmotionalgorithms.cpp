@@ -39,7 +39,7 @@ void LinearMotionAlgorithms::update()
 void LinearMotionAlgorithms::generateRobotList()
 {
     data.swarmRobots.clear();
-    QListIterator<RobotLocation*> i(robotLocationManager.robots);
+    QListIterator<RobotLocation*> i(locationManager.robots);
     while (i.hasNext())
     {
         RobotLocation *currentRobot = i.next();

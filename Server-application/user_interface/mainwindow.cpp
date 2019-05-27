@@ -55,7 +55,7 @@ MainWindow::MainWindow(QWidget *parent) :
         int y = qrand() % globalSettings.fieldSizeY;
         int a = qrand() % 360;
 
-        RobotLocation *l = robotLocationManager.addSimulatedRobot();
+        RobotLocation *l = locationManager.addSimulatedRobot();
         l->x = x;
         l->y = y;
         l->setX(x-0.5*globalSettings.botDiameter);
@@ -139,8 +139,8 @@ void MainWindow::updateNumberOfRobots()
 {
     int real = 0;
     int sim = 0;
-    for(int i = 0; i < robotLocationManager.robots.size();i++){
-        if(robotLocationManager.robots.at(i)->type == RobotLocation::RobotType::REAL){
+    for(int i = 0; i < locationManager.robots.size();i++){
+        if(locationManager.robots.at(i)->type == RobotLocation::RobotType::REAL){
             real++;
         }else{
             sim++;

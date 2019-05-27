@@ -5,7 +5,7 @@
 #include <QUdpSocket>
 #include <QDebug>
 #include "robotlocation.h" // for the UDP struct
-#include "robotlocationmanager.h"
+#include "locationmanager.h"
 #include <QList>
 #include <QTime>
 extern SwarmBotCommunicationSettings communicationSettings;

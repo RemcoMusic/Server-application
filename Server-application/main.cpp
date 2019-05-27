@@ -4,7 +4,7 @@
 #include "robotconnection.h"
 #include "robotdetection.h"
 #include "swarmsimulation.h"
-#include "robotlocationmanager.h"
+#include "locationmanager.h"
 #include <QDebug>
 #include <QObject>
 
@@ -30,7 +30,7 @@ int main(int argc, char *argv[])
     qDebug() << "robotDetection Started!" << endl;
     qDebug() << "setting up signals and slots" << endl;
 
-    bool s = QObject::connect(&robotDetection,SIGNAL(makeANewRobot(int,int)),&robotLocationManager,SLOT(makeNewRealRobot(int,int)));
+    bool s = QObject::connect(&robotDetection,SIGNAL(makeANewRobot(int,int)),&locationManager,SLOT(makeNewRealRobot(int,int)));
     //robotLocationManager.makeNewRealRobot(500,500);
     qDebug() << s;
     QObject::connect(&robotDetection,SIGNAL(newFrameFinished()),&swarmSimulation,SLOT(startSimulation()));

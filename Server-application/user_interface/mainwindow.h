@@ -6,7 +6,7 @@
 #include <QGraphicsView>
 #include <algrorithmvisualisation.h>
 #include "robotlocation.h"
-#include "robotlocationmanager.h"
+#include "locationmanager.h"
 #include <QTime>
 #include <QDebug>
 #include <robotdetectionsettings.h>
