@@ -1,3 +1,5 @@
+//code review rene: use right order in the h file, fist methodes than fields
+
 #ifndef ROBOTCONNECTION_H
 #define ROBOTCONNECTION_H
 #include "swarmbotcommunicationsettings.h"
@@ -8,6 +10,7 @@
 #include "robotlocationmanager.h"
 #include <QList>
 #include <QTime>
+//(rene) extern declaration not needed
 extern SwarmBotCommunicationSettings communicationSettings;
 class RobotConnection : public QObject
 {
@@ -27,6 +30,7 @@ signals:
 private:
     QUdpSocket * socket;
     QString lastRequestedBotIP = "0.0.0.0";
+        //(rene) give a better name
     QTime myTimer;
 
 
