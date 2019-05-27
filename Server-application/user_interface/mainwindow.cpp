@@ -225,3 +225,8 @@ void MainWindow::on_checkRotationTime_stateChanged(int arg1)
 {
     swarmAlgorithmsSettings.useLineAlgorithmRotationTime = arg1;
 }
+
+void MainWindow::on_SliderRobotSpeed_valueChanged(int value)
+{
+    swarmAlgorithmsSettings.robotSpeed = value;
+}

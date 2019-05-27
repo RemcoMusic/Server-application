@@ -54,6 +54,8 @@ private slots:
 
     void on_checkRotationTime_stateChanged(int arg1);
 
+    void on_SliderRobotSpeed_valueChanged(int value);
+
 public slots:
     void updateGui();
 private:
