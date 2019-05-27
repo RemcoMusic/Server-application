@@ -46,6 +46,7 @@ public slots:
 private:
     //QGraphicsScene *dataScene;
     //QGraphicsScene *cameraScene;
+    void updateNumberOfRobots();
     QTime *fpsTimer;
     Ui::MainWindow *ui;
     bool flipFlop = true;

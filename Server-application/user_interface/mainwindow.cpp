@@ -34,6 +34,9 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->lcdNumberErode->setPalette(Qt::green);
     ui->lcdNumberDilate->setPalette(Qt::green);
     ui->lcdNumberDeviation->setPalette(Qt::green);
+    ui->lcdNumberTotalRobots->setPalette(Qt::red);
+    ui->lcdNumberSimulatedRobots->setPalette(Qt::green);
+    ui->lcdNumberRealRobots->setPalette(Qt::green);
 
 
     connect(ui->sliderHue, SIGNAL(valueChanged(int)),this, SLOT(colorSlidersChanged(int)));
@@ -127,10 +130,26 @@ void MainWindow::updateGui()
     int hb = ui->cameraBlueFeed->height();
     ui->cameraBlueFeed->setPixmap(pb.scaled(wb,hb,Qt::KeepAspectRatio));
 
-
+    updateNumberOfRobots();
 
     on_pushButton_clicked(); // resize the scenes
     dataScene->update();
+}
+
+void MainWindow::updateNumberOfRobots()
+{
+    int real = 0;
+    int sim = 0;
+    for(int i = 0; i < robotLocationManager.robots.size();i++){
+        if(robotLocationManager.robots.at(i)->type == RobotLocation::RobotType::REAL){
+            real++;
+        }else{
+            sim++;
+        }
+    }
+    ui->lcdNumberTotalRobots->display(real+sim);
+    ui->lcdNumberSimulatedRobots->display(sim);
+    ui->lcdNumberRealRobots->display(real);
 }
 void MainWindow::colorSlidersChanged(int c)
 {
