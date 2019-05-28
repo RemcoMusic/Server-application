@@ -3,7 +3,7 @@
 
 #include <QObject>
 #include "swarmalgorithmbase.h"
-#include "robotlocationmanager.h"
+#include "locationmanager.h"
 class MoveShapeAlgorithm : public SwarmAlgorithmBase
 
 {

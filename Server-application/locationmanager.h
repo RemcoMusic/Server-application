@@ -11,21 +11,24 @@
 
 
 #include "mainwindow.h"
+#include <objectsbase.h>
 
-class RobotLocationManager: public QObject
+class LocationManager: public QObject
 {
     Q_OBJECT
 public:
-    RobotLocationManager();
-    QList<RobotLocation*> robots;
-    QList<RobotGroup*> groups;
+    LocationManager();
+    QList<RobotLocation*> robots;//list of all robots in the field
+    QList<RobotGroup*> groups;//list of different groups of robots
+
+    QList<Object*>objects;//list of objects in the field
 
     void printAllRobots();
     RobotLocation* addSimulatedRobot(RobotGroup* group = nullptr);
     void deleteAllSimulatedRobots();
     void deleteAllSimulatedRobotsFromGroup(RobotGroup* group = nullptr);
-
+    void addObject(Object* object);
 public slots:
     void makeNewRealRobot(int x,int y);
 };
-extern RobotLocationManager robotLocationManager;
+extern LocationManager locationManager;

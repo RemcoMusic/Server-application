@@ -1,19 +1,25 @@
 #include "linearmotionalgorithms.h"
 #include "swarmalgorithmssettings.h"
 
+
 LinearMotionAlgorithms::LinearMotionAlgorithms()
 {
+
+}
+LinearMotionAlgorithms::~LinearMotionAlgorithms()
+{
+    data.swarmRobots.clear();
+    clearDestinations();
 }
 
+//helper functions
 #define sign(a) ( ( (a) < 0 )  ?  -1   : ( (a) > 0 ) )
-
 inline uint16_t distanceBetweenPoints(int x1, int y1, int x2, int y2)
 {
     int deltaX = x1 - x2;//pytagoras A
     int deltaY = y1 - y2;//pytagoras b
     return sqrt(deltaX*deltaX + deltaY*deltaY);//pytagoras C, distance between points
 }
-
 double map(double x, double x1, double x2, double y1, double y2)
 {
  return (x - x1) * (y2 - y1) / (x2 - x1) + y1;
@@ -39,23 +45,22 @@ void LinearMotionAlgorithms::update()
 void LinearMotionAlgorithms::generateRobotList()
 {
     data.swarmRobots.clear();
-    QListIterator<RobotLocation*> i(robotLocationManager.robots);
+    QListIterator<RobotLocation*> i(locationManager.robots);
     while (i.hasNext())
     {
         RobotLocation *currentRobot = i.next();
         if(currentRobot->group == robotGroup)
         {
-            if(currentRobot->type == RobotLocation::RobotType::SIMULATED){
-                data.swarmRobots.append(currentRobot);
-            }
+             data.swarmRobots.append(currentRobot);
         }
 
     }
 }
 void LinearMotionAlgorithms::runCollisionAvoidance()
 {
-    //connectDestinationsToRobots must run before this, otherwise data.swarmRobots is empty
+    //generateRobotList must run before this(called from derived class), otherwise data.swarmRobots is empty
 
+    //compare all robots with each other
     QListIterator<RobotLocation*> robotIterator1(data.swarmRobots);
     while (robotIterator1.hasNext())
     {
@@ -70,10 +75,8 @@ void LinearMotionAlgorithms::runCollisionAvoidance()
 
             //calculate distance from center to center
             int distance = distanceBetweenPoints(robot1->x, robot1->y, robot2->x, robot2->y);
-            if(distance < 130)//collision
+            if(distance < swarmAlgorithmsSettings.collisionDistance)//collision
             {
-                robot1->myColor = Qt::green;
-                robot2->myColor = Qt::green;
                 //calculate the angle between both robots
                 double robot1Angle = atan2(robot2->y - robot1->y, robot2->x - robot1->x);
                 if(robot1Angle < 0) robot1Angle += 2*M_PI;
@@ -94,35 +97,32 @@ void LinearMotionAlgorithms::runCollisionAvoidance()
 
                 //std::cout << robot1Angle * 57 << "           " <<  robot1AngleDifference *57<< "   "<<robot2AngleDifference *57 << "         "<<robot2Angle * 57<< std::endl;
 
+                //if one of the robots is not moved its direction doesn't matter
                 if(isMoving(robot1) && (!isMoving(robot2)))
                 {
-                    robot1->myColor = Qt::blue;
-                    if(abs(robot1AngleDifference) < 0.6*M_PI)
+                    if(abs(robot1AngleDifference) < 0.6*M_PI)//if avoidance is needed
                     {
-                        int sign = sign(robot1AngleDifference);
+                        int sign = sign(robot1AngleDifference);//on which side will we pass
                         double robot1AngleGoal = robot1Angle + sign * 0.6*M_PI;
                         robot1->destinationY = robot1->y + sin(robot1AngleGoal) * 1000.0;
                         robot1->destinationX = robot1->x + cos(robot1AngleGoal) * 1000.0;
                     }
                 }
-                if(isMoving(robot2) && (!isMoving(robot1)))
+                else if(isMoving(robot2) && (!isMoving(robot1)))
                 {
-                    robot2->myColor = Qt::blue;
-                    if(abs(robot2AngleDifference) < 0.6*M_PI)
+                    if(abs(robot2AngleDifference) < 0.6*M_PI)//if avoidance is needed
                     {
-                        int sign = sign(robot2AngleDifference);
+                        int sign = sign(robot2AngleDifference);//on which side will we pass
                         double robot2AngleGoal = robot2Angle + sign * 0.6*M_PI;
                         robot2->destinationY = robot2->y + sin(robot2AngleGoal) * 1000.0;
                         robot2->destinationX = robot2->x + cos(robot2AngleGoal) * 1000.0;
                     }
                 }
-                if(isMoving(robot1) && (isMoving(robot2)))
+                else if(isMoving(robot1) && (isMoving(robot2)))
                 {
-                    if(abs(robot1AngleDifference)+abs(robot2AngleDifference ) < 1.2*M_PI)
+                    if(abs(robot1AngleDifference)+abs(robot2AngleDifference ) < 1.2*M_PI)//if avoidance is needed
                     {
-                        robot1->myColor = Qt::cyan;
-                        robot2->myColor = Qt::cyan;
-                        int sign = sign(robot1AngleDifference);
+                        int sign = sign(robot1AngleDifference);//on whick side do they pass
                         double robot1AngleGoal = robot1Angle + sign * 0.6*M_PI;
                         robot1->destinationY = robot1->y + sin(robot1AngleGoal) * 1000.0;
                         robot1->destinationX = robot1->x + cos(robot1AngleGoal) * 1000.0;
@@ -133,19 +133,13 @@ void LinearMotionAlgorithms::runCollisionAvoidance()
                     }
                 }
 
-            }
-            else {
-                robot1->myColor = Qt::yellow;
-                robot2->myColor = Qt::yellow;
             }
         }
 
     }
 }
 
-
-
-void LinearMotionAlgorithms::allocateTable()
+void LinearMotionAlgorithms::allocateData()
 {
     //the array is 2 demensional, allocate it on the heap
     data.distanceTable = (uint16_t**) malloc(data.amountOfRobots*sizeof(uint16_t*));
@@ -154,12 +148,11 @@ void LinearMotionAlgorithms::allocateTable()
 
     //and rowResultIndex
     data.rowResultIndex = (uint8_t*)malloc(data.amountOfRobots * sizeof (uint8_t));
+
     //and lastfoundResultIndex
     data.lastfoundResultIndex = (uint8_t*)malloc(data.amountOfRobots * sizeof (uint8_t));
-
-    data.locked = false;
 }
-void LinearMotionAlgorithms::freeTable()
+void LinearMotionAlgorithms::freeData()
 {
     //delete the 2 dimensional array from the heap
     for(int i=0;i<data.amountOfRobots;i++)
@@ -173,8 +166,20 @@ void LinearMotionAlgorithms::freeTable()
     //lastfoundResultIndex
     free(data.lastfoundResultIndex);
     data.lastfoundResultIndex = nullptr;
-
+    data.swarmRobots.clear();
 }
+
+void LinearMotionAlgorithms::clearDestinations()
+{
+    QListIterator<Destination*> destinationIterator(destinations);
+    while (destinationIterator.hasNext())
+    {
+        Destination *currentDestination = destinationIterator.next();
+        free(currentDestination);
+    }
+    destinations.clear();
+}
+
 void LinearMotionAlgorithms::calculateTable()
 {
     //build a table/matrix with the distance between robots and destinations, destinations on the x-axis, robots on the y-axis
@@ -189,6 +194,7 @@ void LinearMotionAlgorithms::calculateTable()
         {
             Destination *currentDestination = destinationIterator.next();
             int rotationTime = 0;
+            //rotation time counts the time that the robot have to rotate to the destination as distance, so the riding time will be more realistic and it also works as kind of hysteresis
             if(swarmAlgorithmsSettings.useLineAlgorithmRotationTime)
             {
                 //calculate the angles and the time to rotate the robot
@@ -208,6 +214,11 @@ void LinearMotionAlgorithms::calculateTable()
 }
 void LinearMotionAlgorithms::optimizeEmptyDestinations()
 {
+    //when there are more destinations than robots the robots normally would use only the first destinations and let the rest open
+    //this function helps to also use that open destinations when the route to them is shorter
+    //note that the amount of destinations and robot should be equal because the derived class should handle that
+
+    //first find the used and unused destinations
     bool destinationUsed[data.amountOfDestinations];
     for(int destination=0;destination<data.amountOfDestinations;destination++)
     {
@@ -223,10 +234,13 @@ void LinearMotionAlgorithms::optimizeEmptyDestinations()
         int currentDistance = data.distanceTable[row][data.rowResultIndex[row]];
         for(int i=0;i<data.amountOfDestinations;i++)
         {
+            //if its open
             if(destinationUsed[i] == false)
             {
+                //and its more efficient
                 if(currentDistance > data.distanceTable[row][i])
                 {
+                    //swap
                     destinationUsed[i] = true;
                     destinationUsed[data.rowResultIndex[row]] = false;
                     data.rowResultIndex[row] = (uint8_t)i;
@@ -238,10 +252,10 @@ void LinearMotionAlgorithms::optimizeEmptyDestinations()
 }
 bool LinearMotionAlgorithms::swapOptimize()
 {
-    //unfortunetly the perfect solution will not alwast be found in the given amount of computing power
-    //as result sometimes lines will cross
-    //this method is a optimalisation to optimze and find that crossing lines
-    //by simply comparing every row to every row, when swapping the 2 rows is better it will swap
+    //this method compare the distances of rows in the table and looks if its more efficient to swap 2 robots
+    //with this method robots will never cross, but it will not alwast give the 100% best solution
+
+    //simply comparing every row to every row, when swapping the 2 rows is better it will swap
 
     if(swarmAlgorithmsSettings.useAllDestinationsWhenLessRobots)
     {
@@ -266,7 +280,7 @@ bool LinearMotionAlgorithms::swapOptimize()
                 int maxNow = std::max(row1Result, row2Result);
                 int maxAlternative = std::max(row1Alternative,row2Alternative);
 
-                if(maxAlternative < maxNow)
+                if(maxAlternative < maxNow)//its more effient to swap
                 {
                     int temp = data.rowResultIndex[row1];
                     data.rowResultIndex[row1] = data.rowResultIndex[row2];
@@ -282,7 +296,7 @@ bool LinearMotionAlgorithms::swapOptimize()
                 {
                     int totalNow = row1Result + row2Result;
                     int totalAlternative = row1Alternative + row2Alternative;
-                    if(totalAlternative < totalNow)
+                    if(totalAlternative < totalNow)//its more effient to swap
                     {
                         int temp = data.rowResultIndex[row1];
                         data.rowResultIndex[row1] = data.rowResultIndex[row2];
@@ -364,16 +378,13 @@ int LinearMotionAlgorithms::getHighestDistanceIndex()
 }
 void LinearMotionAlgorithms::connectDestinationsToRobots()
 {
-    //std::cout << "connect destinations to robots algorithm" << std::endl;
     //complex algorithm to connect the destination points to the robots with the shortest maximal path
-    //brute force algorithm has o(n!) complexity, this algorithm works with taking a random combination and optimizing it by swapping combinations
-
-
+    //brute force algorithm has o(n!) complexity, this algorithm works with taking a random combination and optimizing it by swapping combinations with results in 0(n^2)
 
 
     data.amountOfRobots = data.swarmRobots.size();
     //if there are more robots than destinations the application may crash, this is a fix for that, points are added if needed
-    //this problem should be handled by the derrived class, this is a second protection
+    //this problem should be handled by the derrived class, this is a secondary protection
     int index = 0;
     while(data.amountOfRobots > destinations.size())
     {
@@ -385,9 +396,10 @@ void LinearMotionAlgorithms::connectDestinationsToRobots()
     }
     data.amountOfDestinations = destinations.size();
 
+
     //make a table with the distances between robots and points
     //this table caches the distances, adding a item from a other thread may cause problems
-    allocateTable();
+    allocateData();
 
     if(swarmAlgorithmsSettings.debugLinearMotionVerbose)
     {
@@ -396,16 +408,19 @@ void LinearMotionAlgorithms::connectDestinationsToRobots()
     //generate the table of distances between all combinations of robots and points
     calculateTable();
 
+    //make the first route, route will be optimized later
     for(int i = 0;i < std::min(data.amountOfRobots,data.amountOfDestinations);i++)
     {
         data.rowResultIndex[i] = i;
     }
 
-    int lowestHighest=UINT16_MAX;
-    for(int i=0;i<5;i++)
+    int lowestHighest=UINT16_MAX;//the highest destinance, the lowest when compared to other searches
+    for(int i = 0;i < swarmAlgorithmsSettings.lineAlgorithmPerformanceLevel;i++)
     {
+        //optimze
         while(swapOptimize());
 
+        //save the current state
         int highestIndex = getHighestDistanceIndex();
         int highest = data.lastHighestDistance;
         if(highest < lowestHighest)
@@ -413,6 +428,8 @@ void LinearMotionAlgorithms::connectDestinationsToRobots()
             memcpy(data.lastfoundResultIndex, data.rowResultIndex, data.amountOfRobots * sizeof(uint8_t));
             lowestHighest = highest;
         }
+        //we want to eliminate the longest distance of the found route, try what happens if its being replaced by a very large number,
+        //if it fails and the route becomes even longer we have a backup of the last route
         data.distanceTable[highestIndex][data.rowResultIndex[highestIndex]] = UINT16_MAX;
 
 
@@ -428,6 +445,7 @@ void LinearMotionAlgorithms::connectDestinationsToRobots()
     }
     data.lastHighestDistance = lowestHighest;
 
+    //now set the new destinations to the robot objects
     int destinationIndex=0;
     QListIterator<Destination*> destinationIterator(destinations);
     while (destinationIterator.hasNext())
@@ -441,25 +459,26 @@ void LinearMotionAlgorithms::connectDestinationsToRobots()
 
                 if(swarmAlgorithmsSettings.dynamicSpeed)
                 {
+                    //when dynamic speed is enables the robots will arrive at the same time
                     double speed;
                     speed = (double)distanceBetweenPoints(currentDestination->x, currentDestination->y,currentDestination->robot->x,currentDestination->robot->y)/data.lastHighestDistance;
                     if(speed >1)
                     {
                         speed = 1;
                     }
-                    currentDestination->robot->speed = speed * 6 + 1;
+                    currentDestination->robot->speed = speed * swarmAlgorithmsSettings.robotSpeed + 1;
                 }
                 else {
-                    currentDestination->robot->speed = 6;
+                    currentDestination->robot->speed = swarmAlgorithmsSettings.robotSpeed;
                 }
 
                 currentDestination->robot->destinationX = currentDestination->x;
                 currentDestination->robot->destinationY = currentDestination->y;
+                currentDestination->robot->endAngle = currentDestination->endAngle;
             }
         }
         destinationIndex++;
     }
     //needed for deleting all allocated memory, don't forget this line otherwise we have a memory leak
-    freeTable();
-
+    freeData();
 }

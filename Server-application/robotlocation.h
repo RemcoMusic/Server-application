@@ -21,7 +21,7 @@ enum robotStatus{
     NORMAL = 2,
     CHARGING = 3,
 };
-struct UdpData {
+struct  UdpData {
   uint16_t currentX = 0;
   uint16_t currentY = 0;
   uint16_t newX = 0;
@@ -64,6 +64,7 @@ public:
 
     int destinationX = 0;
     int destinationY = 0;
+    double endAngle = 0;
 
     QColor myColor = Qt::yellow;
 

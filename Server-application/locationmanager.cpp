@@ -1,26 +1,26 @@
-#include "robotlocationmanager.h"
-RobotLocationManager robotLocationManager;
-RobotLocationManager::RobotLocationManager()
+#include "locationmanager.h"
+LocationManager locationManager;
+LocationManager::LocationManager()
 {
 
 }
 
-void RobotLocationManager::printAllRobots()
+void LocationManager::printAllRobots()
 {
-    QListIterator<RobotLocation*> i(robotLocationManager.robots);
+    QListIterator<RobotLocation*> i(locationManager.robots);
     while (i.hasNext())
     {
         i.next()->print();
     }
 }
-RobotLocation *RobotLocationManager::addSimulatedRobot(RobotGroup *group)
+RobotLocation *LocationManager::addSimulatedRobot(RobotGroup *group)
 {
     RobotLocation *newRobot = new RobotLocation(group);
     newRobot->type = RobotLocation::RobotType::SIMULATED;
     robots.append(newRobot);
     return newRobot;
 }
-void RobotLocationManager::deleteAllSimulatedRobots()
+void LocationManager::deleteAllSimulatedRobots()
 {
     QMutableListIterator<RobotLocation*> i(robots);
     while (i.hasNext())
@@ -31,7 +31,7 @@ void RobotLocationManager::deleteAllSimulatedRobots()
         }
     }
 }
-void RobotLocationManager::deleteAllSimulatedRobotsFromGroup(RobotGroup *group)
+void LocationManager::deleteAllSimulatedRobotsFromGroup(RobotGroup *group)
 {
     QMutableListIterator<RobotLocation*> i(robots);
     while (i.hasNext())
@@ -47,7 +47,12 @@ void RobotLocationManager::deleteAllSimulatedRobotsFromGroup(RobotGroup *group)
     }
 }
 
-void RobotLocationManager::makeNewRealRobot(int x, int y)
+void LocationManager::addObject(Object *object)
+{
+    objects.append(object);
+}
+
+void LocationManager::makeNewRealRobot(int x, int y)
 {
     RobotLocation *newRobot = new RobotLocation();
     newRobot->type = RobotLocation::RobotType::REAL;

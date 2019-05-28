@@ -10,7 +10,7 @@ CircleAlgorithm::CircleAlgorithm()
 void CircleAlgorithm::update()
 {
     LinearMotionAlgorithms::generateRobotList();
-    destinations.clear();
+    LinearMotionAlgorithms::clearDestinations();
     if(swarmAlgorithmsSettings.inputSource == SwarmAlgorithmsSettings::AlgorithmInputSource::NONE)
     {
         calculateDestinationsCenterOuter();
@@ -70,6 +70,7 @@ void CircleAlgorithm::calculateDestinationsCenterOuter()
         Destination *newDestination = new Destination;
         newDestination->x = center->x() + cos(angle) * c;
         newDestination->y = center->y() + sin(angle) * c;
+        newDestination->endAngle = angle;
         destinations.append(newDestination);
         //qDebug("new position %d, %d",newDestination->x,newDestination->y);
 
