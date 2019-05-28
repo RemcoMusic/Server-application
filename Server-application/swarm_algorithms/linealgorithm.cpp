@@ -16,7 +16,7 @@ void LineAlgorithm::update()
 }
 void LineAlgorithm::calculatePoints()
 {
-    destinations.clear();
+    LinearMotionAlgorithms::clearDestinations();
     //calculate distance between markers
     int deltaX = abs(point1->rx() - point2->rx());//pytagoras A
     int deltaY = abs(point1->ry() - point2->ry());//pytagoras b

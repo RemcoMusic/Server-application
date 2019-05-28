@@ -21,7 +21,7 @@ enum robotStatus{
     NORMAL = 2,
     CHARGING = 3,
 };
-struct UdpData {
+struct  UdpData {
   uint16_t currentX = 0;
   uint16_t currentY = 0;
   uint16_t newX = 0;

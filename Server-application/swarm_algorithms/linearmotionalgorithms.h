@@ -1,5 +1,4 @@
-#ifndef LINEARMOTIONALGORITHMS_H
-#define LINEARMOTIONALGORITHMS_H
+#pragma once
 
 #include <QObject>
 #include "swarmalgorithmbase.h"
@@ -7,11 +6,13 @@
 #include "math.h"
 #include <iostream>
 #include <iomanip>
+
 class LinearMotionAlgorithms : public SwarmAlgorithmBase
 {
 public:
 
-    LinearMotionAlgorithms();
+    ~LinearMotionAlgorithms();
+    //a destination where a robot should go to, the destination is given by a derrived class, this class route robots to the nearest optimal destition
     struct Destination
     {
         int x;
@@ -20,11 +21,18 @@ public:
         double endAngle;
     };
     QList<Destination*> destinations;
-    void update();
 
+    //update called from derrived class
+    virtual void update();
+    //generates a list of robots that are filtered by the robot group
     void generateRobotList();
 protected:
+    LinearMotionAlgorithms();
+
+    //the algorithm that find the optimal route in many robots to many destinations routing
     void connectDestinationsToRobots();
+
+    //data needed for the algorithm, some allocated on the heap, don't forget the allocate and free
     struct ConnectAlgorithmData
     {
         QList<RobotLocation*> swarmRobots;
@@ -34,23 +42,23 @@ protected:
         uint8_t *rowResultIndex;
         uint8_t *lastfoundResultIndex;
         uint16_t lastHighestDistance;
-        bool locked = false;
     }data;
 
+    //calculate all distances between robots and destinations, save in in the table
     void calculateTable();
-    void allocateTable();
-    void freeTable();
+
+    void allocateData();
+    void freeData();
+    void clearDestinations();
     void printTable();
 
     int getHighestDistance();
-
-    int getHighestDistanceOverAll();
-    void filterPointAvailabilities();
-    bool swapOptimize();
+    int getHighestDistanceOverAll();//uses lastFoundResultIndex
     int getHighestDistanceIndex();
+
+    bool swapOptimize();
+    void optimizeEmptyDestinations();
+
     void runCollisionAvoidance();
 
-    void optimizeEmptyDestinations();
 };
-
-#endif // LINEARMOTIONALGORITHMS_H
