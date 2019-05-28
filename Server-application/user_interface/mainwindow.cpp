@@ -239,7 +239,7 @@ void MainWindow::on_AddSimulatedRobotButton_clicked()
         int y = qrand() % globalSettings.fieldSizeY;
         int a = qrand() % 360;
 
-        RobotLocation *l = robotLocationManager.addSimulatedRobot();
+        RobotLocation *l = locationManager.addSimulatedRobot();
         l->x = x;
         l->y = y;
         l->setX(x-0.5*globalSettings.botDiameter);
