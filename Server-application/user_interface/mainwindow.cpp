@@ -51,7 +51,7 @@ MainWindow::MainWindow(QWidget *parent) :
     //on_colorComboBox_currentIndexChanged(0);
 
 
-    for(int i =0;i<10;i++){
+    for(int i =0;i<5;i++){
         int x = qrand() % globalSettings.fieldSizeX;
         int y = qrand() % globalSettings.fieldSizeY;
         int a = qrand() % 360;

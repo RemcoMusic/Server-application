@@ -17,6 +17,7 @@ public:
 private:
     void calculatePoints();
     void calculateDestination();
+    void findRobotMovementInputs();
 };
 
 #endif // LINEALGORITHM_H
