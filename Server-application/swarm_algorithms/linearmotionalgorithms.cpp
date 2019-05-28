@@ -1,6 +1,4 @@
 #include "linearmotionalgorithms.h"
-#include "swarmalgorithmssettings.h"
-
 
 LinearMotionAlgorithms::LinearMotionAlgorithms()
 {
@@ -13,6 +11,7 @@ LinearMotionAlgorithms::~LinearMotionAlgorithms()
 }
 
 //helper functions
+//sign returns -1 when a <0 , returns 1 when a >0
 #define sign(a) ( ( (a) < 0 )  ?  -1   : ( (a) > 0 ) )
 inline uint16_t distanceBetweenPoints(int x1, int y1, int x2, int y2)
 {
@@ -100,34 +99,34 @@ void LinearMotionAlgorithms::runCollisionAvoidance()
                 //if one of the robots is not moved its direction doesn't matter
                 if(isMoving(robot1) && (!isMoving(robot2)))
                 {
-                    if(abs(robot1AngleDifference) < 0.6*M_PI)//if avoidance is needed
+                    if(abs(robot1AngleDifference) < swarmAlgorithmsSettings.collisionAvoidanceAngle)//if avoidance is needed
                     {
                         int sign = sign(robot1AngleDifference);//on which side will we pass
-                        double robot1AngleGoal = robot1Angle + sign * 0.6*M_PI;
+                        double robot1AngleGoal = robot1Angle + sign * swarmAlgorithmsSettings.collisionAvoidanceAngle;
                         robot1->destinationY = robot1->y + sin(robot1AngleGoal) * 1000.0;
                         robot1->destinationX = robot1->x + cos(robot1AngleGoal) * 1000.0;
                     }
                 }
                 else if(isMoving(robot2) && (!isMoving(robot1)))
                 {
-                    if(abs(robot2AngleDifference) < 0.6*M_PI)//if avoidance is needed
+                    if(abs(robot2AngleDifference) < swarmAlgorithmsSettings.collisionAvoidanceAngle)//if avoidance is needed
                     {
                         int sign = sign(robot2AngleDifference);//on which side will we pass
-                        double robot2AngleGoal = robot2Angle + sign * 0.6*M_PI;
+                        double robot2AngleGoal = robot2Angle + sign * swarmAlgorithmsSettings.collisionAvoidanceAngle;
                         robot2->destinationY = robot2->y + sin(robot2AngleGoal) * 1000.0;
                         robot2->destinationX = robot2->x + cos(robot2AngleGoal) * 1000.0;
                     }
                 }
                 else if(isMoving(robot1) && (isMoving(robot2)))
                 {
-                    if(abs(robot1AngleDifference)+abs(robot2AngleDifference ) < 1.2*M_PI)//if avoidance is needed
+                    if(abs(robot1AngleDifference)+abs(robot2AngleDifference ) < 2*swarmAlgorithmsSettings.collisionAvoidanceAngle)//if avoidance is needed
                     {
-                        int sign = sign(robot1AngleDifference);//on whick side do they pass
-                        double robot1AngleGoal = robot1Angle + sign * 0.6*M_PI;
+                        int sign = sign(robot1AngleDifference);//on which side do they pass
+                        double robot1AngleGoal = robot1Angle + sign * swarmAlgorithmsSettings.collisionAvoidanceAngle;
                         robot1->destinationY = robot1->y + sin(robot1AngleGoal) * 1000.0;
                         robot1->destinationX = robot1->x + cos(robot1AngleGoal) * 1000.0;
 
-                        double robot2AngleGoal = robot2Angle + sign * 0.6*M_PI;
+                        double robot2AngleGoal = robot2Angle + sign * swarmAlgorithmsSettings.collisionAvoidanceAngle;
                         robot2->destinationY = robot2->y + sin(robot2AngleGoal) * 1000.0;
                         robot2->destinationX = robot2->x + cos(robot2AngleGoal) * 1000.0;
                     }
@@ -141,6 +140,8 @@ void LinearMotionAlgorithms::runCollisionAvoidance()
 
 void LinearMotionAlgorithms::allocateData()
 {
+    //allocated on the heap instead of the stack because the size of the table change
+
     //the array is 2 demensional, allocate it on the heap
     data.distanceTable = (uint16_t**) malloc(data.amountOfRobots*sizeof(uint16_t*));
     for(int i=0;i<data.amountOfRobots;i++)
@@ -290,7 +291,7 @@ bool LinearMotionAlgorithms::swapOptimize()
                         std::cout << "swap optimize" << std::endl;
                     }
                     succes = true;
-                    row2--;
+                    row2--;//step back, perhaps there is a new chance to swap
                 }
                 else if(maxAlternative == maxNow)
                 {
@@ -306,7 +307,7 @@ bool LinearMotionAlgorithms::swapOptimize()
                             std::cout << "swap optimize2" << std::endl;
                         }
                         succes = true;
-                        row2--;
+                        row2--;//step back, perhaps there is a new chance to swap
                     }
                 }
             }
@@ -386,13 +387,19 @@ void LinearMotionAlgorithms::connectDestinationsToRobots()
     //if there are more robots than destinations the application may crash, this is a fix for that, points are added if needed
     //this problem should be handled by the derrived class, this is a secondary protection
     int index = 0;
+    int xIndex = 0;
     while(data.amountOfRobots > destinations.size())
     {
         Destination* newDestination = new Destination;
-        newDestination->x = swarmAlgorithmsSettings.distanceBetweenRobots/2;
+        newDestination->x = swarmAlgorithmsSettings.distanceBetweenRobots * xIndex;
         newDestination->y = swarmAlgorithmsSettings.distanceBetweenRobots * index;
         destinations.append(newDestination);
         index++;
+        if(index * swarmAlgorithmsSettings.distanceBetweenRobots > globalSettings.fieldSizeY)
+        {
+            index = 0;
+            xIndex++;
+        }
     }
     data.amountOfDestinations = destinations.size();
 
@@ -418,7 +425,14 @@ void LinearMotionAlgorithms::connectDestinationsToRobots()
     for(int i = 0;i < swarmAlgorithmsSettings.lineAlgorithmPerformanceLevel;i++)
     {
         //optimze
-        while(swapOptimize());
+        for(int i=0;i<10;i++)
+        {
+            if(!swapOptimize())
+            {
+                break;
+            }
+        }
+
 
         //save the current state
         int highestIndex = getHighestDistanceIndex();
@@ -432,8 +446,6 @@ void LinearMotionAlgorithms::connectDestinationsToRobots()
         //if it fails and the route becomes even longer we have a backup of the last route
         data.distanceTable[highestIndex][data.rowResultIndex[highestIndex]] = UINT16_MAX;
 
-
-        while(swapOptimize());
         if(swarmAlgorithmsSettings.debugLinearMotion)
         {
             std::cout << highest << "  "<< getHighestDistance()<< std::endl;
