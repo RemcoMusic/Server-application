@@ -1,5 +1,5 @@
 #include "linearmotionalgorithms.h"
-#include "swarmalgorithmssettings.h"
+#include "swarmalgorithmssettings.h"   //Review-Stefan->:  hoort thuis in de header van deze .cpp
 
 
 LinearMotionAlgorithms::LinearMotionAlgorithms()
@@ -26,11 +26,11 @@ double map(double x, double x1, double x2, double y1, double y2)
 }
 bool isMoving(RobotLocation* robot)
 {
-    if(distanceBetweenPoints(robot->x,robot->y,robot->destinationX, robot->destinationY) < 50)
+    if(distanceBetweenPoints(robot->x,robot->y,robot->destinationX, robot->destinationY) < 50) //Review-Stefan->:  magic number... 
     {
         return false;
     }
-    if(robot->speed < 0.5)
+    if(robot->speed < 0.5)  //Review-Stefan->:  magic number.
     {
         return false;
     }
@@ -42,7 +42,7 @@ void LinearMotionAlgorithms::update()
     connectDestinationsToRobots();
     runCollisionAvoidance();
 }
-void LinearMotionAlgorithms::generateRobotList()
+void LinearMotionAlgorithms::generateRobotList() 
 {
     data.swarmRobots.clear();
     QListIterator<RobotLocation*> i(locationManager.robots);
@@ -56,7 +56,7 @@ void LinearMotionAlgorithms::generateRobotList()
 
     }
 }
-void LinearMotionAlgorithms::runCollisionAvoidance()
+void LinearMotionAlgorithms::runCollisionAvoidance()//Review-Stefan->: heb globale comments gegeven. maar is nog steeds niet helemaal duideljk hoe de if statements onderin werken. eerste helft is perfect gedaan!
 {
     //generateRobotList must run before this(called from derived class), otherwise data.swarmRobots is empty
 
@@ -100,11 +100,11 @@ void LinearMotionAlgorithms::runCollisionAvoidance()
                 //if one of the robots is not moved its direction doesn't matter
                 if(isMoving(robot1) && (!isMoving(robot2)))
                 {
-                    if(abs(robot1AngleDifference) < 0.6*M_PI)//if avoidance is needed
+                    if(abs(robot1AngleDifference) < 0.6*M_PI)//if avoidance is needed    //Review-Stefan->:  waarom bij 0.6*PI ?
                     {
-                        int sign = sign(robot1AngleDifference);//on which side will we pass
-                        double robot1AngleGoal = robot1Angle + sign * 0.6*M_PI;
-                        robot1->destinationY = robot1->y + sin(robot1AngleGoal) * 1000.0;
+                        int sign = sign(robot1AngleDifference);//on which side will we pass  //Review-Stefan->:  deze staat als define... geef boven bij de define een comment wat het precies doet. is nu niet duidelijk. naamgeving van de methode kan ook beter
+                        double robot1AngleGoal = robot1Angle + sign * 0.6*M_PI;                     //Review-Stefan->: weer de 0.6*PI?
+                        robot1->destinationY = robot1->y + sin(robot1AngleGoal) * 1000.0;           //Review-Stefan->: magic number, plz een Constant, variabele of een define
                         robot1->destinationX = robot1->x + cos(robot1AngleGoal) * 1000.0;
                     }
                 }
@@ -152,7 +152,7 @@ void LinearMotionAlgorithms::allocateData()
     //and lastfoundResultIndex
     data.lastfoundResultIndex = (uint8_t*)malloc(data.amountOfRobots * sizeof (uint8_t));
 }
-void LinearMotionAlgorithms::freeData()
+void LinearMotionAlgorithms::freeData()   //Review-Stefan->: niet al deze dingen hoeven per frame ge-freed te worden. voor optimalisatie kunnen ze worden gealloceerd in de constructor, en worden verwijderd in de destructor. (je snapt mn punt. geen zin om t helemaal uit te leggen)
 {
     //delete the 2 dimensional array from the heap
     for(int i=0;i<data.amountOfRobots;i++)
@@ -290,7 +290,7 @@ bool LinearMotionAlgorithms::swapOptimize()
                         std::cout << "swap optimize" << std::endl;
                     }
                     succes = true;
-                    row2--;
+                    row2--;  //Review-Stefan->:  ?  ->kan een comment bij, niet volledig duidelijk
                 }
                 else if(maxAlternative == maxNow)
                 {
@@ -390,7 +390,7 @@ void LinearMotionAlgorithms::connectDestinationsToRobots()
     {
         Destination* newDestination = new Destination;
         newDestination->x = swarmAlgorithmsSettings.distanceBetweenRobots/2;
-        newDestination->y = swarmAlgorithmsSettings.distanceBetweenRobots * index;
+        newDestination->y = swarmAlgorithmsSettings.distanceBetweenRobots * index;  //Review-Stefan->:  Dit kan uit het speelveld komen
         destinations.append(newDestination);
         index++;
     }
@@ -414,11 +414,12 @@ void LinearMotionAlgorithms::connectDestinationsToRobots()
         data.rowResultIndex[i] = i;
     }
 
-    int lowestHighest=UINT16_MAX;//the highest destinance, the lowest when compared to other searches
+    int lowestHighest=UINT16_MAX;//the highest destinance, the lowest when compared to other searches       //Review-Stefan->:  int is 32 bit (maakt weinig uit, maar waarom UINT16_MAX?)
     for(int i = 0;i < swarmAlgorithmsSettings.lineAlgorithmPerformanceLevel;i++)
     {
         //optimze
-        while(swapOptimize());
+        while(swapOptimize());  //Review-Stefan->:  dit blijft runnen totad er iets is geoptimaliseerd. , wat als er nu bij toevel niets te optimaliseren vald?  (1 robot (waar niets te optimaliseren valt), of alles staat bij toeval al goed) ,,, t punt is dat de applicatie dan kan crashen
+                                 //Review-Stefan->:   verder is het niet duidelijk waarom deze loop "lineAlgorithmPerformanceLevel" keer geroepen wordt ipv een variabele mee te geven aan swarmOptimize
 
         //save the current state
         int highestIndex = getHighestDistanceIndex();
@@ -430,10 +431,10 @@ void LinearMotionAlgorithms::connectDestinationsToRobots()
         }
         //we want to eliminate the longest distance of the found route, try what happens if its being replaced by a very large number,
         //if it fails and the route becomes even longer we have a backup of the last route
-        data.distanceTable[highestIndex][data.rowResultIndex[highestIndex]] = UINT16_MAX;
+        data.distanceTable[highestIndex][data.rowResultIndex[highestIndex]] = UINT16_MAX;    //Review-Stefan->:  32 bit ;-)
 
 
-        while(swapOptimize());
+        while(swapOptimize());                                                              //Review-Stefan->:  2e keer dat deze zelfde loop wordt aangeroepen. maar er alsjeblieft een setting voor om dit te voorkomen mocht het te intensief worden kwa rekenkracht. 
         if(swarmAlgorithmsSettings.debugLinearMotion)
         {
             std::cout << highest << "  "<< getHighestDistance()<< std::endl;
@@ -466,7 +467,7 @@ void LinearMotionAlgorithms::connectDestinationsToRobots()
                     {
                         speed = 1;
                     }
-                    currentDestination->robot->speed = speed * swarmAlgorithmsSettings.robotSpeed + 1;
+                    currentDestination->robot->speed = speed * swarmAlgorithmsSettings.robotSpeed + 1;   //Review-Stefan->:  als ik het goed begrijp heeft elke destination een robot.. en niet andesom. Ik kan dus niet aan elke robot vragen waar hij heen wil. en kan wel vragen aan elke destination welke robot er op m af komt rijden.
                 }
                 else {
                     currentDestination->robot->speed = swarmAlgorithmsSettings.robotSpeed;
