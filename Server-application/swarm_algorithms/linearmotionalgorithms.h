@@ -6,6 +6,7 @@
 #include "math.h"
 #include <iostream>
 #include <iomanip>
+#include "swarmalgorithmssettings.h"
 
 class LinearMotionAlgorithms : public SwarmAlgorithmBase
 {

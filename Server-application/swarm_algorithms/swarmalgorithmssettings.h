@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include "swarmalgorithmbase.h"
+#include <math.h>
 class SwarmAlgorithmsSettings
 {
 public:
@@ -44,7 +45,7 @@ public:
     bool enableCollisionAvoidance = true;   //1
     int collisionDistance = 100;            //1
     int collisionAggression = 5;//0-10      //1
-
+    double collisionAvoidanceAngle = 0.6 * M_PI;
     //en verder
     //update rate
     //kiezen van algorithmes en informatie weergeven
