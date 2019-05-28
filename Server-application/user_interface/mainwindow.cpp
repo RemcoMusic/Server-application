@@ -50,21 +50,7 @@ MainWindow::MainWindow(QWidget *parent) :
     //on_colorComboBox_currentIndexChanged(0);
 
 
-    for(int i =0;i<10;i++){
-        int x = qrand() % globalSettings.fieldSizeX;
-        int y = qrand() % globalSettings.fieldSizeY;
-        int a = qrand() % 360;
 
-        RobotLocation *l = robotLocationManager.addSimulatedRobot();
-        l->x = x;
-        l->y = y;
-        l->setX(x-0.5*globalSettings.botDiameter);
-        l->setY(y-0.5*globalSettings.botDiameter);
-        l->destinationX = x;
-        l->destinationY = y;
-        l->setRotation(a);
-        dataScene->addItem(l);
-    }
     //dataScene->addItem(&algorithmVisualisation);
     //ui->graphicsView_Data->fitInView(dataScene->sceneRect(), Qt::KeepAspectRatio);
 
@@ -229,4 +215,23 @@ void MainWindow::on_checkRotationTime_stateChanged(int arg1)
 void MainWindow::on_SliderRobotSpeed_valueChanged(int value)
 {
     swarmAlgorithmsSettings.robotSpeed = value;
+}
+
+void MainWindow::on_AddSimulatedRobotButton_clicked()
+{
+    //for(int i =0;i<10;i++){
+        int x = qrand() % globalSettings.fieldSizeX;
+        int y = qrand() % globalSettings.fieldSizeY;
+        int a = qrand() % 360;
+
+        RobotLocation *l = robotLocationManager.addSimulatedRobot();
+        l->x = x;
+        l->y = y;
+        l->setX(x-0.5*globalSettings.botDiameter);
+        l->setY(y-0.5*globalSettings.botDiameter);
+        l->destinationX = x;
+        l->destinationY = y;
+        l->setRotation(a);
+        dataScene->addItem(l);
+    //}
 }

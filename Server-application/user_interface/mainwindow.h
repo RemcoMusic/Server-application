@@ -56,6 +56,8 @@ private slots:
 
     void on_SliderRobotSpeed_valueChanged(int value);
 
+    void on_AddSimulatedRobotButton_clicked();
+
 public slots:
     void updateGui();
 private:
