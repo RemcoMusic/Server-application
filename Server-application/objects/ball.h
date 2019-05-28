@@ -7,7 +7,7 @@
 
 
 
-class Ball : public ObjectsBase
+class Ball : public Object
 {
 public:
     Ball();

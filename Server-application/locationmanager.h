@@ -11,7 +11,7 @@
 
 
 #include "mainwindow.h"
-#include <object.h>
+#include <objectsbase.h>
 
 class LocationManager: public QObject
 {
