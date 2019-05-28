@@ -20,7 +20,7 @@ public:
     bool debugLinearMotionVerbose = false; //2
     bool debugLinearMotionSources = false; //2
 
-    int distanceBetweenRobots = 170;//distance between the destinations of the robots, //1
+    int distanceBetweenRobots = 120;//distance between the destinations of the robots, //1
 
     enum class AlgorithmInputSource
     {
@@ -30,10 +30,10 @@ public:
         HAND_GESTURE = 3, //by hand gestures(hand object)
         ROBOT_MOVEMENT = 4, //by displacing the robot, displaced robot is the orientation for the algorithm
         ROBOT_MOVEMENT_WITH_ANGLE = 5 //by displacing the robot, displaced robot is the orientation for the algorithm
-    }inputSource = AlgorithmInputSource::REAL_OBJECTS_OUTER_OUTER;
+    }inputSource = AlgorithmInputSource::ROBOT_MOVEMENT;
     bool algorithmAllowSimulatedObject = true;    //1
 
-    int robotSpeed = 50;//10-100  //1
+    int robotSpeed = 5;//10-100  //1
     bool dynamicSpeed = true; // with dynamic robot speed depents op the other robot, they will arive on the same time //1
     bool useLineAlgorithmRotationTime = true;  //2
     int lineAlgorithmRotationWeight = 10;      //2

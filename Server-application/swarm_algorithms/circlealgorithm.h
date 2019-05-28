@@ -18,6 +18,7 @@ private:
     void calculateDestinationsCenterOuter();
     void calculateDestinationsOuterOuter();
     void calculateDestinationsOuterAngle();
+    void findRobotMovementInputs();
 };
 
 #endif // CIRCLEALGORITHM_H

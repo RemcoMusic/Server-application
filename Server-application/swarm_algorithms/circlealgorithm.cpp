@@ -1,5 +1,7 @@
 #include "circlealgorithm.h"
 
+#include <simulatedrobot.h>
+
 CircleAlgorithm::CircleAlgorithm()
 {
     algorithmDiscription.name = "circle algorithm";
@@ -27,9 +29,53 @@ void CircleAlgorithm::update()
     {
         calculateDestinationsOuterOuter();
     }
+    else if(swarmAlgorithmsSettings.inputSource == SwarmAlgorithmsSettings::AlgorithmInputSource::ROBOT_MOVEMENT)
+    {
+        findRobotMovementInputs();
+    }
 
     LinearMotionAlgorithms::update();
 }
+bool compereUserInputs(const RobotLocation* robot1, const RobotLocation* robot2)
+{
+    return robot1->lastDisplacement > robot2->lastDisplacement;
+}
+void CircleAlgorithm::findRobotMovementInputs()
+{
+    QList<RobotLocation*> userInputs;
+    QListIterator<RobotLocation*> i(data.swarmRobots);
+    while (i.hasNext())
+    {
+        RobotLocation *currentRobot = i.next();
+        if(currentRobot->userInput)
+        {
+            userInputs.append(currentRobot);
+        }
+    }
+    qSort(userInputs.begin(),userInputs.end(), compereUserInputs);
+    if(userInputs.size() == 0)
+    {
+        calculateDestinationsCenterOuter();
+    }
+    else if(userInputs.size() == 1)
+    {
+        RobotLocation *currentRobot = userInputs.first();
+        outer1->rx() = currentRobot->x;
+        outer1->ry() = currentRobot->y;
+        calculateDestinationsCenterOuter();
+    }
+    else
+    {
+        RobotLocation *robot1 = userInputs.first();
+        RobotLocation *robot2 = userInputs.at(1);
+        outer1->rx() = robot1->x;
+        outer1->ry() = robot1->y;
+        outer2->rx() = robot2->x;
+        outer2->ry() = robot2->y;
+        calculateDestinationsOuterOuter();
+    }
+}
+
 void CircleAlgorithm::calculateDestinationsOuterAngle()
 {
 
@@ -64,7 +110,8 @@ void CircleAlgorithm::calculateDestinationsCenterOuter()
         qDebug("distance between bots %d",distanceBetweenBots);
         qDebug("angle between bots %f",angleBetweenRobots);
     }
-    double angle = 0;
+    double beginAngle = atan2(deltaY, deltaX);
+    double angle = beginAngle ;
     for(int i=0;i<amountOfRobotsUsing;i++)
     {
         Destination *newDestination = new Destination;

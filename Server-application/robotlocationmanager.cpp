@@ -1,4 +1,5 @@
 #include "robotlocationmanager.h"
+#include "simulatedrobot.h"
 RobotLocationManager robotLocationManager;
 RobotLocationManager::RobotLocationManager()
 {

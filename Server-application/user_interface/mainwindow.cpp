@@ -3,6 +3,7 @@
 
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
+#include <simulatedrobot.h>
 
 
 QGraphicsScene *dataScene;   //global
@@ -63,6 +64,8 @@ MainWindow::MainWindow(QWidget *parent) :
         l->destinationX = x;
         l->destinationY = y;
         l->setRotation(a);
+        l->simulatedRobot = new SimulatedRobot(l);
+        dataScene->addItem(l->simulatedRobot);
         dataScene->addItem(l);
     }
     //dataScene->addItem(&algorithmVisualisation);
