@@ -97,12 +97,12 @@ void LineAlgorithm::calculatePoints()
         qDebug("distance between bots %d",distanceBetweenBots);
         qDebug("line angle %f",angle);
     }
-    qDebug("%d %d    %d %d",point1->x(),point1->y(),point2->x(),point2->y());
     for(int i=0;i<amountOfRobotsUsing;i++)
     {
         Destination *newDestination = new Destination;
         newDestination->x = point1->rx() + cos(angle) * distanceBetweenBots * i;
         newDestination->y = point1->ry() + sin(angle) * distanceBetweenBots * i;
+        newDestination->endAngle = angle;
         destinations.append(newDestination);
         if(swarmAlgorithmsSettings.debugLinearMotionSources)
         {

@@ -251,6 +251,55 @@ void LinearMotionAlgorithms::optimizeEmptyDestinations()
     }
 
 }
+bool LinearMotionAlgorithms::swap2Rows(int row1, int row2)
+{
+    bool succes = false;
+    uint16_t row1Result = data.distanceTable[row1][data.rowResultIndex[row1]];
+    uint16_t row1Alternative = data.distanceTable[row1][data.rowResultIndex[row2]];
+    uint16_t row2Result = data.distanceTable[row2][data.rowResultIndex[row2]];;
+    uint16_t row2Alternative = data.distanceTable[row2][data.rowResultIndex[row1]];
+
+    int maxNow = std::max(row1Result, row2Result);
+    int maxAlternative = std::max(row1Alternative,row2Alternative);
+
+    if(maxAlternative < maxNow)//its more effient to swap
+    {
+        int temp = data.rowResultIndex[row1];
+        data.rowResultIndex[row1] = data.rowResultIndex[row2];
+        data.rowResultIndex[row2] = temp;
+        if(swarmAlgorithmsSettings.debugLinearMotionVerbose)
+        {
+            std::cout << "swap optimize" << std::endl;
+        }
+        succes = true;
+    }
+    else if(maxAlternative == maxNow)
+    {
+        int totalNow = row1Result + row2Result;
+        int totalAlternative = row1Alternative + row2Alternative;
+        if(totalAlternative < totalNow)//its more effient to swap
+        {
+            int temp = data.rowResultIndex[row1];
+            data.rowResultIndex[row1] = data.rowResultIndex[row2];
+            data.rowResultIndex[row2] = temp;
+            if(swarmAlgorithmsSettings.debugLinearMotionVerbose)
+            {
+                std::cout << "swap optimize2" << std::endl;
+            }
+            succes = true;
+        }
+    }
+    if(succes)
+    {
+        for(int i = 0;i < data.amountOfRobots;i++)
+        {
+            swap2Rows(i,row2);
+            swap2Rows(row1, 1);
+        }
+    }
+    return succes;
+}
+
 bool LinearMotionAlgorithms::swapOptimize()
 {
     //this method compare the distances of rows in the table and looks if its more efficient to swap 2 robots
@@ -273,47 +322,10 @@ bool LinearMotionAlgorithms::swapOptimize()
         {
             if(row1 != row2)
             {
-                uint16_t row1Result = data.distanceTable[row1][data.rowResultIndex[row1]];
-                uint16_t row1Alternative = data.distanceTable[row1][data.rowResultIndex[row2]];
-                uint16_t row2Result = data.distanceTable[row2][data.rowResultIndex[row2]];;
-                uint16_t row2Alternative = data.distanceTable[row2][data.rowResultIndex[row1]];
-
-                int maxNow = std::max(row1Result, row2Result);
-                int maxAlternative = std::max(row1Alternative,row2Alternative);
-
-                if(maxAlternative < maxNow)//its more effient to swap
-                {
-                    int temp = data.rowResultIndex[row1];
-                    data.rowResultIndex[row1] = data.rowResultIndex[row2];
-                    data.rowResultIndex[row2] = temp;
-                    if(swarmAlgorithmsSettings.debugLinearMotionVerbose)
-                    {
-                        std::cout << "swap optimize" << std::endl;
-                    }
-                    succes = true;
-                    row2--;//step back, perhaps there is a new chance to swap
-                }
-                else if(maxAlternative == maxNow)
-                {
-                    int totalNow = row1Result + row2Result;
-                    int totalAlternative = row1Alternative + row2Alternative;
-                    if(totalAlternative < totalNow)//its more effient to swap
-                    {
-                        int temp = data.rowResultIndex[row1];
-                        data.rowResultIndex[row1] = data.rowResultIndex[row2];
-                        data.rowResultIndex[row2] = temp;
-                        if(swarmAlgorithmsSettings.debugLinearMotionVerbose)
-                        {
-                            std::cout << "swap optimize2" << std::endl;
-                        }
-                        succes = true;
-                        row2--;//step back, perhaps there is a new chance to swap
-                    }
-                }
+                succes = swap2Rows(row1, row2);
             }
         }
     }
-
     return succes;
 }
 
@@ -386,13 +398,14 @@ void LinearMotionAlgorithms::connectDestinationsToRobots()
     data.amountOfRobots = data.swarmRobots.size();
     //if there are more robots than destinations the application may crash, this is a fix for that, points are added if needed
     //this problem should be handled by the derrived class, this is a secondary protection
-    int index = 0;
-    int xIndex = 0;
+    int index = 1;
+    int xIndex = 1;
     while(data.amountOfRobots > destinations.size())
     {
         Destination* newDestination = new Destination;
         newDestination->x = swarmAlgorithmsSettings.distanceBetweenRobots * xIndex;
         newDestination->y = swarmAlgorithmsSettings.distanceBetweenRobots * index;
+        newDestination->endAngle = 0;
         destinations.append(newDestination);
         index++;
         if(index * swarmAlgorithmsSettings.distanceBetweenRobots > globalSettings.fieldSizeY)
@@ -420,19 +433,10 @@ void LinearMotionAlgorithms::connectDestinationsToRobots()
     {
         data.rowResultIndex[i] = i;
     }
-
-    int lowestHighest=UINT16_MAX;//the highest destinance, the lowest when compared to other searches
+    int lowestHighest = UINT16_MAX;//the highest destinance, the lowest when compared to other searches
     for(int i = 0;i < swarmAlgorithmsSettings.lineAlgorithmPerformanceLevel;i++)
     {
-        //optimze
-        for(int i=0;i<10;i++)
-        {
-            if(!swapOptimize())
-            {
-                break;
-            }
-        }
-
+        swapOptimize();
 
         //save the current state
         int highestIndex = getHighestDistanceIndex();

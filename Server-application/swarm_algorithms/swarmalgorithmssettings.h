@@ -38,7 +38,7 @@ public:
     bool dynamicSpeed = true; // with dynamic robot speed depents op the other robot, they will arive on the same time //1
     bool useLineAlgorithmRotationTime = true;  //2
     int lineAlgorithmRotationWeight = 10;      //2
-    int lineAlgorithmPerformanceLevel = 5;//0-10;   //2
+    int lineAlgorithmPerformanceLevel = 10;//0-10;   //2
 
     bool useAllDestinationsWhenLessRobots = true;  //2
 
