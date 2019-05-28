@@ -1,7 +1,7 @@
 #ifndef ROBOTDISPLACEMENTDETECTION_H
 #define ROBOTDISPLACEMENTDETECTION_H
 
-#include "robotlocationmanager.h"
+#include "locationmanager.h"
 #include <QListIterator>
 #include "robotlocation.h"
 

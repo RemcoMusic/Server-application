@@ -20,7 +20,7 @@ void RobotDisplacementDetection::applyComplementeryFilter(RobotLocation* robot)
 }
 void RobotDisplacementDetection::update()
 {
-    QListIterator<RobotLocation*> i(robotLocationManager.robots);
+    QListIterator<RobotLocation*> i(locationManager.robots);
     while (i.hasNext())
     {
         RobotLocation *currentRobot = i.next();
@@ -43,7 +43,7 @@ void RobotDisplacementDetection::update()
 }
 void RobotDisplacementDetection::sync()
 {
-    QListIterator<RobotLocation*> i(robotLocationManager.robots);
+    QListIterator<RobotLocation*> i(locationManager.robots);
     while (i.hasNext())
     {
         RobotLocation *currentRobot = i.next();

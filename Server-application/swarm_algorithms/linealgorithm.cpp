@@ -75,15 +75,19 @@ void LineAlgorithm::findRobotMovementInputs()
 void LineAlgorithm::calculatePoints()
 {
     //calculate distance between markers
-    int deltaX = abs(point1->rx() - point2->rx());//pytagoras A
-    int deltaY = abs(point1->ry() - point2->ry());//pytagoras b
+    int deltaX = point2->rx() - point1->rx();//pytagoras A
+    int deltaY = point2->ry() - point1->ry();//pytagoras b
     int c = sqrt(deltaX*deltaX + deltaY*deltaY);//pytagoras C, distance between points
 
     int amountOfRobotsFitting = c/swarmAlgorithmsSettings.distanceBetweenRobots;
 
     int amountOfRobotsUsing = std::min(amountOfRobotsFitting, data.swarmRobots.size());
-
-    int distanceBetweenBots = c/amountOfRobotsUsing;
+    if(amountOfRobotsUsing <= 1)
+    {
+        qDebug("amountOfRobotsUsing <= 1");
+        return;
+    }
+    int distanceBetweenBots = c/(amountOfRobotsUsing-1);
 
     double angle = atan2(deltaY,deltaX);
     if(swarmAlgorithmsSettings.debugLinearMotionSources)
@@ -97,8 +101,8 @@ void LineAlgorithm::calculatePoints()
     for(int i=0;i<amountOfRobotsUsing;i++)
     {
         Destination *newDestination = new Destination;
-        newDestination->x = std::min(point1->rx(),point2->rx()) + cos(angle) * distanceBetweenBots*i;
-        newDestination->y = std::min(point1->ry(),point2->ry()) + sin(angle) * distanceBetweenBots*i;
+        newDestination->x = point1->rx() + cos(angle) * distanceBetweenBots * i;
+        newDestination->y = point1->ry() + sin(angle) * distanceBetweenBots * i;
         destinations.append(newDestination);
         if(swarmAlgorithmsSettings.debugLinearMotionSources)
         {

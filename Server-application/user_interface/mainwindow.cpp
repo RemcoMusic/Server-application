@@ -50,13 +50,12 @@ MainWindow::MainWindow(QWidget *parent) :
 
     //on_colorComboBox_currentIndexChanged(0);
 
-
-    for(int i =0;i<5;i++){
+    for(int i =0;i<1;i++){
         int x = qrand() % globalSettings.fieldSizeX;
         int y = qrand() % globalSettings.fieldSizeY;
         int a = qrand() % 360;
 
-        RobotLocation *l = robotLocationManager.addSimulatedRobot();
+        RobotLocation *l = locationManager.addSimulatedRobot();
         l->x = x;
         l->y = y;
         l->setX(x-0.5*globalSettings.botDiameter);
@@ -68,6 +67,8 @@ MainWindow::MainWindow(QWidget *parent) :
         dataScene->addItem(l->simulatedRobot);
         dataScene->addItem(l);
     }
+
+
     //dataScene->addItem(&algorithmVisualisation);
     //ui->graphicsView_Data->fitInView(dataScene->sceneRect(), Qt::KeepAspectRatio);
 
@@ -132,6 +133,7 @@ void MainWindow::updateGui()
     int hb = ui->cameraBlueFeed->height();
     ui->cameraBlueFeed->setPixmap(pb.scaled(wb,hb,Qt::KeepAspectRatio));
 
+
     updateNumberOfRobots();
 
     on_pushButton_clicked(); // resize the scenes
@@ -142,8 +144,8 @@ void MainWindow::updateNumberOfRobots()
 {
     int real = 0;
     int sim = 0;
-    for(int i = 0; i < robotLocationManager.robots.size();i++){
-        if(robotLocationManager.robots.at(i)->type == RobotLocation::RobotType::REAL){
+    for(int i = 0; i < locationManager.robots.size();i++){
+        if(locationManager.robots.at(i)->type == RobotLocation::RobotType::REAL){
             real++;
         }else{
             sim++;
@@ -227,4 +229,30 @@ void MainWindow::on_checkDynamicSpeed_stateChanged(int arg1)
 void MainWindow::on_checkRotationTime_stateChanged(int arg1)
 {
     swarmAlgorithmsSettings.useLineAlgorithmRotationTime = arg1;
+}
+
+void MainWindow::on_SliderRobotSpeed_valueChanged(int value)
+{
+    swarmAlgorithmsSettings.robotSpeed = value;
+}
+
+void MainWindow::on_AddSimulatedRobotButton_clicked()
+{
+    //for(int i =0;i<10;i++){
+        int x = qrand() % globalSettings.fieldSizeX;
+        int y = qrand() % globalSettings.fieldSizeY;
+        int a = qrand() % 360;
+
+        RobotLocation *l = locationManager.addSimulatedRobot();
+        l->x = x;
+        l->y = y;
+        l->setX(x-0.5*globalSettings.botDiameter);
+        l->setY(y-0.5*globalSettings.botDiameter);
+        l->destinationX = x;
+        l->destinationY = y;
+        l->setRotation(a);
+        l->simulatedRobot = new SimulatedRobot(l);
+        dataScene->addItem(l->simulatedRobot);
+        dataScene->addItem(l);
+    //}
 }

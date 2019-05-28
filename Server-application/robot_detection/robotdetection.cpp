@@ -109,8 +109,8 @@ void robotDetection::detectNewRobots(cv::Mat threshold, cv::Mat &originalFrame) 
             cv::Moments moment = moments((cv::Mat)contours[index]);
             double area = moment.m00;
             if(area>100) {
-                for(int i =0;i<robotLocationManager.robots.size(); i++) {
-                    RobotLocation* ptr = robotLocationManager.robots.at(i);
+                for(int i =0;i<locationManager.robots.size(); i++) {
+                    RobotLocation* ptr = locationManager.robots.at(i);
                     if(ptr->type == RobotLocation::RobotType::REAL){
                         if (ptr->x >= (moment.m10/area - 30) && ptr->x <= (moment.m10/area + 30)) {
                             if(ptr->y >= (moment.m01/area -30) && ptr->y <= (moment.m01/area + 30)) {
@@ -162,8 +162,8 @@ void robotDetection::trackFilteredObject(cv::Mat threshold, cv::Mat &originalFra
                 //we only want the object with the largest area so we safe a reference area each
                 //iteration and compare it to the area in the next iteration.
                 if(area>100) {
-                    for(int i =0;i<robotLocationManager.robots.size(); i++) {
-                        RobotLocation* ptr = robotLocationManager.robots.at(i);
+                    for(int i =0;i<locationManager.robots.size(); i++) {
+                        RobotLocation* ptr = locationManager.robots.at(i);
                         if(ptr->type == RobotLocation::RobotType::REAL) {
                             if(ptr->sharedData.status == robotStatus::NORMAL) {
                                 if (ptr->x >= (moment.m10/area - 30) && ptr->x <= (moment.m10/area + 30)) {
@@ -199,8 +199,8 @@ void robotDetection::detectAngleRobots(cv::Mat threshold, cv::Mat &originalFrame
             cv::Moments moment = moments((cv::Mat)contours[index]);
             double area = moment.m00;
             if(area>100) {
-                for(int i =0;i<robotLocationManager.robots.size(); i++) {
-                    RobotLocation* ptr = robotLocationManager.robots.at(i);
+                for(int i =0;i<locationManager.robots.size(); i++) {
+                    RobotLocation* ptr = locationManager.robots.at(i);
                     if(ptr->type == RobotLocation::RobotType::REAL){
                         if (ptr->x >= (moment.m10/area - 30) && ptr->x <= (moment.m10/area + 30)) {
                             if(ptr->y >= (moment.m01/area -30) && ptr->y <= (moment.m01/area + 30)) {
@@ -267,8 +267,8 @@ void robotDetection::morphOps(cv::Mat &thresh) {
 }
 
 void robotDetection::drawObjects(cv::Mat &frame) {
-    for(int i =0; i<robotLocationManager.robots.size(); i++) {
-        RobotLocation* ptr = robotLocationManager.robots.at(i);
+    for(int i =0; i<locationManager.robots.size(); i++) {
+        RobotLocation* ptr = locationManager.robots.at(i);
         if(ptr->type == RobotLocation::RobotType::REAL) {
             cv::circle(frame,cv::Point(ptr->x,ptr->y),10,cv::Scalar(0,0,255));
             cv::putText(frame,std::to_string(ptr->x)+ " , " + std::to_string(ptr->y),

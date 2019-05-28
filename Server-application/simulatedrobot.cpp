@@ -7,6 +7,8 @@
 SimulatedRobot::SimulatedRobot(RobotLocation *baseRobot)
 {
     myColor.setAlpha(0.3);
+    destinationX = baseRobot->destinationX;
+    destinationY = baseRobot->destinationY;
     x = baseRobot->x;
     y = baseRobot->y;
     angle = baseRobot->angle;

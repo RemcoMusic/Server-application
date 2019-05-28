@@ -235,7 +235,7 @@ void SwarmSimulation::startSimulation()
     deltaT = (double)(clock() - lastTime)/CLOCKS_PER_SEC;
     deltaT = std::fmax(deltaT, 0.1);
     lastTime = clock();
-    QListIterator<RobotLocation*> i(robotLocationManager.robots);
+    QListIterator<RobotLocation*> i(locationManager.robots);
     while (i.hasNext())
     {
         RobotLocation *currentRobot = i.next();
