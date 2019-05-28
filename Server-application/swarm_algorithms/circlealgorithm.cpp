@@ -10,7 +10,7 @@ CircleAlgorithm::CircleAlgorithm()
 void CircleAlgorithm::update()
 {
     LinearMotionAlgorithms::generateRobotList();
-    destinations.clear();
+    LinearMotionAlgorithms::clearDestinations();
     if(swarmAlgorithmsSettings.inputSource == SwarmAlgorithmsSettings::AlgorithmInputSource::NONE)
     {
         calculateDestinationsCenterOuter();
