@@ -48,7 +48,21 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->sliderVDinges, SIGNAL(valueChanged(int)),ui->lcdNumberVDinges, SLOT(display(int)));
 
     //on_colorComboBox_currentIndexChanged(0);
+    for(int i =0;i<1;i++){
+        int x = qrand() % globalSettings.fieldSizeX;
+        int y = qrand() % globalSettings.fieldSizeY;
+        int a = qrand() % 360;
 
+        RobotLocation *l = robotLocationManager.addSimulatedRobot();
+        l->x = x;
+        l->y = y;
+        l->setX(x-0.5*globalSettings.botDiameter);
+        l->setY(y-0.5*globalSettings.botDiameter);
+        l->destinationX = x;
+        l->destinationY = y;
+        l->setRotation(a);
+        dataScene->addItem(l);
+    }
 
 
     //dataScene->addItem(&algorithmVisualisation);
@@ -114,6 +128,7 @@ void MainWindow::updateGui()
     int wb = ui->cameraBlueFeed->width();
     int hb = ui->cameraBlueFeed->height();
     ui->cameraBlueFeed->setPixmap(pb.scaled(wb,hb,Qt::KeepAspectRatio));
+
 
     updateNumberOfRobots();
 
