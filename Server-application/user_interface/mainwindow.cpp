@@ -37,6 +37,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->lcdNumberTotalRobots->setPalette(Qt::red);
     ui->lcdNumberSimulatedRobots->setPalette(Qt::green);
     ui->lcdNumberRealRobots->setPalette(Qt::green);
+    ui->lcdNumberTotalObstacles->setPalette(Qt::green);
 
 
     connect(ui->sliderHue, SIGNAL(valueChanged(int)),this, SLOT(colorSlidersChanged(int)));
@@ -150,6 +151,7 @@ void MainWindow::updateNumberOfRobots()
     ui->lcdNumberTotalRobots->display(real+sim);
     ui->lcdNumberSimulatedRobots->display(sim);
     ui->lcdNumberRealRobots->display(real);
+    ui->lcdNumberTotalObstacles->display(locationManager.objects.size());
 }
 void MainWindow::colorSlidersChanged(int c)
 {
@@ -249,4 +251,16 @@ void MainWindow::on_AddSimulatedRobotButton_clicked()
         l->setRotation(a);
         dataScene->addItem(l);
     //}
+}
+
+void MainWindow::on_addSimulatedObjectButton_clicked()
+{
+    int x = qrand() % globalSettings.fieldSizeX;
+     int y = qrand() % globalSettings.fieldSizeY;
+
+     Ball *b = new Ball();
+     b->x = x;
+     b->y = y;
+     dataScene->addItem(b);
+     locationManager.addObject(b);
 }
