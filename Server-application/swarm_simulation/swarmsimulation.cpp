@@ -244,9 +244,12 @@ void SwarmSimulation::startSimulation()
             if(swarmSimulationSettings.realisticSimulationEnabled)
             {
                 moveRobotRealistic(currentRobot);
+                moveRobotRealistic(currentRobot->simulatedRobot);
+
             }
             else {
                 moveRobot(currentRobot);
+                moveRobot(currentRobot->simulatedRobot);
             }
         }
     }

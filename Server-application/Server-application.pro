@@ -32,10 +32,12 @@ SOURCES += \
     objects/ball.cpp \
     objects/objectsbase.cpp \
     robotlocationpainter.cpp \
+    simulatedrobot.cpp \
     swarm_algorithms/algrorithmvisualisation.cpp \
     swarm_algorithms/circlealgorithm.cpp \
     swarm_algorithms/linealgorithm.cpp \
     swarm_algorithms/linearmotionalgorithms.cpp \
+    swarm_algorithms/robotdisplacementdetection.cpp \
     user_interface\mainwindow.cpp \
     swarm_algorithms\swarmalgorithms.cpp \
     swarm_algorithms\swarmalgorithmssettings.cpp \
@@ -52,6 +54,7 @@ SOURCES += \
     robotgroup.cpp
 
 HEADERS += \
+    simulatedrobot.h \
     locationmanager.h \
     objects/ball.h \
     objects/objectsbase.h \
@@ -59,6 +62,7 @@ HEADERS += \
     swarm_algorithms/circlealgorithm.h \
     swarm_algorithms/linealgorithm.h \
     swarm_algorithms/linearmotionalgorithms.h \
+    swarm_algorithms/robotdisplacementdetection.h \
     user_interface\mainwindow.h \
     swarm_algorithms\swarmalgorithms.h \
     robot_detection\robotdetection.h \

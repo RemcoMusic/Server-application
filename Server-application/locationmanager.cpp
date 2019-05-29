@@ -1,4 +1,6 @@
 #include "locationmanager.h"
+#include "simulatedrobot.h"
+LocationManager robotLocationManager;
 LocationManager locationManager;
 LocationManager::LocationManager()
 {
@@ -60,9 +62,11 @@ void LocationManager::makeNewRealRobot(int x, int y)
     newRobot->y = y;
     newRobot->myColor = Qt::red;
     newRobot->sharedData.status = robotStatus::STARTUP;
+    newRobot->simulatedRobot = new SimulatedRobot(newRobot);
     robots.append(newRobot);
     //dataScene.addItem(newRobot);
     //Ui::ui->dataSene->addItem(newRobot);
+    dataScene->addItem(newRobot->simulatedRobot);
     dataScene->addItem(newRobot);
     qDebug() << "MADE A NEW ROBOT";
 }

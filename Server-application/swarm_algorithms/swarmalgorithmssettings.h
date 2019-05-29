@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include "swarmalgorithmbase.h"
+#include <math.h>
 class SwarmAlgorithmsSettings
 {
 public:
@@ -20,7 +21,7 @@ public:
     bool debugLinearMotionVerbose = false; //2
     bool debugLinearMotionSources = false; //2
 
-    int distanceBetweenRobots = 170;//distance between the destinations of the robots, //1
+    int distanceBetweenRobots = 120;//distance between the destinations of the robots, //1
 
     enum class AlgorithmInputSource
     {
@@ -30,21 +31,21 @@ public:
         HAND_GESTURE = 3, //by hand gestures(hand object)
         ROBOT_MOVEMENT = 4, //by displacing the robot, displaced robot is the orientation for the algorithm
         ROBOT_MOVEMENT_WITH_ANGLE = 5 //by displacing the robot, displaced robot is the orientation for the algorithm
-    }inputSource = AlgorithmInputSource::REAL_OBJECTS_OUTER_OUTER;
+    }inputSource = AlgorithmInputSource::ROBOT_MOVEMENT;
     bool algorithmAllowSimulatedObject = true;    //1
 
     int robotSpeed = 5;//10-100  //1
     bool dynamicSpeed = true; // with dynamic robot speed depents op the other robot, they will arive on the same time //1
     bool useLineAlgorithmRotationTime = true;  //2
     int lineAlgorithmRotationWeight = 10;      //2
-    int lineAlgorithmPerformanceLevel = 5;//0-10;   //2
+    int lineAlgorithmPerformanceLevel = 10;//0-10;   //2
 
     bool useAllDestinationsWhenLessRobots = true;  //2
 
     bool enableCollisionAvoidance = true;   //1
     int collisionDistance = 100;            //1
     int collisionAggression = 5;//0-10      //1
-
+    double collisionAvoidanceAngle = 0.6 * M_PI;
     //en verder
     //update rate
     //kiezen van algorithmes en informatie weergeven

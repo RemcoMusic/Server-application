@@ -6,6 +6,7 @@
 #include "math.h"
 #include <iostream>
 #include <iomanip>
+#include "swarmalgorithmssettings.h"
 
 class LinearMotionAlgorithms : public SwarmAlgorithmBase
 {
@@ -17,7 +18,7 @@ public:
     {
         int x;
         int y;
-        RobotLocation* robot;
+        RobotLocation* robot = nullptr;
         double endAngle;
     };
     QList<Destination*> destinations;
@@ -61,4 +62,6 @@ protected:
 
     void runCollisionAvoidance();
 
+private:
+    bool swap2Rows(int row1, int row2);
 };

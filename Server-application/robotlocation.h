@@ -45,13 +45,14 @@ public:
     UdpData sharedData; // <-- must be used for all data that the bots must know
 
     QRectF boundingRect() const;
-    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
+    virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
     void setRotation(int r);
 
     RobotLocation(RobotGroup *group = nullptr);
 
-
-
+    RobotLocation *simulatedRobot;
+    clock_t lastDisplacement = 0;
+    bool userInput = false;//if displaced by the user
 
     double angle = 0;
 
@@ -79,9 +80,9 @@ public:
     void print();
 
 protected:
-    void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
-    void mouseMoveEvent(QGraphicsSceneMouseEvent *event) override;
-    void mouseReleaseEvent(QGraphicsSceneMouseEvent *event) override;
+    virtual void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
+    virtual void mouseMoveEvent(QGraphicsSceneMouseEvent *event) override;
+    virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent *event) override;
 
 };
 

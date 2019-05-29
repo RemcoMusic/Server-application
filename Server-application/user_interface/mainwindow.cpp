@@ -3,6 +3,7 @@
 
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
+#include <simulatedrobot.h>
 
 
 QGraphicsScene *dataScene;   //global
@@ -49,6 +50,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->sliderVDinges, SIGNAL(valueChanged(int)),ui->lcdNumberVDinges, SLOT(display(int)));
 
     //on_colorComboBox_currentIndexChanged(0);
+
     for(int i =0;i<1;i++){
         int x = qrand() % globalSettings.fieldSizeX;
         int y = qrand() % globalSettings.fieldSizeY;
@@ -62,6 +64,8 @@ MainWindow::MainWindow(QWidget *parent) :
         l->destinationX = x;
         l->destinationY = y;
         l->setRotation(a);
+        l->simulatedRobot = new SimulatedRobot(l);
+        dataScene->addItem(l->simulatedRobot);
         dataScene->addItem(l);
     }
 
@@ -249,6 +253,8 @@ void MainWindow::on_AddSimulatedRobotButton_clicked()
         l->destinationX = x;
         l->destinationY = y;
         l->setRotation(a);
+        l->simulatedRobot = new SimulatedRobot(l);
+        dataScene->addItem(l->simulatedRobot);
         dataScene->addItem(l);
     //}
 }
