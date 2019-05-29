@@ -15,10 +15,13 @@ public:
     QPoint *outer2 = new QPoint(800,500);
 
 private:
+    void findRobotMovementInputs();
+protected:
+    int distanceFromCenter(int x, int y);
     void calculateDestinationsCenterOuter();
     void calculateDestinationsOuterOuter();
     void calculateDestinationsOuterAngle();
-    void findRobotMovementInputs();
+    void calculateDestinationsCenterOuter(double beginAngle, double endAngle);
 };
 
 #endif // CIRCLEALGORITHM_H

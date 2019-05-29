@@ -5,5 +5,5 @@
 SwarmAlgorithmsSettings swarmAlgorithmsSettings;
 SwarmAlgorithmsSettings::SwarmAlgorithmsSettings()
 {
-   activeAlgorithms.append(new LineAlgorithm());
+   activeAlgorithms.append(new CircleAlgorithm());
 }
