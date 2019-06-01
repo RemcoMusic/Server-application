@@ -7,6 +7,7 @@
 #include <algrorithmvisualisation.h>
 #include "robotlocation.h"
 #include "locationmanager.h"
+#include "ball.h"
 #include <QTime>
 #include <QDebug>
 #include <robotdetectionsettings.h>
@@ -57,6 +58,8 @@ private slots:
     void on_SliderRobotSpeed_valueChanged(int value);
 
     void on_AddSimulatedRobotButton_clicked();
+
+    void on_addSimulatedObjectButton_clicked();
 
 public slots:
     void updateGui();
