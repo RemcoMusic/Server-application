@@ -1,11 +1,8 @@
-#ifndef LINEALGORITHM_H
-#define LINEALGORITHM_H
+#pragma once
 
 #include "linearmotionalgorithms.h"
 #include "math.h"
 #include "swarmalgorithmssettings.h"
-
-extern SwarmAlgorithmsSettings swarmAlgorithmsSettings;
 
 class LineAlgorithm : public LinearMotionAlgorithms
 {
@@ -19,5 +16,3 @@ private:
     void calculateDestination();
     void findRobotMovementInputs();
 };
-
-#endif // LINEALGORITHM_H

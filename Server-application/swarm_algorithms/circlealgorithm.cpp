@@ -104,7 +104,7 @@ void CircleAlgorithm::calculateDestinationsCenterOuter()
     int deltaX = outer1->rx() - center->rx();//pytagoras A
     int deltaY = outer1->ry() - center->ry();//pytagoras b
     double beginAngle = atan2(deltaY, deltaX);
-    calculateDestinationsCenterOuter(beginAngle,2*M_PI);
+    calculateDestinationsCenterOuter(beginAngle,beginAngle + 2*M_PI);
 }
 void CircleAlgorithm::calculateDestinationsCenterOuter(double beginAngle, double endAngle)
 {

@@ -293,8 +293,14 @@ bool LinearMotionAlgorithms::swap2Rows(int row1, int row2)
     {
         for(int i = 0;i < data.amountOfRobots;i++)
         {
-            swap2Rows(i,row2);
-            swap2Rows(row1, 1);
+            if(row1 != i)
+            {
+                swap2Rows(row1, 1);
+            }
+            if(row2 != i)
+            {
+                swap2Rows(i,row2);
+            }
         }
     }
     return succes;
@@ -316,14 +322,11 @@ bool LinearMotionAlgorithms::swapOptimize()
     }
 
     bool succes = false;
-    for(int row1=0;row1<data.amountOfRobots;row1++)
+    for(int row1=0;row1<data.amountOfRobots-1;row1++)
     {
-        for(int row2=row1;row2<data.amountOfRobots;row2++)
+        for(int row2=row1+1;row2<data.amountOfRobots;row2++)
         {
-            if(row1 != row2)
-            {
-                succes = swap2Rows(row1, row2);
-            }
+             succes = swap2Rows(row1, row2);
         }
     }
     return succes;
@@ -434,7 +437,7 @@ void LinearMotionAlgorithms::connectDestinationsToRobots()
         data.rowResultIndex[i] = i;
     }
     int lowestHighest = UINT16_MAX;//the highest destinance, the lowest when compared to other searches
-    for(int i = 0;i < swarmAlgorithmsSettings.lineAlgorithmPerformanceLevel;i++)
+    for(int i = 0;i < data.amountOfRobots;i++)
     {
         swapOptimize();
 

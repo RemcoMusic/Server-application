@@ -1,9 +1,10 @@
-#ifndef SWARMALGORITHMSSETTINGS_H
-#define SWARMALGORITHMSSETTINGS_H
+#pragma once
 
 #include <QObject>
 #include "swarmalgorithmbase.h"
 #include <math.h>
+
+
 class SwarmAlgorithmsSettings
 {
 public:
@@ -38,7 +39,6 @@ public:
     bool dynamicSpeed = true; // with dynamic robot speed depents op the other robot, they will arive on the same time //1
     bool useLineAlgorithmRotationTime = true;  //2
     int lineAlgorithmRotationWeight = 10;      //2
-    int lineAlgorithmPerformanceLevel = 10;//0-10;   //2
 
     bool useAllDestinationsWhenLessRobots = true;  //2
 
@@ -49,8 +49,5 @@ public:
     //en verder
     //update rate
     //kiezen van algorithmes en informatie weergeven
-
-
 };
 extern SwarmAlgorithmsSettings swarmAlgorithmsSettings;
-#endif // SWARMALGORITHMSSETTINGS_H

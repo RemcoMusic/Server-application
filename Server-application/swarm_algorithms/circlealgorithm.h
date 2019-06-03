@@ -1,5 +1,4 @@
-#ifndef CIRCLEALGORITHM_H
-#define CIRCLEALGORITHM_H
+#pragma once
 
 #include "linearmotionalgorithms.h"
 #include "math.h"
@@ -9,10 +8,10 @@ class CircleAlgorithm : public LinearMotionAlgorithms
 {
 public:
     CircleAlgorithm();
-    void update();
+    virtual void update();
     QPoint *center = new QPoint(500,500);
-    QPoint *outer1 = new QPoint(200,500);
-    QPoint *outer2 = new QPoint(800,500);
+    QPoint *outer1 = new QPoint(200,400);
+    QPoint *outer2 = new QPoint(800,600);
 
 private:
     void findRobotMovementInputs();
@@ -23,5 +22,3 @@ protected:
     void calculateDestinationsOuterAngle();
     void calculateDestinationsCenterOuter(double beginAngle, double endAngle);
 };
-
-#endif // CIRCLEALGORITHM_H
