@@ -288,7 +288,7 @@ void MainWindow::on_ActiveAlgoritmList_currentIndexChanged(const QString &arg1)
 void MainWindow::on_resetSimulationButton_clicked()
 {
     //turn off all robots.
-    communicationSettings.turnOffAllRobots();
+    communicationSettings.turnOffAllRobots();  // will alse reset IP list
 
     //clear qgraphicsscene
     //dataScene->clear();
