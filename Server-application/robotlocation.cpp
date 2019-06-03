@@ -6,6 +6,14 @@ RobotLocation::RobotLocation(RobotGroup *group)
     y = globalSettings.botDiameter/2;
     //setFlags(QGraphicsItem::ItemIsMovable);
 }
+
+bool RobotLocation::isReady()
+{
+    if(sharedData.status == robotStatus::NORMAL){
+        return true;
+    }
+    return false;
+}
 void RobotLocation::print()
 {
     if(type == RobotType::SIMULATED)
