@@ -14,7 +14,7 @@ void MoveShapeAlgorithm::update()
     int preferedX = 500;
     int preferedY = 500;
     qDebug("update move shape algorithm");
-    QListIterator<RobotLocation*> i(robotLocationManager.robots);
+    QListIterator<RobotLocation*> i(locationManager.robots);
     while (i.hasNext())
     {
         RobotLocation* robot = i.next();
