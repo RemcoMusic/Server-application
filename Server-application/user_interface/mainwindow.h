@@ -13,6 +13,7 @@
 #include <robotdetectionsettings.h>
 #include <QObject>
 #include "swarmsimulationsettings.h"
+#include "swarmalgorithmssettings.h"
 
 extern QGraphicsScene *dataScene; //forward declaration (made in cpp)
 
@@ -61,9 +62,12 @@ private slots:
 
     void on_addSimulatedObjectButton_clicked();
 
+    void on_ActiveAlgoritmList_currentIndexChanged(const QString &arg1);
+
 public slots:
     void updateGui();
 private:
+    bool firstTime = true; //called in updategui,.. when all other data is instantiated (cant be in constructor)
     //QGraphicsScene *dataScene;
     //QGraphicsScene *cameraScene;
     void updateNumberOfRobots();

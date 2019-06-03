@@ -4,6 +4,9 @@
 #include <QObject>
 #include "swarmalgorithmbase.h"
 #include <math.h>
+#include <QList>
+#include <QString>
+
 class SwarmAlgorithmsSettings
 {
 public:
@@ -49,6 +52,11 @@ public:
     //en verder
     //update rate
     //kiezen van algorithmes en informatie weergeven
+
+
+
+    QList<QString> anvailableAlgoritms;
+    void runNewAlgortim(QString newAlgoritm);
 
 
 };
