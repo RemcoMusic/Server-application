@@ -167,7 +167,6 @@ void LinearMotionAlgorithms::freeData()
     //lastfoundResultIndex
     free(data.lastfoundResultIndex);
     data.lastfoundResultIndex = nullptr;
-    data.swarmRobots.clear();
 }
 
 void LinearMotionAlgorithms::clearDestinations()

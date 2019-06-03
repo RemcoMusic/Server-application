@@ -49,12 +49,17 @@ public:
     void setRotation(int r);
 
     RobotLocation(RobotGroup *group = nullptr);
+    bool isReady();
+
+    QString ip = "0.0.0.0";  // 0.0.0.0 equals no IP
 
     RobotLocation *simulatedRobot;
     clock_t lastDisplacement = 0;
     bool userInput = false;//if displaced by the user
 
+
     double angle = 0;
+
 
     int x = 0;
     int y = 0;

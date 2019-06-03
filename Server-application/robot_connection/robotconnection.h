@@ -19,17 +19,20 @@ public:
 public slots:
     void readyRead();
     void connectionloop();
+
 signals:
     void done();
 
+
 private:
     QUdpSocket * socket;
-    QString lastRequestedBotIP;
+    QString lastRequestedBotIP = "0.0.0.0";
     QTime myTimer;
 
 
     void processIP(QString ip);
     void turnRobotOn(QString ip);
+    void updateRobots();
 
 
 };

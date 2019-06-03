@@ -98,6 +98,15 @@ void MainWindow::on_pushButton_clicked()
 double smoothFps=0;
 void MainWindow::updateGui()
 {
+
+    if(firstTime){
+        firstTime = false;
+        for(int i = 0; i<swarmAlgorithmsSettings.anvailableAlgoritms.size();i++){
+            ui->ActiveAlgoritmList->addItem(swarmAlgorithmsSettings.anvailableAlgoritms.at(i));
+        }
+
+
+    }
     int t = fpsTimer->elapsed();
     fpsTimer->restart();
     int fps = (double)1000.0/(double)t;
@@ -269,4 +278,9 @@ void MainWindow::on_addSimulatedObjectButton_clicked()
      b->y = y;
      dataScene->addItem(b);
      locationManager.addObject(b);
+}
+
+void MainWindow::on_ActiveAlgoritmList_currentIndexChanged(const QString &arg1)
+{
+    swarmAlgorithmsSettings.runNewAlgortim(arg1);
 }
