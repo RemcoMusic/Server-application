@@ -1,5 +1,9 @@
 #include "robotconnection.h"
 
+
+#define toRad(angleDegrees) ((angleDegrees) * M_PI / 180.0)
+#define toDeg(angleRadians) ((angleRadians) * 180.0 / M_PI)
+
 RobotConnection::RobotConnection()
 {
     communicationSettings.settingVariables.updateRate=0;
@@ -102,8 +106,8 @@ void RobotConnection::updateRobots()
                 ptr->sharedData.newY = ptr->destinationY;
                 ptr->sharedData.currentX = ptr->x;
                 ptr->sharedData.currentY = ptr->y;
-                ptr->sharedData.currentAngle = ptr->angle;
-                ptr->sharedData.speed = 255; // not tested
+                ptr->sharedData.currentAngle = toDeg(ptr->angle);
+                ptr->sharedData.speed = 130; // not tested
 
                 //send new packet to the robots
                  socket->writeDatagram(reinterpret_cast<char*>(&ptr->sharedData), sizeof(UdpData) ,QHostAddress(ptr->ip), 4210);

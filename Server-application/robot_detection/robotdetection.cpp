@@ -51,7 +51,7 @@ void robotDetection::run() {
 
 
 int robotDetection::startDetecting() {
-    cv::VideoCapture cap(0);
+    cv::VideoCapture cap(1);
     cv::Mat originalFrame;
     cv::Mat threshold;
     cv::Mat HSV;
@@ -170,7 +170,7 @@ void robotDetection::trackFilteredObject(cv::Mat threshold, cv::Mat &originalFra
                     for(int i =0;i<locationManager.robots.size(); i++) {
                         RobotLocation* ptr = locationManager.robots.at(i);
                         if(ptr->type == RobotLocation::RobotType::REAL) {
-                            if(ptr->sharedData.status == robotStatus::STARTUP) {
+                            if(ptr->sharedData.status == robotStatus::NORMAL) {
                                 if (ptr->x >= (calibratedX - robotDetectionSettings.xyDeviationMilimeter) && ptr->x <= (calibratedX + robotDetectionSettings.xyDeviationMilimeter)) {
                                     if(ptr->y >= (calibratedY - robotDetectionSettings.xyDeviationMilimeter) && ptr->y <= (calibratedY + robotDetectionSettings.xyDeviationMilimeter)) {
                                         ptr->x=calibratedX;
@@ -266,7 +266,7 @@ void robotDetection::calculateAngle() {
     for (int i =0;i<locationManager.robots.size(); i++) {
         RobotLocation* ptr = locationManager.robots.at(i);
         if(ptr->type == RobotLocation::RobotType::REAL) {
-            if(ptr->sharedData.status == robotStatus::STARTUP) {
+            if(ptr->sharedData.status == robotStatus::NORMAL) {
                 for (int i = 0; i<bluePoints.size(); i++) {
                     int deltaX = ptr->x - bluePoints.at(i).x();
                     int deltaY = ptr->y - bluePoints.at(i).y();
