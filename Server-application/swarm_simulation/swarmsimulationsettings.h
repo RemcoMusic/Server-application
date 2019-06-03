@@ -3,14 +3,18 @@
 
 #include <QObject>
 
+
+
 class SwarmSimulationSettings
 {
 public:
     SwarmSimulationSettings();
-    int maxSpeed = 2;
-    int realisticSimulationEnabled = true;
-    int acceleartionControlEnabled = true;
-    int badMotorsEnbabled = true;
+    int maxSpeed = 1;   //1
+    int realisticSimulationEnabled = true;  //1
+    int acceleartionControlEnabled = true;  //1
+    int badMotorsEnbabled = true;   //1
+
+
 };
 extern SwarmSimulationSettings swarmSimulationSettings;
 #endif // SWARMSIMULATIONSETTINGS_H

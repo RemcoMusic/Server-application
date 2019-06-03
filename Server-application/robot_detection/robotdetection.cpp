@@ -49,6 +49,7 @@ void robotDetection::run() {
     startDetecting();
 }
 
+
 int robotDetection::startDetecting() {
     cv::VideoCapture cap(0);
     cv::Mat originalFrame;
@@ -114,8 +115,8 @@ void robotDetection::detectNewRobots(cv::Mat threshold, cv::Mat &originalFrame) 
             double calibratedX = ((moment.m10/area) * resizeXFactor);
             double calibratedY = ((moment.m01/area) * resizeYFactor);
             if(area>100) {
-                for(int i =0;i<robotLocationManager.robots.size(); i++) {
-                    RobotLocation* ptr = robotLocationManager.robots.at(i);
+                for(int i =0;i<locationManager.robots.size(); i++) {
+                    RobotLocation* ptr = locationManager.robots.at(i);
                     if(ptr->type == RobotLocation::RobotType::REAL){
                         if (ptr->x >= (calibratedX - 30) && ptr->x <= (calibratedX + 30)) {
                             if(ptr->y >= (calibratedY - 30) && ptr->y <= (calibratedY + 30)) {
@@ -166,8 +167,8 @@ void robotDetection::trackFilteredObject(cv::Mat threshold, cv::Mat &originalFra
                 double calibratedX = ((moment.m10/area) * resizeXFactor);
                 double calibratedY = ((moment.m01/area) * resizeYFactor);
                 if(area>100) {
-                    for(int i =0;i<robotLocationManager.robots.size(); i++) {
-                        RobotLocation* ptr = robotLocationManager.robots.at(i);
+                    for(int i =0;i<locationManager.robots.size(); i++) {
+                        RobotLocation* ptr = locationManager.robots.at(i);
                         if(ptr->type == RobotLocation::RobotType::REAL) {
                             if(ptr->sharedData.status == robotStatus::STARTUP) {
                                 if (ptr->x >= (calibratedX - robotDetectionSettings.xyDeviationMilimeter) && ptr->x <= (calibratedX + robotDetectionSettings.xyDeviationMilimeter)) {
@@ -262,8 +263,8 @@ cv::Mat robotDetection::detectColors(cv::Mat frame, QString color) {
 }
 
 void robotDetection::calculateAngle() {
-    for (int i =0;i<robotLocationManager.robots.size(); i++) {
-        RobotLocation* ptr = robotLocationManager.robots.at(i);
+    for (int i =0;i<locationManager.robots.size(); i++) {
+        RobotLocation* ptr = locationManager.robots.at(i);
         if(ptr->type == RobotLocation::RobotType::REAL) {
             if(ptr->sharedData.status == robotStatus::STARTUP) {
                 for (int i = 0; i<bluePoints.size(); i++) {
@@ -295,8 +296,8 @@ void robotDetection::morphOps(cv::Mat &thresh) {
 }
 
 void robotDetection::drawObjects(cv::Mat &frame) {
-    for(int i =0; i<robotLocationManager.robots.size(); i++) { 
-        RobotLocation* ptr = robotLocationManager.robots.at(i);
+    for(int i =0; i<locationManager.robots.size(); i++) {
+        RobotLocation* ptr = locationManager.robots.at(i);
         double uncalibratedXCordinate = ptr->x / (double(globalSettings.fieldSizeX)/double(globalSettings.cameraX));
         double uncalibratedYCordinate = ptr->y / (double(globalSettings.fieldSizeY)/double(globalSettings.cameraY));
         if(ptr->type == RobotLocation::RobotType::REAL) {

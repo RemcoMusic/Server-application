@@ -6,7 +6,7 @@
 #include "opencv2/imgproc/imgproc.hpp"
 #include "robotdetectionsettings.h"
 #include "globalsettings.h"
-#include "robotlocationmanager.h"
+#include "locationmanager.h"
 #include "robotlocation.h"
 #include <math.h>
 #include <QObject>

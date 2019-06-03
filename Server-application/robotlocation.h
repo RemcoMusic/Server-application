@@ -21,7 +21,7 @@ enum robotStatus{
     NORMAL = 2,
     CHARGING = 3,
 };
-struct UdpData {
+struct  UdpData {
   uint16_t currentX = 0;
   uint16_t currentY = 0;
   uint16_t newX = 0;
@@ -45,15 +45,21 @@ public:
     UdpData sharedData; // <-- must be used for all data that the bots must know
 
     QRectF boundingRect() const;
-    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
+    virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
     void setRotation(int r);
 
     RobotLocation(RobotGroup *group = nullptr);
+    bool isReady();
 
+    QString ip = "0.0.0.0";  // 0.0.0.0 equals no IP
 
+    RobotLocation *simulatedRobot;
+    clock_t lastDisplacement = 0;
+    bool userInput = false;//if displaced by the user
 
 
     double angle = 0;
+
 
     int x = 0;
     int y = 0;
@@ -64,6 +70,7 @@ public:
 
     int destinationX = 0;
     int destinationY = 0;
+    double endAngle = 0;
 
     QColor myColor = Qt::yellow;
 
@@ -78,9 +85,9 @@ public:
     void print();
 
 protected:
-    void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
-    void mouseMoveEvent(QGraphicsSceneMouseEvent *event) override;
-    void mouseReleaseEvent(QGraphicsSceneMouseEvent *event) override;
+    virtual void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
+    virtual void mouseMoveEvent(QGraphicsSceneMouseEvent *event) override;
+    virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent *event) override;
 
 };
 

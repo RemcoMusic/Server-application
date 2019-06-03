@@ -17,9 +17,17 @@ void SwarmSimulation::moveRobot(RobotLocation *robot)
     double deltaX = robot->destinationX - robot->x;
     double deltaY = robot->destinationY - robot->y;
 
-    if((abs(deltaX) <= 10) && (abs(deltaY) <= 10))return;//already on location
+    double goalAngle;
+    if((abs(deltaX) <= 10) && (abs(deltaY) <= 10))
+    {
+        goalAngle = robot->endAngle;
+    }
+    else
+    {
+         goalAngle = atan2(deltaY,deltaX);
+    }
 
-    double goalAngle = atan2(deltaY,deltaX);
+
 
     if(robot->angle >  M_PI)robot->angle -= 2* M_PI;
     if(robot->angle < -M_PI)robot->angle+= 2 * M_PI;
@@ -31,17 +39,26 @@ void SwarmSimulation::moveRobot(RobotLocation *robot)
 //    {
 //        robot->angle += M_PI;
 //    }
-    if(difference > 0)
+    if(difference > 0.1)
     {
         robot->angle -= std::min(robot->angle - goalAngle, 0.1);
     }
-    else if(difference < 0)
+    else if(difference < -0.1)
     {
         robot->angle += std::min(goalAngle - robot->angle, 0.1);
     }
 
-    robot->x = robot->x + std::fmin(cos(goalAngle) * robot->speed * swarmSimulationSettings.maxSpeed, abs(deltaX));
-    robot->y = robot->y + std::fmin(sin(goalAngle) * robot->speed * swarmSimulationSettings.maxSpeed, abs(deltaY));
+    if((abs(deltaX) <= 10) && (abs(deltaY) <= 10))
+    {
+
+    }
+    else {
+        if(abs(difference) < 0.5)
+        {
+            robot->x = robot->x + std::fmin(cos(goalAngle) * robot->speed * swarmSimulationSettings.maxSpeed, abs(deltaX));
+            robot->y = robot->y + std::fmin(sin(goalAngle) * robot->speed * swarmSimulationSettings.maxSpeed, abs(deltaY));
+        }
+    }
 
     while(robot->angle >= 2 * M_PI) robot->angle -=2 * M_PI;
     while(robot->angle < 0) robot->angle +=2 * M_PI;
@@ -51,10 +68,18 @@ void SwarmSimulation::moveRobotRealistic(RobotLocation *robot)
 {
     double deltaX = robot->destinationX - robot->x;
     double deltaY = robot->destinationY - robot->y;
+    double goalAngle;
+    bool onLocation=false;
     double distanceFromDestination = sqrt(deltaX*deltaX + deltaY*deltaY);//pythogoras
-    if((abs(deltaX) <= 10) && (abs(deltaY) <= 10))return;//already on location
+    if((abs(deltaX) <= 10) && (abs(deltaY) <= 10))//already on location
+    {
+        goalAngle = robot->endAngle;
+        onLocation = true;
+    }
+    else {
+        goalAngle = atan2(deltaY,deltaX);
+    }
 
-    double goalAngle = atan2(deltaY,deltaX);
     while(goalAngle <0) goalAngle += M_PI * 2;
     double currentAngle = robot->angle;
     while(currentAngle < 0) currentAngle += M_PI * 2;
@@ -62,79 +87,104 @@ void SwarmSimulation::moveRobotRealistic(RobotLocation *robot)
     double difference = currentAngle - goalAngle;
     if(difference > M_PI)difference -= 2* M_PI;
     if(difference < -M_PI)difference += 2 * M_PI;
-    if(abs(difference) > 0.6 * M_PI)//0.6 is added for hysteresis
+    if(!onLocation)
     {
-        robot->angle += M_PI;
+        if(abs(difference) > 0.6 * M_PI)//0.6 is added for hysteresis
+        {
+            robot->angle += M_PI;
+        }
     }
     while(currentAngle >= 2*M_PI) currentAngle -= M_PI * 2;
 
-    int maxSpeed = robot->speed;
-    if(distanceFromDestination < 100)
-    {
-        maxSpeed = map(distanceFromDestination,0,100,maxSpeed/2,maxSpeed);
-    }
     double left = 0;
     double right = 0;
-    double rideAngle = 0.3*M_PI;
-    if(abs(difference) < 0.1 * M_PI)
+    if(onLocation)
     {
-        left = maxSpeed;
-        right = maxSpeed;
-    }
-    else if(difference > 0)
-    {
-        left = maxSpeed;
-        if(difference > rideAngle)
+        double maxSpeed = map(difference,0,2 * M_PI,robot->speed/2,robot->speed);
+        if(difference > 0)
         {
-            if(distanceFromDestination > 100)
-            {
-                right = map(difference,0,rideAngle,-maxSpeed,0);
-            }
-            else {
-                right = map(difference,0,rideAngle,-maxSpeed,-maxSpeed/2);
-            }
-
-        }
-        else {
+            left = maxSpeed;
             right = -maxSpeed;
-        }
-    }
-    else if(difference < 0)
-    {
-        right = maxSpeed;
-        if(difference > -rideAngle)
-        {
-            if(distanceFromDestination > 100)
-            {
-                left = map(difference,-rideAngle,0,-maxSpeed, 0);
-            }
-            else {
-                left = map(difference,-rideAngle,0,-maxSpeed, -maxSpeed/2);
-            }
         }
         else {
             left = -maxSpeed;
+            right = maxSpeed;
         }
     }
+    else
+    {
+        int maxSpeed = robot->speed;
+        if(distanceFromDestination < 100)
+        {
+            maxSpeed = map(distanceFromDestination,0,100,maxSpeed/2,maxSpeed);
+        }
 
-    double acceleration = 5;
-    if(left > robot->currentSpeedLeft)
-    {
-        robot->currentSpeedLeft+= std::min(acceleration,left - robot->currentSpeedLeft);
+        double rideAngle = 0.3*M_PI;
+        if(abs(difference) < 0.1 * M_PI)
+        {
+            left = maxSpeed;
+            right = maxSpeed;
+        }
+        else if(difference > 0)
+        {
+            left = maxSpeed;
+            if(difference > rideAngle)
+            {
+                if(distanceFromDestination > 100)
+                {
+                    right = map(difference,0,rideAngle,-maxSpeed,0);
+                }
+                else {
+                    right = map(difference,0,rideAngle,-maxSpeed,-maxSpeed/2);
+                }
+
+            }
+            else {
+                right = -maxSpeed;
+            }
+        }
+        else if(difference < 0)
+        {
+            right = maxSpeed;
+            if(difference > -rideAngle)
+            {
+                if(distanceFromDestination > 100)
+                {
+                    left = map(difference,-rideAngle,0,-maxSpeed, 0);
+                }
+                else {
+                    left = map(difference,-rideAngle,0,-maxSpeed, -maxSpeed/2);
+                }
+            }
+            else {
+                left = -maxSpeed;
+            }
+        }
     }
-    if(left < robot->currentSpeedLeft)
+    if(swarmSimulationSettings.acceleartionControlEnabled)
     {
-        robot->currentSpeedLeft-= std::min(acceleration, robot->currentSpeedLeft - left);
+        double acceleration = 5;
+        if(left > robot->currentSpeedLeft)
+        {
+            robot->currentSpeedLeft+= std::min(acceleration,left - robot->currentSpeedLeft);
+        }
+        if(left < robot->currentSpeedLeft)
+        {
+            robot->currentSpeedLeft-= std::min(acceleration, robot->currentSpeedLeft - left);
+        }
+        if(right > robot->currentSpeedRight)
+        {
+            robot->currentSpeedRight+= std::min(acceleration,right - robot->currentSpeedRight);
+        }
+        if(right < robot->currentSpeedRight)
+        {
+            robot->currentSpeedRight-= std::min(acceleration, robot->currentSpeedRight - right);
+        }
+        moveWheels(robot->currentSpeedLeft, robot->currentSpeedRight, robot);
     }
-    if(right > robot->currentSpeedRight)
-    {
-        robot->currentSpeedRight+= std::min(acceleration,right - robot->currentSpeedRight);
+    else {
+         moveWheels(left, right, robot);
     }
-    if(right < robot->currentSpeedRight)
-    {
-        robot->currentSpeedRight-= std::min(acceleration, robot->currentSpeedRight - right);
-    }
-    moveWheels(robot->currentSpeedLeft, robot->currentSpeedRight, robot);
 }
 void SwarmSimulation::moveWheels(double Vl, double Vr, RobotLocation* robot)
 {
@@ -185,7 +235,7 @@ void SwarmSimulation::startSimulation()
     deltaT = (double)(clock() - lastTime)/CLOCKS_PER_SEC;
     deltaT = std::fmax(deltaT, 0.1);
     lastTime = clock();
-    QListIterator<RobotLocation*> i(robotLocationManager.robots);
+    QListIterator<RobotLocation*> i(locationManager.robots);
     while (i.hasNext())
     {
         RobotLocation *currentRobot = i.next();
@@ -194,9 +244,12 @@ void SwarmSimulation::startSimulation()
             if(swarmSimulationSettings.realisticSimulationEnabled)
             {
                 moveRobotRealistic(currentRobot);
+                moveRobotRealistic(currentRobot->simulatedRobot);
+
             }
             else {
                 moveRobot(currentRobot);
+                moveRobot(currentRobot->simulatedRobot);
             }
         }
     }

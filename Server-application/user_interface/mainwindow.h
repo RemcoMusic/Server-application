@@ -6,11 +6,15 @@
 #include <QGraphicsView>
 #include <algrorithmvisualisation.h>
 #include "robotlocation.h"
-#include "robotlocationmanager.h"
+#include "locationmanager.h"
+#include "ball.h"
 #include <QTime>
 #include <QDebug>
 #include <robotdetectionsettings.h>
 #include <QObject>
+#include "swarmsimulationsettings.h"
+#include "swarmalgorithmssettings.h"
+#include "swarmbotcommunicationsettings.h"
 
 extern QGraphicsScene *dataScene; //forward declaration (made in cpp)
 
@@ -41,11 +45,35 @@ private slots:
 
     void on_sliderErode_valueChanged(int value);
 
+    void on_checkRealSimulation_stateChanged(int arg1);
+
+    void on_checkAccelerationControl_stateChanged(int arg1);
+
+    void on_checkInconsisentMotors_stateChanged(int arg1);
+
+    void on_checkUADWLB_stateChanged(int arg1);
+
+    void on_checkDynamicSpeed_stateChanged(int arg1);
+
+    void on_checkRotationTime_stateChanged(int arg1);
+
+    void on_SliderRobotSpeed_valueChanged(int value);
+
+    void on_AddSimulatedRobotButton_clicked();
+
+    void on_addSimulatedObjectButton_clicked();
+
+    void on_ActiveAlgoritmList_currentIndexChanged(const QString &arg1);
+
+    void on_resetSimulationButton_clicked();
+
 public slots:
     void updateGui();
 private:
+    bool firstTime = true; //called in updategui,.. when all other data is instantiated (cant be in constructor)
     //QGraphicsScene *dataScene;
     //QGraphicsScene *cameraScene;
+    void updateNumberOfRobots();
     QTime *fpsTimer;
     Ui::MainWindow *ui;
     bool flipFlop = true;
