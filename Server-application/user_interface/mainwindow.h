@@ -14,6 +14,7 @@
 #include <QObject>
 #include "swarmsimulationsettings.h"
 #include "swarmalgorithmssettings.h"
+#include "swarmbotcommunicationsettings.h"
 
 extern QGraphicsScene *dataScene; //forward declaration (made in cpp)
 
@@ -63,6 +64,8 @@ private slots:
     void on_addSimulatedObjectButton_clicked();
 
     void on_ActiveAlgoritmList_currentIndexChanged(const QString &arg1);
+
+    void on_resetSimulationButton_clicked();
 
 public slots:
     void updateGui();

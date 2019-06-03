@@ -53,6 +53,11 @@ void RobotConnection::readyRead()
 
 void RobotConnection::connectionloop()
 {
+
+    if(communicationSettings.turnOffBots){
+        communicationSettings.turnOffBots = false;
+        turnOffAllRobots();
+    }
     //check of new robots have come online
     if(myTimer.elapsed() <= 5000 && lastRequestedBotIP !="0.0.0.0"){   // 5 seconds to detect a bot when the status has been set to 'STARTUP'
            // check if there is a robot with a green led
@@ -106,6 +111,23 @@ void RobotConnection::updateRobots()
         }
     }
 }
+
+void RobotConnection::turnOffAllRobots()
+{
+    for(int i = 0; i < locationManager.robots.size();i++){
+        RobotLocation *ptr = locationManager.robots.at(i);
+        if(ptr->type == RobotLocation::RobotType::REAL){
+            if(ptr->sharedData.status == robotStatus::NORMAL||ptr->sharedData.status == robotStatus::OFF){ //only possible when camera detection has created a bot
+                //update the packets of the robots
+                 ptr->sharedData.status = robotStatus::OFF;
+                //send new packet to the robots
+                 socket->writeDatagram(reinterpret_cast<char*>(&ptr->sharedData), sizeof(UdpData) ,QHostAddress(ptr->ip), 4210);
+            }
+        }
+    }
+    IpList.clear();
+}
+
 
 void RobotConnection::processIP(QString ip)
 {

@@ -284,3 +284,17 @@ void MainWindow::on_ActiveAlgoritmList_currentIndexChanged(const QString &arg1)
 {
     swarmAlgorithmsSettings.runNewAlgortim(arg1);
 }
+
+void MainWindow::on_resetSimulationButton_clicked()
+{
+    //turn off all robots.
+    communicationSettings.turnOffAllRobots();
+
+    //clear qgraphicsscene
+    //dataScene->clear();
+    //remove all robots in the robotLocation
+    //locationManager.robots.clear();
+    //reset IP list tracker
+
+
+}
