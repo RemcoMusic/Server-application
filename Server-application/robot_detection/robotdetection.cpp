@@ -277,6 +277,7 @@ void robotDetection::calculateAngle() {
                             goalAngle -= 2*M_PI;
                         }
                         ptr->angle = goalAngle;
+                        break;  // when multiple blue point are present at a robot. only take the first one
                     }
                 }
             }
