@@ -49,7 +49,12 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->sliderSaturation, SIGNAL(valueChanged(int)),ui->lcdNumberSaturation, SLOT(display(int)));
     connect(ui->sliderVDinges, SIGNAL(valueChanged(int)),ui->lcdNumberVDinges, SLOT(display(int)));
 
+
     //on_colorComboBox_currentIndexChanged(0);
+    ui->sliderErode->setValue(robotDetectionSettings.erodeObject);
+    ui->sliderDilate->setValue(robotDetectionSettings.dilateObject);
+    ui->sliderDeviation->setValue(robotDetectionSettings.xyDeviationMilimeter);
+
 
     for(int i =0;i<1;i++){
         int x = qrand() % globalSettings.fieldSizeX;
@@ -288,13 +293,19 @@ void MainWindow::on_ActiveAlgoritmList_currentIndexChanged(const QString &arg1)
 void MainWindow::on_resetSimulationButton_clicked()
 {
     //turn off all robots.
-    communicationSettings.turnOffAllRobots();  // will alse reset IP list
+    communicationSettings.turnOffAllRobots();  // will also reset IP list
 
     //clear qgraphicsscene
-    //dataScene->clear();
+    dataScene->clear();
+    for(int i =locationManager.robots.size()-1; i>=0 ;i--){
+        locationManager.robots.removeAt(i);
+    }
     //remove all robots in the robotLocation
     //locationManager.robots.clear();
     //reset IP list tracker
 
+
+    //add fieldsize back
+    dataScene->addRect(0,0,globalSettings.fieldSizeX,globalSettings.fieldSizeY);
 
 }

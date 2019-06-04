@@ -7,12 +7,8 @@ SwarmAlgorithmsSettings swarmAlgorithmsSettings;
 
 SwarmAlgorithmsSettings::SwarmAlgorithmsSettings()
 {
-
-   // activeAlgorithms.append(new LineAlgorithm());
-
-
-    anvailableAlgoritms << "CircleAlgorirm"\
-                           << "aap"\
+    anvailableAlgoritms << "RemcoAlgoritm"\
+                           << "CircleAlgorirm"\
                         << "LineAlgoritm" << "halfCircleAlgorithm";
 }
 
