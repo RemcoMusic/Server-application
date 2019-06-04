@@ -1,5 +1,9 @@
 #include "robotconnection.h"
 
+
+#define toRad(angleDegrees) ((angleDegrees) * M_PI / 180.0)
+#define toDeg(angleRadians) ((angleRadians) * 180.0 / M_PI)
+
 RobotConnection::RobotConnection()
 {
     communicationSettings.settingVariables.updateRate=0;
@@ -53,6 +57,11 @@ void RobotConnection::readyRead()
 
 void RobotConnection::connectionloop()
 {
+
+    if(communicationSettings.turnOffBots){
+        communicationSettings.turnOffBots = false;
+        turnOffAllRobots();
+    }
     //check of new robots have come online
     if(myTimer.elapsed() <= 5000 && lastRequestedBotIP !="0.0.0.0"){   // 5 seconds to detect a bot when the status has been set to 'STARTUP'
            // check if there is a robot with a green led
@@ -97,8 +106,8 @@ void RobotConnection::updateRobots()
                 ptr->sharedData.newY = ptr->destinationY;
                 ptr->sharedData.currentX = ptr->x;
                 ptr->sharedData.currentY = ptr->y;
-                ptr->sharedData.currentAngle = ptr->angle;
-                ptr->sharedData.speed = 255; // not tested
+                ptr->sharedData.currentAngle = toDeg(ptr->angle);
+                ptr->sharedData.speed = 130; // not tested
 
                 //send new packet to the robots
                  socket->writeDatagram(reinterpret_cast<char*>(&ptr->sharedData), sizeof(UdpData) ,QHostAddress(ptr->ip), 4210);
@@ -106,6 +115,23 @@ void RobotConnection::updateRobots()
         }
     }
 }
+
+void RobotConnection::turnOffAllRobots()
+{
+    for(int i = 0; i < locationManager.robots.size();i++){
+        RobotLocation *ptr = locationManager.robots.at(i);
+        if(ptr->type == RobotLocation::RobotType::REAL){
+            if(ptr->sharedData.status == robotStatus::NORMAL||ptr->sharedData.status == robotStatus::OFF){ //only possible when camera detection has created a bot
+                //update the packets of the robots
+                 ptr->sharedData.status = robotStatus::OFF;
+                //send new packet to the robots
+                 socket->writeDatagram(reinterpret_cast<char*>(&ptr->sharedData), sizeof(UdpData) ,QHostAddress(ptr->ip), 4210);
+            }
+        }
+    }
+    IpList.clear();
+}
+
 
 void RobotConnection::processIP(QString ip)
 {

@@ -8,6 +8,7 @@
 #include "globalsettings.h"
 #include "locationmanager.h"
 #include "robotlocation.h"
+#include <math.h>
 #include <QObject>
 #include <QThread>
 #include <QList>
@@ -29,7 +30,8 @@ class robotDetection: public QThread
     private:
         void detectNewRobots(cv::Mat threshold, cv::Mat &originalFrame);
         void trackFilteredObject(cv::Mat threshold, cv::Mat &originalFrame);
-        void detectAngleRobots(cv::Mat threshold, cv::Mat &originalFrame);
+        void detectBlueDots(cv::Mat threshold, cv::Mat &originalFrame);
+        void calculateAngle();
         void drawObjects(cv::Mat &frame);
         void morphOps(cv::Mat &thresh);
         cv::Mat detectColors(cv::Mat frame, QString color);

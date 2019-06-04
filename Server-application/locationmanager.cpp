@@ -54,6 +54,8 @@ void LocationManager::addObject(Object *object)
     objects.append(object);
 }
 
+
+
 void LocationManager::makeNewRealRobot(int x, int y)
 {
     RobotLocation *newRobot = new RobotLocation();

@@ -33,6 +33,7 @@ private:
     void processIP(QString ip);
     void turnRobotOn(QString ip);
     void updateRobots();
+    void turnOffAllRobots();
 
 
 };

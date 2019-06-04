@@ -28,6 +28,7 @@ public:
     void deleteAllSimulatedRobots();
     void deleteAllSimulatedRobotsFromGroup(RobotGroup* group = nullptr);
     void addObject(Object* object);
+    void turnOffAllRobots();
 public slots:
     void makeNewRealRobot(int x,int y);
 };

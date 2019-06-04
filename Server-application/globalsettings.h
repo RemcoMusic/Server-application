@@ -7,11 +7,11 @@ class GlobalSettings
 {
 public:
     GlobalSettings();
-    int fieldSizeX=1140;//mm
-    int fieldSizeY=860;//mm
+    int fieldSizeX=1400;//mm
+    int fieldSizeY=800;//mm
 
-    int cameraX= 1280;
-    int cameraY= 720;
+    int cameraX= 640;
+    int cameraY= 480;
 
     int botDiameter = 100;//mm
     int botDistanceBetweenWheels = 80;

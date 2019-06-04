@@ -51,7 +51,7 @@ void robotDetection::run() {
 
 
 int robotDetection::startDetecting() {
-    cv::VideoCapture cap(0);
+    cv::VideoCapture cap(1);
     cv::Mat originalFrame;
     cv::Mat threshold;
     cv::Mat HSV;
@@ -60,6 +60,9 @@ int robotDetection::startDetecting() {
     cv::Mat G;
     cv::Mat B;
 
+//    cap.set(cv::CAP_PROP_FRAME_WIDTH, globalSettings.cameraX);
+//    cap.set(cv::CAP_PROP_FRAME_HEIGHT, globalSettings.cameraY);
+
     if(!cap.isOpened()) {
         return -1;
     }
@@ -67,6 +70,12 @@ int robotDetection::startDetecting() {
     for(;;) {
         cap >> originalFrame;
         cv::cvtColor(originalFrame,HSV,cv::COLOR_BGR2HSV);
+
+        threshold = detectColors(HSV,"Blue");
+        morphOps(threshold);
+        cv::cvtColor(threshold,B, cv::COLOR_BGR2RGB);
+        robotDetectionSettings.processedBlueFrame = B;
+        detectBlueDots(threshold,originalFrame);
 
         threshold = detectColors(HSV, "Green");
         morphOps(threshold);
@@ -79,14 +88,6 @@ int robotDetection::startDetecting() {
         cv::cvtColor(threshold,R, cv::COLOR_BGR2RGB);
         robotDetectionSettings.processedRedFrame = R;
         trackFilteredObject(threshold,originalFrame);
-
-        threshold = detectColors(HSV,"Blue");
-        morphOps(threshold);
-        cv::cvtColor(threshold,B, cv::COLOR_BGR2RGB);
-        robotDetectionSettings.processedBlueFrame = B;
-
-        imshow("Color detection", originalFrame);
-        imshow("Thresholded Frame", threshold);
 
         cv::cvtColor(originalFrame,RGB, cv::COLOR_BGR2RGB);
         robotDetectionSettings.processedFrame = RGB;
@@ -109,15 +110,19 @@ void robotDetection::detectNewRobots(cv::Mat threshold, cv::Mat &originalFrame) 
         for (int index = 0; index >= 0; index = hierarchy[index][0]) {
             cv::Moments moment = moments((cv::Mat)contours[index]);
             double area = moment.m00;
+            double resizeXFactor = double(globalSettings.fieldSizeX)/double(globalSettings.cameraX);
+            double resizeYFactor = double(globalSettings.fieldSizeY)/double(globalSettings.cameraY);
+            double calibratedX = ((moment.m10/area) * resizeXFactor);
+            double calibratedY = ((moment.m01/area) * resizeYFactor);
             if(area>100) {
                 for(int i =0;i<locationManager.robots.size(); i++) {
                     RobotLocation* ptr = locationManager.robots.at(i);
                     if(ptr->type == RobotLocation::RobotType::REAL){
-                        if (ptr->x >= (moment.m10/area - 30) && ptr->x <= (moment.m10/area + 30)) {
-                            if(ptr->y >= (moment.m01/area -30) && ptr->y <= (moment.m01/area + 30)) {
+                        if (ptr->x >= (calibratedX - 30) && ptr->x <= (calibratedX + 30)) {
+                            if(ptr->y >= (calibratedY - 30) && ptr->y <= (calibratedY + 30)) {
                                 newRobot = false;
-                                ptr->x=moment.m10/area;
-                                ptr->y=moment.m01/area;
+                                ptr->x=calibratedX;
+                                ptr->y=calibratedY;
                                 break;
                             }
                         }
@@ -125,7 +130,7 @@ void robotDetection::detectNewRobots(cv::Mat threshold, cv::Mat &originalFrame) 
                 }
                 if (newRobot) {
                     if (robotDetectionSettings.enableDetection) {
-                        emit makeANewRobot(moment.m10/area,moment.m01/area);
+                        emit makeANewRobot(calibratedX,calibratedY);
                         newRobot = true;
                     }
                 }
@@ -151,26 +156,26 @@ void robotDetection::trackFilteredObject(cv::Mat threshold, cv::Mat &originalFra
     bool objectFound = false;
     if (hierarchy.size() > 0) {
         int numObjects = hierarchy.size();
-        //if number of objects greater than MAX_NUM_OBJECTS we have a noisy filter
         if(numObjects<50)
         {
             for (int index = 0; index >= 0; index = hierarchy[index][0])
             {
                 cv::Moments moment = moments((cv::Mat)contours[index]);
                 double area = moment.m00;
-                //if the area is less than 20 px by 20px then it is probably just noise
-                //if the area is the same as the 3/2 of the image size, probably just a bad filter
-                //we only want the object with the largest area so we safe a reference area each
-                //iteration and compare it to the area in the next iteration.
+                double resizeXFactor = double(globalSettings.fieldSizeX)/double(globalSettings.cameraX);
+                double resizeYFactor = double(globalSettings.fieldSizeY)/double(globalSettings.cameraY);
+                double calibratedX = ((moment.m10/area) * resizeXFactor);
+                double calibratedY = ((moment.m01/area) * resizeYFactor);
                 if(area>100) {
                     for(int i =0;i<locationManager.robots.size(); i++) {
                         RobotLocation* ptr = locationManager.robots.at(i);
                         if(ptr->type == RobotLocation::RobotType::REAL) {
                             if(ptr->sharedData.status == robotStatus::NORMAL) {
-                                if (ptr->x >= (moment.m10/area - 30) && ptr->x <= (moment.m10/area + 30)) {
-                                    if(ptr->y >= (moment.m01/area -30) && ptr->y <= (moment.m01/area + 30)) {
-                                        ptr->x=moment.m10/area;
-                                        ptr->y=moment.m01/area;
+                                if (ptr->x >= (calibratedX - robotDetectionSettings.xyDeviationMilimeter) && ptr->x <= (calibratedX + robotDetectionSettings.xyDeviationMilimeter)) {
+                                    if(ptr->y >= (calibratedY - robotDetectionSettings.xyDeviationMilimeter) && ptr->y <= (calibratedY + robotDetectionSettings.xyDeviationMilimeter)) {
+                                        ptr->x=calibratedX;
+                                        ptr->y=calibratedY;
+                                        calculateAngle();
                                         objectFound = true;
                                         break;
                                     }
@@ -187,7 +192,7 @@ void robotDetection::trackFilteredObject(cv::Mat threshold, cv::Mat &originalFra
     }
 }
 
-void robotDetection::detectAngleRobots(cv::Mat threshold, cv::Mat &originalFrame) {
+void robotDetection::detectBlueDots(cv::Mat threshold, cv::Mat &originalFrame) {
     bool newRobot = true;
     cv::Mat temp;
     threshold.copyTo(temp);
@@ -199,23 +204,25 @@ void robotDetection::detectAngleRobots(cv::Mat threshold, cv::Mat &originalFrame
         for (int index = 0; index >= 0; index = hierarchy[index][0]) {
             cv::Moments moment = moments((cv::Mat)contours[index]);
             double area = moment.m00;
+            double resizeXFactor = double(globalSettings.fieldSizeX)/double(globalSettings.cameraX);
+            double resizeYFactor = double(globalSettings.fieldSizeY)/double(globalSettings.cameraY);
+            double calibratedX = ((moment.m10/area) * resizeXFactor);
+            double calibratedY = ((moment.m01/area) * resizeYFactor);
             if(area>100) {
-                for(int i =0;i<locationManager.robots.size(); i++) {
-                    RobotLocation* ptr = locationManager.robots.at(i);
-                    if(ptr->type == RobotLocation::RobotType::REAL){
-                        if (ptr->x >= (moment.m10/area - 30) && ptr->x <= (moment.m10/area + 30)) {
-                            if(ptr->y >= (moment.m01/area -30) && ptr->y <= (moment.m01/area + 30)) {
-                                newRobot = false;
-                                ptr->x=moment.m10/area;
-                                ptr->y=moment.m01/area;
-                                break;
-                            }
+                for(int i =0;i<bluePoints.size(); i++) {
+                    if (bluePoints.at(i).x() >= (calibratedX - 30) && bluePoints.at(i).x() <= (calibratedX + 30)) {
+                        if(bluePoints.at(i).y() >= (calibratedY -30) && bluePoints.at(i).y() <= (calibratedY + 30)) {
+                            newRobot = false;
+                            bluePoints[i].setX(calibratedX);
+                            bluePoints[i].setY(calibratedY);
+                            break;
                         }
                     }
                 }
                 if (newRobot) {
                     if (robotDetectionSettings.enableDetection) {
-                        emit makeANewRobot(moment.m10/area,moment.m01/area);
+                        bluePoints.append(QPoint(calibratedX,calibratedY));
+                        qDebug() << "Size of Bluepoints" << bluePoints.size();
                         newRobot = true;
                     }
                 }
@@ -223,13 +230,12 @@ void robotDetection::detectAngleRobots(cv::Mat threshold, cv::Mat &originalFrame
             }
             else objectFound = false;
         }
-        if(objectFound)
-        {
-            drawObjects(originalFrame);
-        }
+//        if(objectFound)
+//        {
+//            drawObjects(originalFrame);
+//        }
     }
 }
-
 
 cv::Mat robotDetection::detectColors(cv::Mat frame, QString color) {
     if(color == "Red") {
@@ -256,6 +262,28 @@ cv::Mat robotDetection::detectColors(cv::Mat frame, QString color) {
     }
 }
 
+void robotDetection::calculateAngle() {
+    for (int i =0;i<locationManager.robots.size(); i++) {
+        RobotLocation* ptr = locationManager.robots.at(i);
+        if(ptr->type == RobotLocation::RobotType::REAL) {
+            if(ptr->sharedData.status == robotStatus::NORMAL) {
+                for (int i = 0; i<bluePoints.size(); i++) {
+                    int deltaX = ptr->x - bluePoints.at(i).x();
+                    int deltaY = ptr->y - bluePoints.at(i).y();
+                    double distance = sqrt(deltaX*deltaX + deltaY*deltaY);
+                    if(distance <= 55) {
+                        double goalAngle = atan2(deltaY,deltaX) + M_PI;
+                        if(goalAngle >= 2 *M_PI) {
+                            goalAngle -= 2*M_PI;
+                        }
+                        ptr->angle = goalAngle;
+                    }
+                }
+            }
+        }
+    }
+}
+
 void robotDetection::morphOps(cv::Mat &thresh) {
     cv::Mat erodeElement = getStructuringElement(cv::MORPH_RECT, cv::Size(robotDetectionSettings.erodeObject,robotDetectionSettings.erodeObject));
     cv::Mat dilateElement = getStructuringElement(cv::MORPH_RECT, cv::Size(robotDetectionSettings.dilateObject,robotDetectionSettings.dilateObject));
@@ -270,12 +298,14 @@ void robotDetection::morphOps(cv::Mat &thresh) {
 void robotDetection::drawObjects(cv::Mat &frame) {
     for(int i =0; i<locationManager.robots.size(); i++) {
         RobotLocation* ptr = locationManager.robots.at(i);
+        double uncalibratedXCordinate = ptr->x / (double(globalSettings.fieldSizeX)/double(globalSettings.cameraX));
+        double uncalibratedYCordinate = ptr->y / (double(globalSettings.fieldSizeY)/double(globalSettings.cameraY));
         if(ptr->type == RobotLocation::RobotType::REAL) {
-            cv::circle(frame,cv::Point(ptr->x,ptr->y),10,cv::Scalar(0,0,255));
-            cv::putText(frame,std::to_string(ptr->x)+ " , " + std::to_string(ptr->y),
-                        cv::Point(ptr->x,ptr->y+10),1,1,cv::Scalar(0,255,0));
+            cv::circle(frame,cv::Point(uncalibratedXCordinate,uncalibratedYCordinate),10,cv::Scalar(0,0,255));
+            cv::putText(frame,std::to_string(int(uncalibratedXCordinate))+ " , " + std::to_string(int(uncalibratedYCordinate)),
+                        cv::Point(uncalibratedXCordinate,uncalibratedYCordinate),1,1,cv::Scalar(0,255,0));
             std::string str =std::to_string(i);
-            cv::putText(frame,str,cv::Point(ptr->x,ptr->y-15),1,2,cv::Scalar(0,0,255));
+            cv::putText(frame,str,cv::Point(uncalibratedXCordinate,uncalibratedYCordinate),1,2,cv::Scalar(0,0,255));
         }
     }
 }
