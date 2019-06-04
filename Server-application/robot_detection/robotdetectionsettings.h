@@ -29,7 +29,7 @@ public:
     QList<Hsv*> HSVColorValues;
     int erodeObject = 2; //Default 1-20
     int dilateObject = 8; //Default 1-20
-    int xyDeviationMilimeter = 0; //Has to be implemented
+    int xyDeviationMilimeter = 50; //Has to be implemented
     bool drawRobots = false; //Default
     bool enableDetection = true; //Default
     cv::Mat processedFrame;

@@ -49,7 +49,12 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->sliderSaturation, SIGNAL(valueChanged(int)),ui->lcdNumberSaturation, SLOT(display(int)));
     connect(ui->sliderVDinges, SIGNAL(valueChanged(int)),ui->lcdNumberVDinges, SLOT(display(int)));
 
+
     //on_colorComboBox_currentIndexChanged(0);
+    ui->sliderErode->setValue(robotDetectionSettings.erodeObject);
+    ui->sliderDilate->setValue(robotDetectionSettings.dilateObject);
+    ui->sliderDeviation->setValue(robotDetectionSettings.xyDeviationMilimeter);
+
 
     for(int i =0;i<1;i++){
         int x = qrand() % globalSettings.fieldSizeX;
