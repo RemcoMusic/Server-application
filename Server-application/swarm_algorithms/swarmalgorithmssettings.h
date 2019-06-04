@@ -37,7 +37,7 @@ public:
     bool algorithmAllowSimulatedObject = true;    //1
 
     int robotSpeed = 5;//10-100  //1
-    bool dynamicSpeed = true; // with dynamic robot speed depents op the other robot, they will arive on the same time //1
+    bool dynamicSpeed = true; // with dynamic robot speed depents on the other robot, they will arive on the same time //1
     bool useLineAlgorithmRotationTime = true;  //2
     int lineAlgorithmRotationWeight = 10;      //2
 

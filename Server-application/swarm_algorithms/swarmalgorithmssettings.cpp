@@ -13,7 +13,7 @@ SwarmAlgorithmsSettings::SwarmAlgorithmsSettings()
 
     anvailableAlgoritms << "CircleAlgorirm"\
                            << "aap"\
-                        << "LineAlgoritm";
+                        << "LineAlgoritm" << "halfCircleAlgorithm";
 }
 
 void SwarmAlgorithmsSettings::runNewAlgortim(QString newAlgoritm)
@@ -32,5 +32,8 @@ void SwarmAlgorithmsSettings::runNewAlgortim(QString newAlgoritm)
         activeAlgorithms.append(new CircleAlgorithm());
     } else if(newAlgoritm == "LineAlgoritm"){
         activeAlgorithms.append(new LineAlgorithm());
+    }
+    else if(newAlgoritm == "halfCircleAlgorithm"){
+        activeAlgorithms.append(new HalfCircleAlgorithm());
     }
 }

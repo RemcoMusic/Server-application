@@ -55,38 +55,31 @@ void HalfCircleAlgorithm::findRobotMovementInputs()
     {
         calculateDestinationsCenterOuter();
     }
-    else if(userInputs.size() == 1)
-    {
-        RobotLocation *currentRobot = userInputs.first();
-        //first check if the robot is near the radius of the circle
-//        if(abs(distanceFromCenter(outer1->x(),outer1->y()) - distanceFromCenter(currentRobot->x,currentRobot->y)) < 100)
-//        {
-//            outer1->rx() = currentRobot->x;
-//            outer1->ry() = currentRobot->y;
-//        }
-        if(abs(outer1->x() - currentRobot->x) + abs(outer1->y() - currentRobot->y) < 100)
-        {
-            outer1->rx() = currentRobot->x;
-            outer1->ry() = currentRobot->y;
-        }
-        else if(abs(outer2->x() - currentRobot->x) + abs(outer2->y() - currentRobot->y) < 100)
-        {
-            outer2->rx() = currentRobot->x;
-            outer2->ry() = currentRobot->y;
-        }
-
-        calculateDestinationsCenterOuter();
-    }
     else
     {
-//        RobotLocation *robot1 = userInputs.first();
-//        RobotLocation *robot2 = userInputs.at(1);
-//        outer1->rx() = robot1->x;
-//        outer1->ry() = robot1->y;
-//        outer2->rx() = robot2->x;
-//        outer2->ry() = robot2->y;
-//        calculateDestinationsOuterOuter();
+        for(int i=0;i<userInputs.size();i++)
+        {
+            RobotLocation *currentRobot = userInputs.at(i);
+
+            if(abs(outer1->x() - currentRobot->x) + abs(outer1->y() - currentRobot->y) < 100)
+            {
+                outer1->rx() = currentRobot->x;
+                outer1->ry() = currentRobot->y;
+            }
+            else if(abs(outer2->x() - currentRobot->x) + abs(outer2->y() - currentRobot->y) < 100)
+            {
+                outer2->rx() = currentRobot->x;
+                outer2->ry() = currentRobot->y;
+            }
+            else if(abs( distanceFromCenter(currentRobot->x, currentRobot->y) - distanceFromCenter(outer1->x(),outer1->y()) ) < 100)
+            {
+                radius = distanceFromCenter(currentRobot->x, currentRobot->y);
+            }
+
+            HalfCircleAlgorithm::calculateDestinationsCenterOuter();
+        }
     }
+
 }
 void HalfCircleAlgorithm::calculateDestinationsOuterOuter()
 {
@@ -99,9 +92,33 @@ void HalfCircleAlgorithm::calculateDestinationsOuterOuter()
 }
 void HalfCircleAlgorithm::calculateDestinationsCenterOuter()
 {
+    //calculate center
+    //calcute distance between outer1 and outer2
+    int deltaX = outer2->rx() - outer1->rx();
+    int deltaY = outer2->ry() - outer1->ry();
+    int distance = sqrt(deltaX*deltaX + deltaY*deltaY);//pytagoras C
+    int halfDistance = distance/2;
+
+    int currentRadius = radius;
+    if(halfDistance >= radius)
+    {
+        currentRadius = halfDistance;
+    }
+
+    //calculate the height of the line in the circle
+    int lineHight = sqrt(currentRadius*currentRadius - halfDistance*halfDistance);
+    qDebug("radius %d, halfdistance %d, lineheight %d",currentRadius,halfDistance,lineHight);
+    double lineAngle = atan2(deltaY,deltaX);
+
+    int lineMiddleX = cos(lineAngle) * halfDistance;
+    int lineMiddleY = sin(lineAngle) * halfDistance;
+
+    center->rx() = outer1->x() + lineMiddleX - cos(lineAngle+0.5*M_PI) * lineHight;
+    center->ry() = outer1->y() + lineMiddleY - sin(lineAngle+0.5*M_PI) * lineHight;
+
     //begin angle
-    int deltaX = outer1->rx() - center->rx();
-    int deltaY = outer1->ry() - center->ry();
+    deltaX = outer1->rx() - center->rx();
+    deltaY = outer1->ry() - center->ry();
     double beginAngle = atan2(deltaY, deltaX);
 
     //end angle
@@ -109,7 +126,14 @@ void HalfCircleAlgorithm::calculateDestinationsCenterOuter()
     deltaY = outer2->ry() - center->ry();
     double endAngle = atan2(deltaY, deltaX);
 
-    if(beginAngle < 0)beginAngle+=2*M_PI;
-    if(endAngle < 0)endAngle+=2*M_PI;
-    CircleAlgorithm::calculateDestinationsCenterOuter(std::min(beginAngle,endAngle), std::max(beginAngle,endAngle));
+    while(beginAngle < 0)
+    {
+        beginAngle += 2*M_PI;
+        endAngle += 2*M_PI;
+    }
+    while(endAngle <= beginAngle)
+    {
+        endAngle += 2*M_PI;
+    }
+    CircleAlgorithm::calculateDestinationsCenterOuter(beginAngle,endAngle,true);
 }
