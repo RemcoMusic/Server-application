@@ -155,7 +155,7 @@ void MainWindow::updateNumberOfRobots()
     int real = 0;
     int sim = 0;
     for(int i = 0; i < locationManager.robots.size();i++){
-        if(locationManager.robots.at(i)->type == RobotLocation::RobotType::REAL){
+        if(locationManager.robots.at(i)->type == Object::Type::REAL){
             real++;
         }else{
             sim++;

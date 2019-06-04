@@ -16,7 +16,7 @@ bool RobotLocation::isReady()
 }
 void RobotLocation::print()
 {
-    if(type == RobotType::SIMULATED)
+    if(type == Object::Type::SIMULATED)
     {
         qDebug("robot at x=%d y=%d simulated",x,y);
     }

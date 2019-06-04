@@ -10,7 +10,7 @@ class Object: public QGraphicsItem
 public:
     Object();
     QRectF boundingRect() const;
-    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
+    virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)=0;
     int x;
     int y;
     enum class Type

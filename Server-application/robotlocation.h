@@ -15,6 +15,7 @@
 #include <QPoint>
 #include <QFrame>
 #include <math.h>
+#include "objectsbase.h"
 enum robotStatus{
     OFF = 0,
     STARTUP = 1,
@@ -39,7 +40,7 @@ struct  UdpData {
 // 3 = charging
 
 
-class RobotLocation: public QGraphicsItem, public QFrame
+class RobotLocation: public Object
 {
 public:
     UdpData sharedData; // <-- must be used for all data that the bots must know
@@ -61,8 +62,6 @@ public:
     double angle = 0;
 
 
-    int x = 0;
-    int y = 0;
 
     double speed = 1;
     double currentSpeedLeft = 0;
@@ -77,11 +76,7 @@ public:
     double batteryVoltage=7.4;
 
     RobotGroup* group = nullptr;
-    enum class RobotType
-    {
-        REAL = 1,
-        SIMULATED=2
-    }type;
+
     void print();
 
 protected:

@@ -68,7 +68,7 @@ void RobotConnection::connectionloop()
 
         for(int i = 0; i < locationManager.robots.size();i++){
             RobotLocation *ptr = locationManager.robots.at(i);
-            if(ptr->type == RobotLocation::RobotType::REAL){
+            if(ptr->type == Object::Type::REAL){
                 if(ptr->sharedData.status == robotStatus::STARTUP){ //only possible when camera detection has created a bot
                     ptr->sharedData.status = robotStatus::NORMAL; //the bot has been detected by the camera while the bot has joined je application by broadcasting it's IP
                     ptr->ip = lastRequestedBotIP;
@@ -99,7 +99,7 @@ void RobotConnection::updateRobots()
     //send all data to new robots
     for(int i = 0; i < locationManager.robots.size();i++){
         RobotLocation *ptr = locationManager.robots.at(i);
-        if(ptr->type == RobotLocation::RobotType::REAL){
+        if(ptr->type == Object::Type::REAL){
             if(ptr->sharedData.status == robotStatus::NORMAL){ //only possible when camera detection has created a bot
                 //update the packets of the robots
                 ptr->sharedData.newX = ptr->destinationX;
@@ -120,7 +120,7 @@ void RobotConnection::turnOffAllRobots()
 {
     for(int i = 0; i < locationManager.robots.size();i++){
         RobotLocation *ptr = locationManager.robots.at(i);
-        if(ptr->type == RobotLocation::RobotType::REAL){
+        if(ptr->type == Object::Type::REAL){
             if(ptr->sharedData.status == robotStatus::NORMAL||ptr->sharedData.status == robotStatus::OFF){ //only possible when camera detection has created a bot
                 //update the packets of the robots
                  ptr->sharedData.status = robotStatus::OFF;

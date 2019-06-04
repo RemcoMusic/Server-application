@@ -239,7 +239,7 @@ void SwarmSimulation::startSimulation()
     while (i.hasNext())
     {
         RobotLocation *currentRobot = i.next();
-        if(currentRobot->type == RobotLocation::RobotType::SIMULATED)
+        if(currentRobot->type == Object::Type::SIMULATED)
         {
             if(swarmSimulationSettings.realisticSimulationEnabled)
             {

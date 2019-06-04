@@ -51,7 +51,7 @@ void robotDetection::run() {
 
 
 int robotDetection::startDetecting() {
-    cv::VideoCapture cap(1);
+    cv::VideoCapture cap(0);
     cv::Mat originalFrame;
     cv::Mat threshold;
     cv::Mat HSV;
@@ -117,7 +117,7 @@ void robotDetection::detectNewRobots(cv::Mat threshold, cv::Mat &originalFrame) 
             if(area>100) {
                 for(int i =0;i<locationManager.robots.size(); i++) {
                     RobotLocation* ptr = locationManager.robots.at(i);
-                    if(ptr->type == RobotLocation::RobotType::REAL){
+                    if(ptr->type == Object::Type::REAL){
                         if (ptr->x >= (calibratedX - 30) && ptr->x <= (calibratedX + 30)) {
                             if(ptr->y >= (calibratedY - 30) && ptr->y <= (calibratedY + 30)) {
                                 newRobot = false;
@@ -169,7 +169,7 @@ void robotDetection::trackFilteredObject(cv::Mat threshold, cv::Mat &originalFra
                 if(area>100) {
                     for(int i =0;i<locationManager.robots.size(); i++) {
                         RobotLocation* ptr = locationManager.robots.at(i);
-                        if(ptr->type == RobotLocation::RobotType::REAL) {
+                        if(ptr->type == Object::Type::REAL) {
                             if(ptr->sharedData.status == robotStatus::NORMAL) {
                                 if (ptr->x >= (calibratedX - robotDetectionSettings.xyDeviationMilimeter) && ptr->x <= (calibratedX + robotDetectionSettings.xyDeviationMilimeter)) {
                                     if(ptr->y >= (calibratedY - robotDetectionSettings.xyDeviationMilimeter) && ptr->y <= (calibratedY + robotDetectionSettings.xyDeviationMilimeter)) {
@@ -265,7 +265,7 @@ cv::Mat robotDetection::detectColors(cv::Mat frame, QString color) {
 void robotDetection::calculateAngle() {
     for (int i =0;i<locationManager.robots.size(); i++) {
         RobotLocation* ptr = locationManager.robots.at(i);
-        if(ptr->type == RobotLocation::RobotType::REAL) {
+        if(ptr->type == Object::Type::REAL) {
             if(ptr->sharedData.status == robotStatus::NORMAL) {
                 for (int i = 0; i<bluePoints.size(); i++) {
                     int deltaX = ptr->x - bluePoints.at(i).x();
@@ -300,7 +300,7 @@ void robotDetection::drawObjects(cv::Mat &frame) {
         RobotLocation* ptr = locationManager.robots.at(i);
         double uncalibratedXCordinate = ptr->x / (double(globalSettings.fieldSizeX)/double(globalSettings.cameraX));
         double uncalibratedYCordinate = ptr->y / (double(globalSettings.fieldSizeY)/double(globalSettings.cameraY));
-        if(ptr->type == RobotLocation::RobotType::REAL) {
+        if(ptr->type == Object::Type::REAL) {
             cv::circle(frame,cv::Point(uncalibratedXCordinate,uncalibratedYCordinate),10,cv::Scalar(0,0,255));
             cv::putText(frame,std::to_string(int(uncalibratedXCordinate))+ " , " + std::to_string(int(uncalibratedYCordinate)),
                         cv::Point(uncalibratedXCordinate,uncalibratedYCordinate),1,1,cv::Scalar(0,255,0));

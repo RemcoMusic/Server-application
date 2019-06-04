@@ -1,6 +1,7 @@
 #pragma once
 
 #include "robotlocation.h"
+#include "objectsbase.h"
 
 
 

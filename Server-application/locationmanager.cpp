@@ -18,7 +18,7 @@ void LocationManager::printAllRobots()
 RobotLocation *LocationManager::addSimulatedRobot(RobotGroup *group)
 {
     RobotLocation *newRobot = new RobotLocation(group);
-    newRobot->type = RobotLocation::RobotType::SIMULATED;
+    newRobot->type = Object::Type::SIMULATED;
     robots.append(newRobot);
     return newRobot;
 }
@@ -27,7 +27,7 @@ void LocationManager::deleteAllSimulatedRobots()
     QMutableListIterator<RobotLocation*> i(robots);
     while (i.hasNext())
     {
-        if(i.next()->type == RobotLocation::RobotType::SIMULATED)
+        if(i.next()->type == Object::Type::SIMULATED)
         {
             i.remove();
         }
@@ -39,7 +39,7 @@ void LocationManager::deleteAllSimulatedRobotsFromGroup(RobotGroup *group)
     while (i.hasNext())
     {
         auto val = i.next();
-        if(val->type == RobotLocation::RobotType::SIMULATED)
+        if(val->type == Object::Type::SIMULATED)
         {
             if(val->group == group)
             {
@@ -59,7 +59,7 @@ void LocationManager::addObject(Object *object)
 void LocationManager::makeNewRealRobot(int x, int y)
 {
     RobotLocation *newRobot = new RobotLocation();
-    newRobot->type = RobotLocation::RobotType::REAL;
+    newRobot->type = Object::Type::REAL;
     newRobot->sharedData.status = robotStatus::STARTUP;  //when the camera connects, it must be set to startup because it has no IP as of this moment
     newRobot->x = x;
     newRobot->y = y;
