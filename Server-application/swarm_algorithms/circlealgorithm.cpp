@@ -13,6 +13,7 @@ void CircleAlgorithm::update()
 {
     LinearMotionAlgorithms::generateRobotList();
     LinearMotionAlgorithms::clearDestinations();
+    userInputs.clear();
     if(swarmAlgorithmsSettings.inputSource == SwarmAlgorithmsSettings::AlgorithmInputSource::NONE)
     {
         calculateDestinationsCenterOuter();
@@ -23,26 +24,36 @@ void CircleAlgorithm::update()
     }
     else if(swarmAlgorithmsSettings.inputSource == SwarmAlgorithmsSettings::AlgorithmInputSource::REAL_OBJECTS_CENTER_OUTER)
     {
-        calculateDestinationsCenterOuter();
+        findObjectInputs(true);
+        processUserInputsCenterOuter();
     }
     else if(swarmAlgorithmsSettings.inputSource == SwarmAlgorithmsSettings::AlgorithmInputSource::REAL_OBJECTS_OUTER_OUTER)
     {
-        calculateDestinationsOuterOuter();
+        findObjectInputs(true);
+        processUserInputsOuterOuter();
     }
     else if(swarmAlgorithmsSettings.inputSource == SwarmAlgorithmsSettings::AlgorithmInputSource::ROBOT_MOVEMENT)
     {
         findRobotMovementInputs();
+        processUserInputsOuterOuter();
     }
 
     LinearMotionAlgorithms::update();
 }
-bool compereUserInputs(const RobotLocation* robot1, const RobotLocation* robot2)
+void CircleAlgorithm::findObjectInputs(bool simulated)
 {
-    return robot1->lastDisplacement > robot2->lastDisplacement;
+    QListIterator<Object*> i(locationManager.objects);
+    while (i.hasNext())
+    {
+        Object *currentObject = i.next();
+        if(dynamic_cast<Ball*>(currentObject) != nullptr)
+        {
+            userInputs.append(currentObject);
+        }
+    }
 }
 void CircleAlgorithm::findRobotMovementInputs()
 {
-    QList<RobotLocation*> userInputs;
     QListIterator<RobotLocation*> i(data.swarmRobots);
     while (i.hasNext())
     {
@@ -52,31 +63,52 @@ void CircleAlgorithm::findRobotMovementInputs()
             userInputs.append(currentRobot);
         }
     }
-    qSort(userInputs.begin(),userInputs.end(), compereUserInputs);
+}
+
+void CircleAlgorithm::processUserInputsCenterOuter()
+{
+    for(int i = 0;i<userInputs.size();i++)
+    {
+        Object *currentObject = userInputs.at(i);
+        if(abs(distanceFromCenter(outer1->x(),outer1->y()) - distanceFromCenter(currentObject->x,currentObject->y)) < 100)
+        {
+            outer1->rx() = currentObject->x;
+            outer1->ry() = currentObject->y;
+        }
+        else if(distanceFromCenter(currentObject->x,currentObject->y) < 100)
+        {
+            center->rx() = currentObject->x;
+            center->ry() = currentObject->y;
+        }
+    }
+    calculateDestinationsCenterOuter();
+}
+void CircleAlgorithm::processUserInputsOuterOuter()
+{
     if(userInputs.size() == 0)
     {
         calculateDestinationsCenterOuter();
     }
     else if(userInputs.size() == 1)
     {
-        RobotLocation *currentRobot = userInputs.first();
-        //first check if the robot is near the radius of the circle
-        if(abs(distanceFromCenter(outer1->x(),outer1->y()) - distanceFromCenter(currentRobot->x,currentRobot->y)) < 100)
-        {
-            outer1->rx() = currentRobot->x;
-            outer1->ry() = currentRobot->y;
-        }
 
+        Object *currentObject = userInputs.first();
+        //first check if the robot is near the radius of the circle
+        if(abs(distanceFromCenter(outer1->x(),outer1->y()) - distanceFromCenter(currentObject->x,currentObject->y)) < 100)
+        {
+            outer1->rx() = currentObject->x;
+            outer1->ry() = currentObject->y;
+        }
         calculateDestinationsCenterOuter();
     }
     else
     {
-        RobotLocation *robot1 = userInputs.first();
-        RobotLocation *robot2 = userInputs.at(1);
-        outer1->rx() = robot1->x;
-        outer1->ry() = robot1->y;
-        outer2->rx() = robot2->x;
-        outer2->ry() = robot2->y;
+        Object *object1 = userInputs.first();
+        Object *object2 = userInputs.at(1);
+        outer1->rx() = object1->x;
+        outer1->ry() = object1->y;
+        outer2->rx() = object2->x;
+        outer2->ry() = object2->y;
         calculateDestinationsOuterOuter();
     }
 }
@@ -121,7 +153,7 @@ void CircleAlgorithm::calculateDestinationsCenterOuter(double beginAngle, double
     int amountOfRobotsUsing = std::min(amountOfRobotsFitting, data.swarmRobots.size());
     if(amountOfRobotsUsing < 1)
     {
-        qFatal("amount of robots using < 1");
+        qFatal("fatal amount of robots using < 1");
     }
 
     double angleBetweenRobots = (endAngle - beginAngle)/(amountOfRobotsUsing);
