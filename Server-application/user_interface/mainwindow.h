@@ -67,6 +67,8 @@ private slots:
 
     void on_resetSimulationButton_clicked();
 
+    void on_algorithmInputComboBox_currentIndexChanged(int index);
+
 public slots:
     void updateGui();
 private:

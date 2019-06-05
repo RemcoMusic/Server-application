@@ -309,3 +309,8 @@ void MainWindow::on_resetSimulationButton_clicked()
     dataScene->addRect(0,0,globalSettings.fieldSizeX,globalSettings.fieldSizeY);
 
 }
+
+void MainWindow::on_algorithmInputComboBox_currentIndexChanged(int index)
+{
+    swarmAlgorithmsSettings.inputSource = (SwarmAlgorithmsSettings::AlgorithmInputSource)index;
+}

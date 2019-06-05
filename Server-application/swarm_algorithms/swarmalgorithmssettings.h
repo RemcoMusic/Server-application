@@ -33,7 +33,8 @@ public:
         HAND_GESTURE = 3, //by hand gestures(hand object)
         ROBOT_MOVEMENT = 4, //by displacing the robot, displaced robot is the orientation for the algorithm
         ROBOT_MOVEMENT_WITH_ANGLE = 5 //by displacing the robot, displaced robot is the orientation for the algorithm
-    }inputSource = AlgorithmInputSource::REAL_OBJECTS_CENTER_OUTER;
+    }inputSource = AlgorithmInputSource::NONE;
+
     bool algorithmAllowSimulatedObject = true;    //1
 
     int robotSpeed = 5;//10-100  //1
