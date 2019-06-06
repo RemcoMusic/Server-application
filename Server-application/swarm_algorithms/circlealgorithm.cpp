@@ -138,10 +138,26 @@ void CircleAlgorithm::calculateDestinationsCenterOuter()
     double beginAngle = atan2(deltaY, deltaX);
     calculateDestinationsCenterOuter(beginAngle,beginAngle + 2*M_PI);
 }
+static void constrainPoint(QPoint *point, int xMin, int yMin, int xMax, int yMax)
+{
+    point->rx() = std::max(xMin, point->x());
+    point->ry() = std::max(yMin, point->y());
+    point->rx() = std::min(xMax, point->x());
+    point->ry() = std::min(yMax, point->y());
+}
+void CircleAlgorithm::inputValidation()
+{
+    int clearance  = globalSettings.botDiameter/2;
+    constrainPoint(outer1, clearance, clearance, globalSettings.fieldSizeX, globalSettings.fieldSizeY);
+    int clearanceCenter = clearance + distanceFromCenter(outer1->x(), outer1->y());
+    constrainPoint(center, clearanceCenter, clearanceCenter, globalSettings.fieldSizeX-clearanceCenter, globalSettings.fieldSizeY-clearanceCenter);
+}
 void CircleAlgorithm::calculateDestinationsCenterOuter(double beginAngle, double endAngle, bool addExtra)
 {
+    inputValidation();
     if(endAngle <= beginAngle)qFatal("calculateDestinationsCenterOuter endAngle <= beginAngle");
     qDebug("%f , %f",beginAngle,endAngle);
+
     //calculate distance between markers
     int deltaX = outer1->rx() - center->rx();//pytagoras A
     int deltaY = outer1->ry() - center->ry();//pytagoras b

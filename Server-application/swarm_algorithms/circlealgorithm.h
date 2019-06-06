@@ -9,9 +9,9 @@ class CircleAlgorithm : public LinearMotionAlgorithms
 public:
     CircleAlgorithm();
     virtual void update();
-    QPoint *center = new QPoint(500,600);
-    QPoint *outer1 = new QPoint(250,600);
-    QPoint *outer2 = new QPoint(750,600);
+    QPoint *center = new QPoint(500,500);
+    QPoint *outer1 = new QPoint(250,500);
+    QPoint *outer2 = new QPoint(750,500);
     QList<Object *> userInputs;
 
 private:
@@ -27,4 +27,5 @@ protected:
     void calculateDestinationsOuterAngle();
     void calculateDestinationsCenterOuter(double beginAngle, double endAngle, bool addExtra = false);
 
+    void inputValidation();
 };

@@ -72,8 +72,22 @@ void LineAlgorithm::findRobotMovementInputs()
     }
     calculatePoints();
 }
+static void constrainPoint(QPoint *point, int xMin, int yMin, int xMax, int yMax)
+{
+    point->rx() = std::max(xMin, point->x());
+    point->ry() = std::max(yMin, point->y());
+    point->rx() = std::min(xMax, point->x());
+    point->ry() = std::min(yMax, point->y());
+}
+void LineAlgorithm::inputValidation()
+{
+    int clearance  = globalSettings.botDiameter/2;
+    constrainPoint(point1, clearance, clearance, globalSettings.fieldSizeX-clearance, globalSettings.fieldSizeY-clearance);
+    constrainPoint(point2, clearance, clearance, globalSettings.fieldSizeX-clearance, globalSettings.fieldSizeY-clearance);
+}
 void LineAlgorithm::calculatePoints()
 {
+    inputValidation();
     //calculate distance between markers
     int deltaX = point2->rx() - point1->rx();//pytagoras A
     int deltaY = point2->ry() - point1->ry();//pytagoras b
