@@ -19,6 +19,7 @@ RobotLocation *LocationManager::addSimulatedRobot(RobotGroup *group)
 {
     RobotLocation *newRobot = new RobotLocation(group);
     newRobot->type = Object::Type::SIMULATED;
+    newRobot->sharedData.status = robotStatus::NORMAL;
     robots.append(newRobot);
     return newRobot;
 }

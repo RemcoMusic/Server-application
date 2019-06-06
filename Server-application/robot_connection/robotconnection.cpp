@@ -99,18 +99,17 @@ void RobotConnection::updateRobots()
     //send all data to new robots
     for(int i = 0; i < locationManager.robots.size();i++){
         RobotLocation *ptr = locationManager.robots.at(i);
-        if(ptr->type == Object::Type::REAL){
-            if(ptr->sharedData.status == robotStatus::NORMAL){ //only possible when camera detection has created a bot
-                //update the packets of the robots
-                ptr->sharedData.newX = ptr->destinationX;
-                ptr->sharedData.newY = ptr->destinationY;
-                ptr->sharedData.currentX = ptr->x;
-                ptr->sharedData.currentY = ptr->y;
-                ptr->sharedData.currentAngle = toDeg(ptr->angle);
-                ptr->sharedData.speed = 130; // not tested
-
-                //send new packet to the robots
-                 socket->writeDatagram(reinterpret_cast<char*>(&ptr->sharedData), sizeof(UdpData) ,QHostAddress(ptr->ip), 4210);
+        if(ptr->sharedData.status == robotStatus::NORMAL){ //only possible when camera detection has created a bot
+            //update the packets of the robots
+            ptr->sharedData.newX = ptr->destinationX;
+            ptr->sharedData.newY = ptr->destinationY;
+            ptr->sharedData.currentX = ptr->x;
+            ptr->sharedData.currentY = ptr->y;
+            ptr->sharedData.currentAngle = toDeg(ptr->angle);
+            ptr->sharedData.speed = 130; // not tested
+            if(ptr->type == Object::Type::REAL){
+            //send new packet to the robots
+                socket->writeDatagram(reinterpret_cast<char*>(&ptr->sharedData), sizeof(UdpData) ,QHostAddress(ptr->ip), 4210);
             }
         }
     }

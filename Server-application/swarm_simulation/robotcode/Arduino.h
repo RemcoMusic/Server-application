@@ -15,5 +15,6 @@ extern void ledcWrite(int pin, int dutyCycle);
 extern void pinMode(int pin,int mode);
 extern void ledcSetup(int pin, int a, int b);
 extern void ledcAttachPin(int pin, int mode);
-extern int simulatedLeftSpeed;
-extern int simulatedRightSpeed;
+extern double getLeftSpeedFromLastArduinoSimulation();
+extern double getRigthSpeedFromLastArduinoSimulation();
+

@@ -8,10 +8,6 @@ SwarmSimulation::SwarmSimulation()
 {
 
 }
-static double map(double x, double x1, double x2, double y1, double y2)
-{
- return (x - x1) * (y2 - y1) / (x2 - x1) + y1;
-}
 void SwarmSimulation::moveRobot(RobotLocation *robot)
 {
     double deltaX = robot->destinationX - robot->x;
@@ -229,6 +225,18 @@ void SwarmSimulation::moveWheels(double Vl, double Vr, RobotLocation* robot)
     while(robot->angle < 0) robot->angle +=2 * M_PI;
 
 }
+void SwarmSimulation::robotCodeSimulation(RobotLocation* robot)
+{
+    udpData = robot->sharedData;
+    MotorDriver* motorDriver = new MotorDriver();
+    motorDriver->driveMotor();
+    double leftSpeed = getLeftSpeedFromLastArduinoSimulation();
+    double rightSpeed = getRigthSpeedFromLastArduinoSimulation();
+    qDebug("%d, %d",leftSpeed, rightSpeed);
+    moveWheels(leftSpeed, rightSpeed, robot);
+
+    delete motorDriver;
+}
 void SwarmSimulation::startSimulation()
 {
     //qDebug() << "start simulation called" << endl;
@@ -243,7 +251,8 @@ void SwarmSimulation::startSimulation()
         {
             if(swarmSimulationSettings.realisticSimulationEnabled)
             {
-                moveRobotRealistic(currentRobot);
+                robotCodeSimulation(currentRobot);
+                //moveRobotRealistic(currentRobot);
                 moveRobotRealistic(currentRobot->simulatedRobot);
 
             }

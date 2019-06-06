@@ -51,7 +51,7 @@ void robotDetection::run() {
 
 
 int robotDetection::startDetecting() {
-    cv::VideoCapture cap(1);
+    cv::VideoCapture cap(0);
     cv::Mat originalFrame;
     cv::Mat threshold;
     cv::Mat HSV;

@@ -1,11 +1,11 @@
 #include "Arduino.h"
 
-int simulatedLeftSpeed;
-int simulatedRightSpeed;
+double simulatedLeftSpeed;
+double simulatedRightSpeed;
 void ledcWrite(int pin, int dutyCycle)
 {
     if(dutyCycle == 0)return;
-    int devider = 50;
+    double devider = 50;
     if(pin == 2)
     {
         simulatedLeftSpeed = dutyCycle/devider;
@@ -30,3 +30,13 @@ void ledcSetup(int pin, int a, int b){}
 void ledcAttachPin(int pin, int mode){}
 
 
+
+double getLeftSpeedFromLastArduinoSimulation()
+{
+    return simulatedLeftSpeed;
+}
+
+double getRigthSpeedFromLastArduinoSimulation()
+{
+    return simulatedRightSpeed;
+}

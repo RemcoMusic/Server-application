@@ -9,6 +9,12 @@
 #include <QGenericMatrix>
 #include <swarmalgorithmbase.h>
 #include <time.h>
+#include "globalhelperfunctions.h"
+
+//arduino codes
+#include <Arduino.h>
+#include "motorDriver.h"
+
 extern LocationManager locationManager;
 class SwarmSimulation: public QObject
 {
@@ -19,6 +25,7 @@ class SwarmSimulation: public QObject
     clock_t lastTime;
     double deltaT=0;
 
+    void robotCodeSimulation(RobotLocation *robot);
 public:
     SwarmSimulation();
 public slots:

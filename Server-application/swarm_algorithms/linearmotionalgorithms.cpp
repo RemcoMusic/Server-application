@@ -19,10 +19,6 @@ inline uint16_t distanceBetweenPoints(int x1, int y1, int x2, int y2)
     int deltaY = y1 - y2;//pytagoras b
     return sqrt(deltaX*deltaX + deltaY*deltaY);//pytagoras C, distance between points
 }
-double map(double x, double x1, double x2, double y1, double y2)
-{
- return (x - x1) * (y2 - y1) / (x2 - x1) + y1;
-}
 bool isMoving(RobotLocation* robot)
 {
     if(distanceBetweenPoints(robot->x,robot->y,robot->destinationX, robot->destinationY) < 50)
