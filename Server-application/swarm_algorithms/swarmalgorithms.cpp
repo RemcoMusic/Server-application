@@ -3,11 +3,16 @@
 
 SwarmAlgorithms::SwarmAlgorithms()
 {
-    QTimer *timer = new QTimer();
-    connect(timer, SIGNAL(timeout()), this, SLOT(update()));
-    timer->start(swarmAlgorithmsSettings.settingVariables.updateIntervalMs);
+
 }
 void SwarmAlgorithms::update()
-{
-    swarmAlgorithmsSettings.settingVariables.activeAlgorithm->update();
+{        
+    robotDisplacementDetection.update();
+    QListIterator<SwarmAlgorithmBase*> i(swarmAlgorithmsSettings.activeAlgorithms);
+    while (i.hasNext())
+    {
+        i.next()->update();
+    }
+    robotDisplacementDetection.sync();
+    emit algoritmFinished();
 }
