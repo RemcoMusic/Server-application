@@ -6,22 +6,28 @@ CRGB leds[NUM_LEDS];
 void LedDriver::setup()
 {
 	LEDS.addLeds<WS2812,PIN,GRB>(leds,NUM_LEDS);
+	off(); 
 }
 
 void LedDriver::selectMode()
 {
-	switch (udpData.status) {
-		case 0: off();		//all leds off
-				break;
-        case 1: startup();	//turn on middle led to green
-				break;
-		case 2: normal();	//middle led red and direction led blue
-				break;
-		case 3: charging();	//charging animation
-				break;
-		default:
-				off();
-    }
+	if(udpData.status != currentMode)
+	{
+		currentMode = udpData.status;		
+		switch (udpData.status) 
+		{
+			case 0: off();		//all leds off
+					break;
+			case 1: startup();	//turn on middle led to green
+					break;
+			case 2: normal();	//middle led red and direction led blue
+					break;
+			case 3: charging();	//charging animation
+					break;
+			default:
+					off();
+		}
+	}
 }
 
 void LedDriver::charging()
@@ -65,10 +71,11 @@ void LedDriver::startup()
 
 void LedDriver::normal()
 {
+	Serial.println("mode: normal");
 	FastLED.clear();
 	FastLED.setBrightness(brightness);
 	leds[middleLedPosition] = CRGB::Red;
-	leds[directionLedPostition] = CRGB::Green;
+	leds[directionLedPostition] = CRGB::Blue;
 	FastLED.show();
 }
 

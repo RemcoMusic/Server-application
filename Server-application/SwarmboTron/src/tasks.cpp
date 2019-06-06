@@ -6,6 +6,7 @@ serverCommunication server;
 MotorDriver motor;
 ReadVoltage voltageReader;
 LedDriver led;
+debug debugger;
 
 unsigned long startMillis;
 unsigned long currentMillis;
@@ -25,7 +26,7 @@ Tasks::Tasks()
     serverCommunication,
     "serverCommunication",
     10000,
-    NULL,
+    NULL, 
     1,
     NULL);
 
@@ -40,6 +41,14 @@ Tasks::Tasks()
   xTaskCreate(
     LEDtask,
     "LEDtask",
+    10000,
+    NULL,
+    1,
+    NULL);
+
+  xTaskCreate(
+    debuggerTask,
+    "debuggerTask",
     10000,
     NULL,
     1,
@@ -68,8 +77,9 @@ void Tasks::serverCommunication(void * parameter)
     if (currentMillis - startMillis >= period)  
     {
       startMillis = currentMillis; 
-      server.send(voltageReader.read());
-    }
+      //server.send(voltageReader.read());
+      server.send(5);
+    } 
     server.listen();
     vTaskDelay(10/portTICK_PERIOD_MS);
   }
@@ -79,7 +89,30 @@ void Tasks::motorDriver(void * parameter)
 {
   for(;;)
   {
-    motor.driveMotor();
+    //if(!globalData.motorDebug)
+    //{
+      motor.driveMotor();
+      vTaskDelay(10/portTICK_PERIOD_MS);
+    //}
+    // else
+    // {
+    //   if(globalData.DriveForward)
+    //   {
+    //     motor.setMotorSpeed(1000,1000);
+    //   }
+    //   // if(globalData.TurnLeft)
+    //   // {
+    //   //   motor.setMotorSpeed(300,1024);
+    //   // }
+    //   // if(globalData.TurnRight)
+    //   // {
+    //   //   motor.setMotorSpeed(1024,300);
+    //   // }
+    //   // else
+    //   // {
+    //   //   motor.setMotorSpeed(0,0);
+    //   // } 
+    // }
   }
 }
 
@@ -89,6 +122,7 @@ void Tasks::OTAtask(void * parameter)
   for(;;)
   {
     OTAUpdate.handle();
+    vTaskDelay(10/portTICK_PERIOD_MS);
   }
 }
 
@@ -97,8 +131,20 @@ void Tasks::LEDtask(void * parameter)
   led.setup();
   for(;;)
   {
-    led.selectMode(); 
+    led.selectMode();
+    vTaskDelay(10/portTICK_PERIOD_MS);
   }
 }
+
+void Tasks::debuggerTask(void * parameter)
+{
+  debugger.setup();
+  for(;;)
+  {
+    debugger.loop();
+  }
+}
+
+
 
 
