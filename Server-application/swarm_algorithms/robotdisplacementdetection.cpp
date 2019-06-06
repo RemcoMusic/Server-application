@@ -27,7 +27,6 @@ void RobotDisplacementDetection::update()
         int distance = distanceBetweenPoints(currentRobot, currentRobot->simulatedRobot);
         if(distance > 50)
         {
-            currentRobot->myColor = Qt::cyan;
             currentRobot->lastDisplacement = clock();
             currentRobot->userInput = true;
         }
@@ -35,7 +34,6 @@ void RobotDisplacementDetection::update()
             if((clock()-currentRobot->lastDisplacement)/CLOCKS_PER_SEC > 2)
             {
                 currentRobot->userInput = false;
-                currentRobot->myColor = Qt::yellow;
             }
         }
         applyComplementeryFilter(currentRobot);

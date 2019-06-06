@@ -65,6 +65,7 @@ void LinearMotionAlgorithms::runCollisionAvoidance()
     {
         RobotLocation *robot1 = robotIterator1.next();
         QListIterator<RobotLocation*> robotIterator2(data.swarmRobots);
+        robot1->collision = false;
         while (robotIterator2.hasNext())
         {
             RobotLocation *robot2 = robotIterator2.next();
@@ -131,6 +132,8 @@ void LinearMotionAlgorithms::runCollisionAvoidance()
                         robot2->destinationX = robot2->x + cos(robot2AngleGoal) * 1000.0;
                     }
                 }
+                robot1->collision = true;
+                robot2->collision = true;
 
             }
         }

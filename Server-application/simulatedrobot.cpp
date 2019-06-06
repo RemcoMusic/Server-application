@@ -6,7 +6,6 @@
 
 SimulatedRobot::SimulatedRobot(RobotLocation *baseRobot)
 {
-    myColor.setAlpha(0.3);
     destinationX = baseRobot->destinationX;
     destinationY = baseRobot->destinationY;
     x = baseRobot->x;
@@ -41,7 +40,7 @@ void SimulatedRobot::paint(QPainter *painter, const QStyleOptionGraphicsItem *op
 
         painter->drawEllipse(0,0,d,d);
 
-        brush.setColor(myColor);//statusColor
+        brush.setColor(Qt::yellow);//statusColor
         painter->setBrush(brush);
         double p = 0.1; //value
         painter->drawEllipse(p*d,p*d,d-2*p*d,d-2*p*d);

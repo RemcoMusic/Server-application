@@ -57,6 +57,7 @@ public:
     RobotLocation *simulatedRobot;
     clock_t lastDisplacement = 0;
     bool userInput = false;//if displaced by the user
+    bool collision = false;//if a collision occured, for the status color
 
 
     double angle = 0;
@@ -70,8 +71,6 @@ public:
     int destinationX = 0;
     int destinationY = 0;
     double endAngle = 0;
-
-    QColor myColor = Qt::yellow;
 
     double batteryVoltage=7.4;
 

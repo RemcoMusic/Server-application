@@ -26,12 +26,32 @@ void RobotLocation::paint(QPainter *painter, const QStyleOptionGraphicsItem *opt
 
         painter->drawEllipse(0,0,d,d);
 
-        brush.setColor(myColor);//statusColor
+        if(type == Type::SIMULATED)
+        {
+            brush.setColor(Qt::yellow);//statusColor
+        }
+        else {
+            brush.setColor(Qt::red);//statusColor
+        }
         painter->setBrush(brush);
         double p = 0.1; //value
         painter->drawEllipse(p*d,p*d,d-2*p*d,d-2*p*d);
 
-        brush.setColor(Qt::black);//statusColor
+        if(userInput)
+        {
+            brush.setColor(Qt::blue);//statusColor
+        }
+        else if(collision)
+        {
+            brush.setColor(Qt::cyan);//statusColor
+        }
+        else if(batteryVoltage < 6.4){
+            brush.setColor(Qt::white);//statusColor
+        }
+        else
+        {
+            brush.setColor(Qt::black);//statusColor
+        }
         painter->setBrush(brush);
         p = 0.2;
         painter->drawEllipse(p*d,p*d,d-2*p*d,d-2*p*d);

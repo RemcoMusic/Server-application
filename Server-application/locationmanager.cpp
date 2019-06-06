@@ -63,7 +63,6 @@ void LocationManager::makeNewRealRobot(int x, int y)
     newRobot->sharedData.status = robotStatus::STARTUP;  //when the camera connects, it must be set to startup because it has no IP as of this moment
     newRobot->x = x;
     newRobot->y = y;
-    newRobot->myColor = Qt::red;
     newRobot->sharedData.status = robotStatus::STARTUP;
     newRobot->simulatedRobot = new SimulatedRobot(newRobot);
     robots.append(newRobot);
