@@ -49,7 +49,6 @@ void robotDetection::run() {
     startDetecting();
 }
 
-
 void robotDetection::startDetecting() {
     cv::VideoCapture cap(robotDetectionSettings.selectCamera);
     cv::Mat originalFrame;

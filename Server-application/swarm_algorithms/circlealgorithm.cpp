@@ -156,7 +156,6 @@ void CircleAlgorithm::calculateDestinationsCenterOuter(double beginAngle, double
 {
     inputValidation();
     if(endAngle <= beginAngle)qFatal("calculateDestinationsCenterOuter endAngle <= beginAngle");
-    qDebug("%f , %f",beginAngle,endAngle);
 
     //calculate distance between markers
     int deltaX = outer1->rx() - center->rx();//pytagoras A

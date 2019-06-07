@@ -7,7 +7,7 @@
 #include <iostream>
 #include <iomanip>
 #include "swarmalgorithmssettings.h"
-
+#include "globalhelperfunctions.h"
 class LinearMotionAlgorithms : public SwarmAlgorithmBase
 {
 public:

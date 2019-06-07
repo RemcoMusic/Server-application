@@ -7,6 +7,14 @@ RobotLocation::RobotLocation(RobotGroup *group)
     //setFlags(QGraphicsItem::ItemIsMovable);
 }
 
+RobotLocation::~RobotLocation()
+{
+    if(simulatedRobot != nullptr)
+    {
+        delete simulatedRobot;
+    }
+}
+
 bool RobotLocation::isReady()
 {
     if(sharedData.status == robotStatus::NORMAL){

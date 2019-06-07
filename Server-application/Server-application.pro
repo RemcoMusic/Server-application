@@ -39,6 +39,7 @@ SOURCES += \
     swarm_algorithms/linealgorithm.cpp \
     swarm_algorithms/linearmotionalgorithms.cpp \
     swarm_algorithms/robotdisplacementdetection.cpp \
+    swarm_simulation/robotcode/arduino.cpp \
     user_interface\mainwindow.cpp \
     swarm_algorithms\swarmalgorithms.cpp \
     swarm_algorithms\swarmalgorithmssettings.cpp \
@@ -52,9 +53,12 @@ SOURCES += \
     swarm_algorithms/swarmalgorithmbase.cpp \
     swarm_algorithms/moveshapealgorithm.cpp \
     globalsettings.cpp \
-    robotgroup.cpp
+    robotgroup.cpp \
+    swarm_simulation/robotcode/motorDriver.cpp \
+    swarm_simulation/robotcode/globals.cpp
 
 HEADERS += \
+    globalhelperfunctions.h \
     simulatedrobot.h \
     locationmanager.h \
     objects/ball.h \
@@ -65,6 +69,7 @@ HEADERS += \
     swarm_algorithms/linealgorithm.h \
     swarm_algorithms/linearmotionalgorithms.h \
     swarm_algorithms/robotdisplacementdetection.h \
+    swarm_simulation/robotcode/Arduino.h \
     user_interface\mainwindow.h \
     swarm_algorithms\swarmalgorithms.h \
     robot_detection\robotdetection.h \
@@ -78,12 +83,15 @@ HEADERS += \
     swarm_algorithms/swarmalgorithmbase.h \
     swarm_algorithms/moveshapealgorithm.h \
     globalsettings.h \
-    robotgroup.h
+    robotgroup.h \
+    swarm_simulation/robotcode/motorDriver.h \
+    swarm_simulation/robotcode/globals.h
 FORMS += \
         user_interface/mainwindow.ui
 
 
 INCLUDEPATH += swarm_simulation
+INCLUDEPATH += swarm_simulation/robotcode
 INCLUDEPATH += swarm_algorithms
 INCLUDEPATH += robot_detection
 INCLUDEPATH += robot_connection
