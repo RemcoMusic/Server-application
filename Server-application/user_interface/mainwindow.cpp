@@ -3,6 +3,7 @@
 
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
+#include <chargestation.h>
 #include <simulatedrobot.h>
 
 
@@ -278,7 +279,9 @@ void MainWindow::on_addSimulatedObjectButton_clicked()
     int x = qrand() % globalSettings.fieldSizeX;
      int y = qrand() % globalSettings.fieldSizeY;
 
-     Ball *b = new Ball();
+     //temperory fix add no ball but a charge station
+     //Ball *b = new Ball();
+     Object* b = new ChargeStation();
      b->x = x;
      b->y = y;
      dataScene->addItem(b);
@@ -295,10 +298,10 @@ void MainWindow::on_resetSimulationButton_clicked()
     //turn off all robots.
     communicationSettings.turnOffAllRobots();  // will also reset IP list
 
-    //clear qgraphicsscene
-    dataScene->clear();
-    for(int i =locationManager.robots.size()-1; i>=0 ;i--){
-        locationManager.robots.removeAt(i);
+    while(locationManager.robots.size() > 0){
+        RobotLocation* toDelete = locationManager.robots.takeAt(0);
+        dataScene->removeItem(toDelete);
+        delete toDelete;
     }
     //remove all robots in the robotLocation
     //locationManager.robots.clear();

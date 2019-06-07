@@ -12,14 +12,22 @@ SwarmAlgorithmsSettings::SwarmAlgorithmsSettings()
                         << "LineAlgoritm" << "halfCircleAlgorithm";
 }
 
-void SwarmAlgorithmsSettings::runNewAlgortim(QString newAlgoritm)
+void SwarmAlgorithmsSettings::runNewAlgortim(QString newAlgoritm, bool clearOthers)
 {
     //as of this time only one algoritm is allowed
     //clear the list
-    if(activeAlgorithms.size() > 0){
-
-        delete(activeAlgorithms.takeAt(0));
+    if(clearOthers)
+    {
+        for(int i=0;i<activeAlgorithms.size();i++)
+        {
+            if(activeAlgorithms.at(i)->algorithmDiscription.systemAlgorithm == false)
+            {
+                delete activeAlgorithms.takeAt(i);
+                i--;
+            }
+        }
     }
+
 
     //activeAlgorithms.clear();
 

@@ -39,6 +39,15 @@ void RobotLocation::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
     qDebug("press");
     tempAngle = angle;
+
+    //tempory for debugging charge algorithm
+    if(batteryVoltage == 5)
+    {
+        batteryVoltage = 8.4;
+    }
+    else {
+        batteryVoltage = 5;
+    }
 }
 
 void RobotLocation::mouseMoveEvent(QGraphicsSceneMouseEvent *event)

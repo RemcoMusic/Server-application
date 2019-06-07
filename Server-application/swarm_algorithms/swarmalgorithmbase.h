@@ -19,8 +19,11 @@ public:
         int maximalAmountOfBots;
         QString errorMessage;
         bool errorOccured=false;
+
+        bool systemAlgorithm = false;
     }algorithmDiscription;
     virtual void update()=0;
+
 
 };
 
