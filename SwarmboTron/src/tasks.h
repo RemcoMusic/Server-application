@@ -4,6 +4,7 @@
 #include "readVoltage.h"
 #include "ledDriver.h"
 #include "globals.h"
+#include "debug.h"
 
 class Tasks
 {
@@ -13,4 +14,5 @@ class Tasks
         static void motorDriver(void * parameter);
         static void OTAtask(void * parameter);
         static void LEDtask(void * parameter);
+        static void debuggerTask(void * parameter);
 };

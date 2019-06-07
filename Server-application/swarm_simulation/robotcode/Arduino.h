@@ -3,6 +3,7 @@
 #include <math.h>
 #include "globalhelperfunctions.h"
 #include <QObject>
+#include "robotlocation.h"
 #define OUTPUT 0
 #define PI M_PI
 #define debugE qDebug

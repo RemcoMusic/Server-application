@@ -3,6 +3,8 @@
 #include <WiFi.h>
 #include <iostream>
 #include "globals.h"
+#include "debug.h"
+
 class serverCommunication
 {
     public:
@@ -15,4 +17,7 @@ class serverCommunication
         const char* serverIP = "192.168.137.1";
         uint16_t serverPort = 4210;
         uint8_t rx_buffer[sizeof(udpData)];
+        unsigned long startMillis;
+        unsigned long currentMillis;   
+        unsigned long timeoutPeriod = 5000;   
 };
