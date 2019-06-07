@@ -232,7 +232,6 @@ void SwarmSimulation::robotCodeSimulation(RobotLocation* robot)
     motorDriver->driveMotor();
     double leftSpeed = getLeftSpeedFromLastArduinoSimulation();
     double rightSpeed = getRigthSpeedFromLastArduinoSimulation();
-    qDebug("%d, %d",leftSpeed, rightSpeed);
     moveWheels(leftSpeed, rightSpeed, robot);
 
     delete motorDriver;

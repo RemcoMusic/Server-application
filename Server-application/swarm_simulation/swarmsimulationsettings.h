@@ -13,7 +13,7 @@ public:
     int realisticSimulationEnabled = true;  //1
     int acceleartionControlEnabled = true;  //1
     int badMotorsEnbabled = true;   //1
-
+    bool enableArduinoLogging = false;
 
 };
 extern SwarmSimulationSettings swarmSimulationSettings;
