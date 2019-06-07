@@ -150,7 +150,7 @@ void MainWindow::updateGui()
 
 
     updateNumberOfRobots();
-
+    removeUnusedRobots();
     on_pushButton_clicked(); // resize the scenes
     dataScene->update();
 }
@@ -171,9 +171,23 @@ void MainWindow::updateNumberOfRobots()
     ui->lcdNumberRealRobots->display(real);
     ui->lcdNumberTotalObstacles->display(locationManager.objects.size());
 }
+
+void MainWindow::removeUnusedRobots()
+{
+    for(int i = 0; i < locationManager.robots.size();i++){
+        RobotLocation * ptr = locationManager.robots.at(i);
+        if(ptr->sharedData.status == robotStatus::STARTUP){
+            //now delete ptr
+            //int index = locationManager.robots.indexOf(ptr);
+
+            locationManager.robots.removeOne(ptr);
+            dataScene->removeItem(ptr);
+             // delete ptr;
+        }
+    }
+}
 void MainWindow::colorSlidersChanged(int c)
 {
-
     if(flipFlop){
         int currentColor = ui->colorComboBox->currentIndex();
         int h = ui->sliderHue->value();
