@@ -1,6 +1,6 @@
  #pragma once
  #include <Arduino.h>
- 
+
  #ifdef ARDUINO
         enum robotStatus{
         OFF = 0,

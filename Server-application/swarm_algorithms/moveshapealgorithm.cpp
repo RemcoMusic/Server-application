@@ -1,5 +1,7 @@
 #include "swarm_algorithms/moveshapealgorithm.h"
 
+#include <robotlocation.h>
+
 MoveShapeAlgorithm::MoveShapeAlgorithm()
 {
     algorithmDiscription.name = "moving shape";
@@ -9,5 +11,19 @@ MoveShapeAlgorithm::MoveShapeAlgorithm()
 }
 void MoveShapeAlgorithm::update()
 {
+    int preferedX = 500;
+    int preferedY = 500;
     qDebug("update move shape algorithm");
+    QListIterator<RobotLocation*> i(locationManager.robots);
+    while (i.hasNext())
+    {
+        RobotLocation* robot = i.next();
+        if(robot->x > preferedX)
+        {
+            robot->x -=2;
+        }
+        else if(robot->x < preferedX){
+            robot->x +=2;
+        }
+    }
 }
