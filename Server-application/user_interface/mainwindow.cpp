@@ -181,7 +181,9 @@ void MainWindow::removeUnusedRobots()
             //int index = locationManager.robots.indexOf(ptr);
 
             locationManager.robots.removeOne(ptr);
+            dataScene->removeItem(ptr->simulatedRobot);
             dataScene->removeItem(ptr);
+
              // delete ptr;
         }
     }

@@ -69,7 +69,7 @@ void LocationManager::makeNewRealRobot(int x, int y)
     robots.append(newRobot);
     //dataScene.addItem(newRobot);
     //Ui::ui->dataSene->addItem(newRobot);
-    //dataScene->addItem(newRobot->simulatedRobot);
+    dataScene->addItem(newRobot->simulatedRobot);
     dataScene->addItem(newRobot);
     qDebug() << "MADE A NEW ROBOT";
 }
