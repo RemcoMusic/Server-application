@@ -50,11 +50,12 @@ public:
     void setRotation(int r);
 
     RobotLocation(RobotGroup *group = nullptr);
+    ~RobotLocation();
     bool isReady();
 
     QString ip = "0.0.0.0";  // 0.0.0.0 equals no IP
 
-    RobotLocation *simulatedRobot;
+    RobotLocation *simulatedRobot = nullptr;
     clock_t lastDisplacement = 0;
     bool userInput = false;//if displaced by the user
     bool collision = false;//if a collision occured, for the status color
