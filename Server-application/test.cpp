@@ -46,7 +46,8 @@ void Test::cleanupTestCase()
 }
 void Test::testMapFunction()
 {
-    double output = map(50,0,100,0,1000); // should output 500
+    double output;
+    output = map(50,0,100,0,1000); // should output 500
     QVERIFY(output == 500);
 }
 void Test::testDistanceBetweenPoints()
@@ -57,6 +58,8 @@ void Test::testDistanceBetweenPoints()
     double result = distanceBetweenPoints(0,0,a,b);
     QVERIFY(result == distance);
 }
+
+
 void Test::testAddingANewRobot()
 {
     int currentSize = locationManager.robots.size();
@@ -65,14 +68,31 @@ void Test::testAddingANewRobot()
 
     QVERIFY(newSize == currentSize+1); // see if at least 1 bot has been added
 
-    //check if the bot has been appended to the list
+    //check if the bot has been appended to the list with the right parameters
     RobotLocation *ptr =  locationManager.robots.at(newSize-1);
 
-    QVERIFY(ptr->x = 123 &&\
-            ptr->y == 123 &&\
-            ptr->sharedData.status == robotStatus::STARTUP &&\
-            ptr->ip == "0.0.0.0");
+    QVERIFY(ptr->x == 123);
+    QVERIFY(ptr->y == 123);
+    QVERIFY(ptr->sharedData.status == robotStatus::STARTUP);
+    QVERIFY(ptr->ip == "0.0.0.0");
 
+}
+
+void Test::validateInitialGlobalSettings()
+{
+    QVERIFY(globalSettings.fieldSizeX >0);
+    QVERIFY(globalSettings.fieldSizeY >0);
+    QVERIFY(globalSettings.cameraX >0);
+    QVERIFY(globalSettings.cameraY >0);
+    QVERIFY(globalSettings.botDiameter >0);
+    QVERIFY(globalSettings.botDistanceBetweenWheels != 0);
+    QVERIFY(globalSettings.simulationSpeed >= 0);
+}
+
+void Test::testGuiUpdateSpeed(){  // do nothing,, the benchmark will cause a lot of debugging because the image is a nullptr
+//    QBENCHMARK{
+//        w->updateGui();
+//    }
 }
 
 #ifdef RUN_TESTS

@@ -19,9 +19,15 @@ private slots:
     void testMapFunction();
     void testDistanceBetweenPoints();
 
+
     //locationmanager
     void testAddingANewRobot();
 
+    //global settings
+    void validateInitialGlobalSettings();
+
+    //gui
+    void testGuiUpdateSpeed();
 
 };
 
