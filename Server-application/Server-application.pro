@@ -6,6 +6,7 @@
 
 QT       += core gui
 QT       += network
+QT       += testlib
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -43,6 +44,7 @@ SOURCES += \
     swarm_algorithms/linearmotionalgorithms.cpp \
     swarm_algorithms/robotdisplacementdetection.cpp \
     swarm_simulation/robotcode/arduino.cpp \
+    test.cpp \
     user_interface\mainwindow.cpp \
     swarm_algorithms\swarmalgorithms.cpp \
     swarm_algorithms\swarmalgorithmssettings.cpp \
@@ -62,6 +64,7 @@ SOURCES += \
 
 HEADERS += \
     globalhelperfunctions.h \
+    main.h \
     objects/chargestation.h \
     simulatedrobot.h \
     locationmanager.h \
@@ -76,6 +79,7 @@ HEADERS += \
     swarm_algorithms/robotdisplacementdetection.h \
     swarm_simulation/robotcode/Arduino.h \
     swarm_simulation/robotcode/debug.h \
+    test.h \
     user_interface\mainwindow.h \
     swarm_algorithms\swarmalgorithms.h \
     robot_detection\robotdetection.h \
