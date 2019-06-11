@@ -66,10 +66,6 @@ void robotDetection::startDetecting() {
         }
         if(!cap.isOpened()) {
             qDebug() << "There is no camera detected";
-            robotDetectionSettings.processedBlueFrame = cv::Mat::zeros(640, 480, CV_64F);
-            robotDetectionSettings.processedGreenFrame = cv::Mat::zeros(640, 480, CV_64F);
-            robotDetectionSettings.processedRedFrame = cv::Mat::zeros(640, 480, CV_64F);
-            robotDetectionSettings.processedFrame = cv::Mat::zeros(640, 480, CV_64F);
         } else {
             cap >> originalFrame;
             cv::cvtColor(originalFrame,HSV,cv::COLOR_BGR2HSV);
@@ -216,7 +212,6 @@ void robotDetection::detectBlueDots(cv::Mat threshold, cv::Mat &originalFrame) {
                 if (newRobot) {
                     if (robotDetectionSettings.enableDetection) {
                         bluePoints.append(QPoint(calibratedX,calibratedY));
-                        qDebug() << "Size of Bluepoints" << bluePoints.size();
                         newRobot = true;
                     }
                 }
