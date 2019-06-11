@@ -1,14 +1,14 @@
-#include "linealgorithm.h"
+#include "rectanglealgorithm.h"
 
-LineAlgorithm::LineAlgorithm()
+RectangleAlgorithm::RectangleAlgorithm()
 {
-    algorithmDiscription.name = "line algorithm";
-    algorithmDiscription.discription = "bots ride in a line defined by red objects";
+    algorithmDiscription.name = "rectangle algorithm";
+    algorithmDiscription.discription = "bots drive in the shape of a rectangle";
     algorithmDiscription.minimalAmountOfBots = 1;
     algorithmDiscription.maximalAmountOfBots = 100;
 }
 
-void LineAlgorithm::update()
+void RectangleAlgorithm::update()
 {
     LinearMotionAlgorithms::generateRobotList();
     LinearMotionAlgorithms::clearDestinations();
@@ -35,7 +35,7 @@ void LineAlgorithm::update()
     LinearMotionAlgorithms::update();
 }
 
-void LineAlgorithm::findRobotMovementInputs()
+void RectangleAlgorithm::findRobotMovementInputs()
 {
     QList<RobotLocation*> userInputs;
     QListIterator<RobotLocation*> i(data.swarmRobots);
@@ -55,11 +55,13 @@ void LineAlgorithm::findRobotMovementInputs()
         {
             point1->setX(currentRobot->x);
             point1->setY(currentRobot->y);
+            qDebug("1");
         }
         else if(distanceBetweenPoints(currentRobot->x,currentRobot->y,point2->x(),point2->y()) < 200)
         {
             point2->setX(currentRobot->x);
             point2->setY(currentRobot->y);
+            qDebug("2");
         }
     }
     calculatePoints();
@@ -71,50 +73,75 @@ static void constrainPoint(QPoint *point, int xMin, int yMin, int xMax, int yMax
     point->rx() = std::min(xMax, point->x());
     point->ry() = std::min(yMax, point->y());
 }
-void LineAlgorithm::inputValidation()
+void RectangleAlgorithm::inputValidation()
 {
     int clearance  = globalSettings.botDiameter/2;
     constrainPoint(point1, clearance, clearance, globalSettings.fieldSizeX-clearance, globalSettings.fieldSizeY-clearance);
     constrainPoint(point2, clearance, clearance, globalSettings.fieldSizeX-clearance, globalSettings.fieldSizeY-clearance);
 }
-void LineAlgorithm::calculatePoints()
+void RectangleAlgorithm::calculatePoints()
 {
     inputValidation();
     //calculate distance between markers
     int deltaX = point2->rx() - point1->rx();//pytagoras A
     int deltaY = point2->ry() - point1->ry();//pytagoras b
-    int c = sqrt(deltaX*deltaX + deltaY*deltaY);//pytagoras C, distance between points
 
-    int amountOfRobotsFitting = c/swarmAlgorithmsSettings.distanceBetweenRobots;
+
+    int amountOfRobotsFittingXLines = deltaX/swarmAlgorithmsSettings.distanceBetweenRobots;
+    int amountOfRobotsFittingYLines = deltaY/swarmAlgorithmsSettings.distanceBetweenRobots;
+
+    //calculate the amount of robots fitting in each of the for lines and sum them
+    int amountOfRobotsFitting = amountOfRobotsFittingXLines*2 + amountOfRobotsFittingYLines*2;
 
     int amountOfRobotsUsing = std::min(amountOfRobotsFitting, data.swarmRobots.size());
-    if(amountOfRobotsUsing <= 1)
+    if(amountOfRobotsUsing <= 3)
     {
-        //qDebug("amountOfRobotsUsing <= 1");
+        qDebug("amountOfRobotsUsing <= 3");
         return;
     }
-    int distanceBetweenBots = c/(amountOfRobotsUsing-1);
 
-    double angle = atan2(deltaY,deltaX);
+    double xyRatio = amountOfRobotsUsing / amountOfRobotsFitting;
+    int amountOfRobotsUsingXLines = amountOfRobotsFittingXLines * xyRatio * 0.5 + 2;
+    int amountOfRobotsUsingYLines = (amountOfRobotsUsing - amountOfRobotsUsingXLines*2) / 2;
+
+    int distanceBetweenRobotsXLines = deltaX/amountOfRobotsUsingXLines;
+    int distanceBetweenRobotsYLines = deltaY/amountOfRobotsUsingYLines;
+
     if(swarmAlgorithmsSettings.debugLinearMotionSources)
     {
-        qDebug("distance between points %d",c);
         qDebug("amount of bots fitting %d",amountOfRobotsFitting);
-        qDebug("distance between bots %d",distanceBetweenBots);
-        qDebug("line angle %f",angle);
     }
-    for(int i=0;i<amountOfRobotsUsing;i++)
+    for(int i=0;i<amountOfRobotsUsingXLines;i++)
     {
         Destination *newDestination = new Destination;
-        newDestination->x = point1->rx() + cos(angle) * distanceBetweenBots * i;
-        newDestination->y = point1->ry() + sin(angle) * distanceBetweenBots * i;
-        newDestination->endAngle = angle;
+        newDestination->x = point1->rx()  + i * distanceBetweenRobotsXLines;
+        newDestination->y = point1->ry();
+        newDestination->endAngle = 0;
         destinations.append(newDestination);
-        if(swarmAlgorithmsSettings.debugLinearMotionSources)
-        {
-            qDebug("new position %d, %d",newDestination->x,newDestination->y);
-        }
     }
-
+    for(int i=0;i<amountOfRobotsUsingXLines;i++)
+    {
+        Destination *newDestination = new Destination;
+        newDestination->x = point1->rx()  + i * distanceBetweenRobotsXLines;
+        newDestination->y = point2->ry();
+        newDestination->endAngle = 0;
+        destinations.append(newDestination);
+    }
+    for(int i=0;i<amountOfRobotsUsingYLines;i++)
+    {
+        Destination *newDestination = new Destination;
+        newDestination->x = point1->rx() ;
+        newDestination->y = point1->ry() + i * distanceBetweenRobotsYLines;
+        newDestination->endAngle = 0;
+        destinations.append(newDestination);
+    }
+    for(int i=0;i<amountOfRobotsUsingYLines;i++)
+    {
+        Destination *newDestination = new Destination;
+        newDestination->x = point1->rx() ;
+        newDestination->y = point2->ry() + i * distanceBetweenRobotsYLines;
+        newDestination->endAngle = 0;
+        destinations.append(newDestination);
+    }
 }
 

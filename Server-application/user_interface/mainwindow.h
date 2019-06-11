@@ -4,7 +4,6 @@
 #include <QMainWindow>
 #include <QGraphicsScene>
 #include <QGraphicsView>
-#include <algrorithmvisualisation.h>
 #include "robotlocation.h"
 #include "locationmanager.h"
 #include "ball.h"

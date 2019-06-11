@@ -1,10 +1,10 @@
 #pragma once
-
 #include <QObject>
 #include "swarmalgorithmbase.h"
 #include <math.h>
 #include <QList>
 #include <QString>
+
 
 class SwarmAlgorithmsSettings
 {

@@ -2,7 +2,6 @@
 
 #include <QObject>
 
-#include "algrorithmvisualisation.h"
 #include "chargealgorithm.h"
 #include "robotdisplacementdetection.h"
 #include "swarmalgorithmssettings.h"

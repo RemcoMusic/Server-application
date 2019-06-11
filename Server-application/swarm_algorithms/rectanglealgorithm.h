@@ -1,16 +1,16 @@
 #pragma once
 
-#include "swarmalgorithmssettings.h"
 #include "linearmotionalgorithms.h"
+#include "swarmalgorithmssettings.h"
 #include "math.h"
 
-class LineAlgorithm : public LinearMotionAlgorithms
+class RectangleAlgorithm : public LinearMotionAlgorithms
 {
 public:
-    LineAlgorithm();
+    RectangleAlgorithm();
     void update();
-    QPoint *point1 = new QPoint(900,900);
-    QPoint *point2 = new QPoint(0,0);
+    QPoint *point1 = new QPoint(200,200);
+    QPoint *point2 = new QPoint(800,800);
 protected:
     void inputValidation();
     void calculatePoints();
