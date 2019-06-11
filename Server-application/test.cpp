@@ -90,9 +90,10 @@ void Test::validateInitialGlobalSettings()
 }
 
 void Test::testGuiUpdateSpeed(){  // do nothing,, the benchmark will cause a lot of debugging because the image is a nullptr
-//    QBENCHMARK{
-//        w->updateGui();
-//    }
+    QBENCHMARK{
+        QVERIFY(globalSettings.fieldSizeX >0);
+        // w->updateGui();
+    }
 }
 
 #ifdef RUN_TESTS

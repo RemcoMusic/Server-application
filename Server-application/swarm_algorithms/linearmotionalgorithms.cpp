@@ -38,87 +38,122 @@ void LinearMotionAlgorithms::runCollisionAvoidance()
     //generateRobotList must run before this(called from derived class), otherwise data.swarmRobots is empty
 
     //compare all robots with each other
-    QListIterator<RobotLocation*> robotIterator1(data.swarmRobots);
+    QListIterator<RobotLocation*> robotIterator1(locationManager.robots);
     while (robotIterator1.hasNext())
     {
         RobotLocation *robot1 = robotIterator1.next();
-        QListIterator<RobotLocation*> robotIterator2(data.swarmRobots);
-        robot1->collision = false;
-        while (robotIterator2.hasNext())
-        {
-            RobotLocation *robot2 = robotIterator2.next();
+        collisionAvoidance(robot1);
+    }
 
-            //don't compare the same robots, don't compare robots 2 times
-            if(robot1 == robot2)break;
-
-            //calculate distance from center to center
-            int distance = distanceBetweenPoints(robot1->x, robot1->y, robot2->x, robot2->y);
-            if(distance < swarmAlgorithmsSettings.collisionDistance)//collision
-            {
-                //calculate the angle between both robots
-                double robot1Angle = atan2(robot2->y - robot1->y, robot2->x - robot1->x);
-                if(robot1Angle < 0) robot1Angle += 2*M_PI;
-
-                //also calculate it seen from the other robot
-                double robot2Angle = robot1Angle - M_PI;
-                if(robot2Angle < 0) robot2Angle += 2*M_PI;
-
-                //calculate how much the robot angle differs from the angle between the robots
-                double robot1AngleDifference = robot1->angle - robot1Angle;
-                if(robot1AngleDifference < 0) robot1AngleDifference += 2 * M_PI;
-                if(robot1AngleDifference >  M_PI) robot1AngleDifference -= 2 * M_PI ;
-
-                //calculate it also for the other robot
-                double robot2AngleDifference = robot2->angle - robot2Angle;
-                if(robot2AngleDifference < 0) robot2AngleDifference += 2 * M_PI;
-                if(robot2AngleDifference >  M_PI) robot2AngleDifference -= 2 * M_PI;
-
-                //std::cout << robot1Angle * 57 << "           " <<  robot1AngleDifference *57<< "   "<<robot2AngleDifference *57 << "         "<<robot2Angle * 57<< std::endl;
-
-                //if one of the robots is not moved its direction doesn't matter
-                if(isMoving(robot1) && (!isMoving(robot2)))
-                {
-                    if(abs(robot1AngleDifference) < swarmAlgorithmsSettings.collisionAvoidanceAngle)//if avoidance is needed
-                    {
-                        int sign = sign(robot1AngleDifference);//on which side will we pass
-                        double robot1AngleGoal = robot1Angle + sign * swarmAlgorithmsSettings.collisionAvoidanceAngle;
-                        robot1->destinationY = robot1->y + sin(robot1AngleGoal) * 1000.0;
-                        robot1->destinationX = robot1->x + cos(robot1AngleGoal) * 1000.0;
-                    }
-                }
-                else if(isMoving(robot2) && (!isMoving(robot1)))
-                {
-                    if(abs(robot2AngleDifference) < swarmAlgorithmsSettings.collisionAvoidanceAngle)//if avoidance is needed
-                    {
-                        int sign = sign(robot2AngleDifference);//on which side will we pass
-                        double robot2AngleGoal = robot2Angle + sign * swarmAlgorithmsSettings.collisionAvoidanceAngle;
-                        robot2->destinationY = robot2->y + sin(robot2AngleGoal) * 1000.0;
-                        robot2->destinationX = robot2->x + cos(robot2AngleGoal) * 1000.0;
-                    }
-                }
-                else if(isMoving(robot1) && (isMoving(robot2)))
-                {
-                    if(abs(robot1AngleDifference)+abs(robot2AngleDifference ) < 2*swarmAlgorithmsSettings.collisionAvoidanceAngle)//if avoidance is needed
-                    {
-                        int sign = sign(robot1AngleDifference);//on which side do they pass
-                        double robot1AngleGoal = robot1Angle + sign * swarmAlgorithmsSettings.collisionAvoidanceAngle;
-                        robot1->destinationY = robot1->y + sin(robot1AngleGoal) * 1000.0;
-                        robot1->destinationX = robot1->x + cos(robot1AngleGoal) * 1000.0;
-
-                        double robot2AngleGoal = robot2Angle + sign * swarmAlgorithmsSettings.collisionAvoidanceAngle;
-                        robot2->destinationY = robot2->y + sin(robot2AngleGoal) * 1000.0;
-                        robot2->destinationX = robot2->x + cos(robot2AngleGoal) * 1000.0;
-                    }
-                }
-                robot1->collision = true;
-                robot2->collision = true;
-
-            }
-        }
-
+    //also with objects
+    QListIterator<Object*> objectIterator(locationManager.objects);
+    while (objectIterator.hasNext())
+    {
+        collisionAvoidance(objectIterator.next());
     }
 }
+void LinearMotionAlgorithms::collisionAvoidance(Object* object)
+{
+    if(object->collisionRadius == 0)return;
 
+    //this method runs collision avoidance between a robot and a object, that object can be a robot location
+    bool objectIsARobot = false;
+    RobotLocation* robot1 = dynamic_cast<RobotLocation*>(object);
+    if(robot1 != nullptr)
+    {
+        objectIsARobot = true;
+    }
+    QListIterator<RobotLocation*> robotIterator2(data.swarmRobots);
+
+    if(objectIsARobot)robot1->collision = false;
+
+    while (robotIterator2.hasNext())
+    {
+        RobotLocation *robot2 = robotIterator2.next();
+
+        //don't compare the same robots, don't compare robots 2 times
+        if(object == robot2)break;
+
+        //calculate distance from center to center
+        int distance = distanceBetweenPoints(object->x, object->y, robot2->x, robot2->y);
+        int collisianRadius = object->collisionRadius + robot2->collisionRadius + swarmAlgorithmsSettings.collisionDistance;
+        if(distance < collisianRadius)//collision
+        {
+            double proportionalError = map(distance, 0, collisianRadius, 1, 0.8);
+            //calculate the angle between both robots
+            double robot1Angle = atan2(robot2->y - object->y, robot2->x - object->x);
+            if(robot1Angle < 0) robot1Angle += 2*M_PI;
+
+            //also calculate it seen from the other robot
+            double robot2Angle = robot1Angle - M_PI;
+            if(robot2Angle < 0) robot2Angle += 2*M_PI;
+
+            //calculate how much the robot angle differs from the angle between the robots
+            double robot1AngleDifference = 0;
+            if(objectIsARobot)//if the object is not a robot the object doesn't have a angle
+            {
+                robot1AngleDifference = robot1->angle - robot1Angle;
+                if(robot1AngleDifference < 0) robot1AngleDifference += 2 * M_PI;
+                if(robot1AngleDifference >  M_PI) robot1AngleDifference -= 2 * M_PI;
+            }
+
+            //calculate it also for the other robot
+            double robot2AngleDifference = robot2->angle - robot2Angle;
+            if(robot2AngleDifference < 0) robot2AngleDifference += 2 * M_PI;
+            if(robot2AngleDifference >  M_PI) robot2AngleDifference -= 2 * M_PI;
+
+            //std::cout << robot1Angle * 57 << "           " <<  robot1AngleDifference *57<< "   "<<robot2AngleDifference *57 << "         "<<robot2Angle * 57<< std::endl;
+
+            //if one of the robots is not moved its direction doesn't matter
+            if(objectIsARobot)
+            {
+                if(isMoving(robot1) && (!isMoving(robot2)))
+                {
+                    if(abs(robot1AngleDifference) < swarmAlgorithmsSettings.collisionAvoidanceAngle * proportionalError)//if avoidance is needed
+                    {
+                        int sign = sign(robot1AngleDifference);//on which side will we pass
+                        double robot1AngleGoal = robot1Angle + sign * swarmAlgorithmsSettings.collisionAvoidanceAngle * proportionalError;
+                        robot1->destinationY = object->y + sin(robot1AngleGoal) * 1000.0;
+                        robot1->destinationX = object->x + cos(robot1AngleGoal) * 1000.0;
+                    }
+                }
+            }
+            if(isMoving(robot2))
+            {
+                if((objectIsARobot) || (!isMoving(robot1)))
+                {
+                    if(abs(robot2AngleDifference) < swarmAlgorithmsSettings.collisionAvoidanceAngle * proportionalError)//if avoidance is needed
+                    {
+                        int sign = sign(robot2AngleDifference);//on which side will we pass
+                        double robot2AngleGoal = robot2Angle + sign * swarmAlgorithmsSettings.collisionAvoidanceAngle * proportionalError;
+                        robot2->destinationY = robot2->y + sin(robot2AngleGoal) * 1000.0;
+                        robot2->destinationX = robot2->x + cos(robot2AngleGoal) * 1000.0;
+                    }
+                }
+            }
+            if(!objectIsARobot)
+            {
+                if(isMoving(robot1) && (isMoving(robot2)))
+                {
+                    if(abs(robot1AngleDifference)+abs(robot2AngleDifference ) < 2*swarmAlgorithmsSettings.collisionAvoidanceAngle * proportionalError)//if avoidance is needed
+                    {
+                        int sign = sign(robot1AngleDifference);//on which side do they pass
+                        double robot1AngleGoal = robot1Angle + sign * swarmAlgorithmsSettings.collisionAvoidanceAngle * proportionalError;
+                        robot1->destinationY = object->y + sin(robot1AngleGoal) * 1000.0;
+                        robot1->destinationX = object->x + cos(robot1AngleGoal) * 1000.0;
+
+                        double robot2AngleGoal = robot2Angle + sign * swarmAlgorithmsSettings.collisionAvoidanceAngle * proportionalError;
+                        robot2->destinationY = robot2->y + sin(robot2AngleGoal) * 1000.0;
+                        robot2->destinationX = robot2->x + cos(robot2AngleGoal) * 1000.0;
+                    }
+                }
+            }
+            if(objectIsARobot)robot1->collision = true;
+            robot2->collision = true;
+
+        }
+    }
+}
 void LinearMotionAlgorithms::allocateData()
 {
     //allocated on the heap instead of the stack because the size of the table change
@@ -419,7 +454,7 @@ void LinearMotionAlgorithms::connectDestinationsToRobots()
     int lowestHighest = UINT16_MAX;//the highest destinance, the lowest when compared to other searches
     for(int i = 0;i < data.amountOfRobots;i++)
     {
-        swapOptimize();
+        //swapOptimize();
 
         //save the current state
         int highestIndex = getHighestDistanceIndex();
