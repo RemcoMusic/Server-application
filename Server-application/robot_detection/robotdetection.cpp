@@ -19,8 +19,8 @@ robotDetection::robotDetection()
         Hsv* temporaryBL = new Hsv();
         temporaryBL->c = ColorNames::BLUE_LOW;
         temporaryBL->h = 75;
-        temporaryBL->s = 100;
-        temporaryBL->v = 40;
+        temporaryBL->s = 160;
+        temporaryBL->v = 75;
         robotDetectionSettings.HSVColorValues.append(temporaryBL);
 
         Hsv* temporaryBH = new Hsv();
@@ -99,12 +99,6 @@ void robotDetection::startDetecting() {
     }
 }
 
-void robotDetection::stubDetection()
-{
-
-    emit newFrameFinished();
-}
-
 void robotDetection::detectNewRobots(cv::Mat threshold, cv::Mat &originalFrame) {
     bool newRobot = true;
     cv::Mat temp;
@@ -145,10 +139,10 @@ void robotDetection::detectNewRobots(cv::Mat threshold, cv::Mat &originalFrame) 
             }
             else objectFound = false;
         }
-        if(objectFound)
-        {
-            drawObjects(originalFrame);
-        }
+//        if(objectFound)
+//        {
+//            drawObjects(originalFrame);
+//        }
     }
 }
 
@@ -277,6 +271,7 @@ void robotDetection::calculateAngle() {
             }
         }
     }
+    bluePoints.clear();
 }
 
 void robotDetection::morphOps(cv::Mat &thresh) {
