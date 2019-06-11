@@ -14,6 +14,7 @@
 #include <QList>
 #include <QPoint>
 #include <QtDebug>
+#include <QTimer>
 #include <iostream>
 #include <sstream>
 #include <string>
@@ -42,6 +43,7 @@ class robotDetection: public QThread
 
     public slots:
         void startDetecting();
+        void updateDefaultImages();
 
     signals:
         void newFrameFinished();
