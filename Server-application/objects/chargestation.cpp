@@ -2,7 +2,7 @@
 
 ChargeStation::ChargeStation()
 {
-
+    collisionRadius = 100;
 }
 
 int ChargeStation::getDrivewayX()

@@ -64,4 +64,5 @@ protected:
 
 private:
     bool swap2Rows(int row1, int row2);
+    void collisionAvoidance(Object *object);
 };

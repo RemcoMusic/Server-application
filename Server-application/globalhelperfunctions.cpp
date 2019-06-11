@@ -18,6 +18,7 @@ double distanceBetweenPoints(Object* object1, Object* object2)
 }
 bool isMoving(RobotLocation* robot)
 {
+    if(robot == nullptr)return false;
     if(distanceBetweenPoints(robot->x,robot->y,robot->destinationX, robot->destinationY) < 50)
     {
         return false;

@@ -76,6 +76,7 @@ private:
     //QGraphicsScene *dataScene;
     //QGraphicsScene *cameraScene;
     void updateNumberOfRobots();
+    void removeUnusedRobots();
     QTime *fpsTimer;
     Ui::MainWindow *ui;
     bool flipFlop = true;

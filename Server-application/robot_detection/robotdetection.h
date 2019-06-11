@@ -36,10 +36,12 @@ class robotDetection: public QThread
         void morphOps(cv::Mat &thresh);
         cv::Mat detectColors(cv::Mat frame, QString color);
 
+        int oldCameraInput = robotDetectionSettings.selectCamera;
+
         QList<QPoint> bluePoints;
 
     public slots:
-        int startDetecting();
+        void startDetecting();
 
     signals:
         void newFrameFinished();
