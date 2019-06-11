@@ -43,7 +43,6 @@ class robotDetection: public QThread
 
     public slots:
         void startDetecting();
-        void updateDefaultImages();
 
     signals:
         void newFrameFinished();
