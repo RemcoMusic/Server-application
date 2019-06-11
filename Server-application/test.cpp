@@ -116,10 +116,16 @@ void Test::testAlgorihmSpeed_data()
     QTest::addColumn<QString>("AlgoritmName");
     QTest::addColumn<QString>("NumBots");
 
-    QTest::newRow("CircleAlgorirm") << "CircleAlgorirm" << "10";
-    QTest::newRow("LineAlgoritm")     << "LineAlgoritm" << "10";
-    QTest::newRow("halfCircleAlgorithm") << "halfCircleAlgorithm" << "10";
-    QTest::newRow("RemcoAlgoritm") << "RemcoAlgoritm" << "10";
+    QTest::newRow("CircleAlgorirm-10bots") << "CircleAlgorirm" << "10";
+    QTest::newRow("CircleAlgorirm-30bots") << "CircleAlgorirm" << "30";
+    QTest::newRow("CircleAlgorirm-100bots") << "CircleAlgorirm" << "100";
+    QTest::newRow("LineAlgoritm-10bots")     << "LineAlgoritm" << "10";
+    QTest::newRow("LineAlgoritm-30bots")     << "LineAlgoritm" << "30";
+    QTest::newRow("LineAlgoritm-100bots")     << "LineAlgoritm" << "100";
+    QTest::newRow("halfCircleAlgorithm-10bots") << "halfCircleAlgorithm" << "10";
+    QTest::newRow("halfCircleAlgorithm-30bots") << "halfCircleAlgorithm" << "30";
+    QTest::newRow("halfCircleAlgorithm-100bots") << "halfCircleAlgorithm" << "100";
+    QTest::newRow("RemcoAlgoritm-10bots") << "RemcoAlgoritm" << "10";
 }
 
 void Test::testAlgorihmSpeed()
