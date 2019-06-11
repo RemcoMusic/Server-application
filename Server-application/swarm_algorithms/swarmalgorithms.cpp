@@ -8,6 +8,10 @@ SwarmAlgorithms::SwarmAlgorithms()
 }
 void SwarmAlgorithms::update()
 {        
+    doTheAlgoritm();
+    emit algoritmFinished();
+}
+void SwarmAlgorithms::doTheAlgoritm(){
     robotDisplacementDetection.update();
     QListIterator<SwarmAlgorithmBase*> i(swarmAlgorithmsSettings.activeAlgorithms);
     while (i.hasNext())
@@ -15,5 +19,4 @@ void SwarmAlgorithms::update()
         i.next()->update();
     }
     robotDisplacementDetection.sync();
-    emit algoritmFinished();
 }

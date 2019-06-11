@@ -58,21 +58,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
 
     for(int i =0;i<1;i++){
-        int x = qrand() % globalSettings.fieldSizeX;
-        int y = qrand() % globalSettings.fieldSizeY;
-        int a = qrand() % 360;
-
-        RobotLocation *l = locationManager.addSimulatedRobot();
-        l->x = x;
-        l->y = y;
-        l->setX(x-0.5*globalSettings.botDiameter);
-        l->setY(y-0.5*globalSettings.botDiameter);
-        l->destinationX = x;
-        l->destinationY = y;
-        l->setRotation(a);
-        l->simulatedRobot = new SimulatedRobot(l);
-        dataScene->addItem(l->simulatedRobot);
-        dataScene->addItem(l);
+        locationManager.addSimulatedRobot();
     }
 
 
@@ -255,23 +241,7 @@ void MainWindow::on_SliderRobotSpeed_valueChanged(int value)
 
 void MainWindow::on_AddSimulatedRobotButton_clicked()
 {
-    //for(int i =0;i<10;i++){
-        int x = qrand() % globalSettings.fieldSizeX;
-        int y = qrand() % globalSettings.fieldSizeY;
-        int a = qrand() % 360;
-
-        RobotLocation *l = locationManager.addSimulatedRobot();
-        l->x = x;
-        l->y = y;
-        l->setX(x-0.5*globalSettings.botDiameter);
-        l->setY(y-0.5*globalSettings.botDiameter);
-        l->destinationX = x;
-        l->destinationY = y;
-        l->setRotation(a);
-        l->simulatedRobot = new SimulatedRobot(l);
-        dataScene->addItem(l->simulatedRobot);
-        dataScene->addItem(l);
-    //}
+    locationManager.addSimulatedRobot();
 }
 
 void MainWindow::on_addSimulatedObjectButton_clicked()
@@ -295,22 +265,7 @@ void MainWindow::on_ActiveAlgoritmList_currentIndexChanged(const QString &arg1)
 
 void MainWindow::on_resetSimulationButton_clicked()
 {
-    //turn off all robots.
-    communicationSettings.turnOffAllRobots();  // will also reset IP list
-
-    while(locationManager.robots.size() > 0){
-        RobotLocation* toDelete = locationManager.robots.takeAt(0);
-        dataScene->removeItem(toDelete);
-        delete toDelete;
-    }
-    //remove all robots in the robotLocation
-    //locationManager.robots.clear();
-    //reset IP list tracker
-
-
-    //add fieldsize back
-    dataScene->addRect(0,0,globalSettings.fieldSizeX,globalSettings.fieldSizeY);
-
+    locationManager.resetEverything();
 }
 
 void MainWindow::on_algorithmInputComboBox_currentIndexChanged(int index)

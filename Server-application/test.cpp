@@ -1,6 +1,27 @@
 #include "test.h"
 
 
+#ifdef RUN_TESTS
+
+MainWindow *w;
+SwarmAlgorithms *swarmAlgorithms;
+RobotConnection *robotConnection;
+SwarmSimulation *swarmSimulation;
+robotDetection *robotDetection;
+
+
+void Test::prepareAndRunAlgoritm(QString algoritmName, int numBots)
+{
+    locationManager.resetEverything();
+    for(int i = 0; i<numBots;i++){
+        locationManager.addSimulatedRobot();
+    }
+    swarmAlgorithmsSettings.runNewAlgortim(algoritmName, true);
+
+    QBENCHMARK{
+        swarmAlgorithms->doTheAlgoritm();
+    }
+}
 
 void Test::testIfQTestIsWorking()
 {
@@ -8,17 +29,11 @@ void Test::testIfQTestIsWorking()
     QVERIFY(true);
 }
 
-#ifdef RUN_TESTS
-MainWindow *w;
-SwarmAlgorithms *swarmAlgorithms;
-RobotConnection *robotConnection;
-SwarmSimulation *swarmSimulation;
-robotDetection *robotDetection;
-#endif
+
 
 void Test::initTestCase()
 {
-    #ifdef RUN_TESTS
+
 
     w = new MainWindow();
     swarmAlgorithms = new SwarmAlgorithms();
@@ -35,7 +50,6 @@ void Test::initTestCase()
     QObject::connect(swarmAlgorithms,SIGNAL(algoritmFinished()),robotConnection,SLOT(connectionloop()));
     QObject::connect(robotConnection,SIGNAL(done()),w,SLOT(updateGui()));
 
-    #endif
     //return a.exec();
 }
 
@@ -92,12 +106,31 @@ void Test::validateInitialGlobalSettings()
 void Test::testGuiUpdateSpeed(){  // do nothing,, the benchmark will cause a lot of debugging because the image is a nullptr
 //    QBENCHMARK{
 //        w->updateGui();
-//    }
+    //    }
 }
 
-#ifdef RUN_TESTS
+void Test::testAlgorihmSpeed_data()
+{
+
+
+    QTest::addColumn<QString>("AlgoritmName");
+    QTest::addColumn<QString>("NumBots");
+
+    QTest::newRow("CircleAlgorirm") << "CircleAlgorirm" << "10";
+    QTest::newRow("LineAlgoritm")     << "LineAlgoritm" << "10";
+    QTest::newRow("halfCircleAlgorithm") << "halfCircleAlgorithm" << "10";
+    QTest::newRow("RemcoAlgoritm") << "RemcoAlgoritm" << "10";
+}
+
+void Test::testAlgorihmSpeed()
+{
+    QFETCH(QString, AlgoritmName);
+    QFETCH(QString, NumBots);
+    prepareAndRunAlgoritm(AlgoritmName,NumBots.toInt());
+}
+
 QTEST_MAIN(Test)
-#endif
+#endif  //RUN_TEST
 
 
 //#include "Test.moc"

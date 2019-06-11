@@ -107,7 +107,6 @@ void HalfCircleAlgorithm::calculateDestinationsCenterOuter()
 
     //calculate the height of the line in the circle
     int lineHight = sqrt(currentRadius*currentRadius - halfDistance*halfDistance);
-    qDebug("radius %d, halfdistance %d, lineheight %d",currentRadius,halfDistance,lineHight);
     double lineAngle = atan2(deltaY,deltaX);
 
     int lineMiddleX = cos(lineAngle) * halfDistance;
