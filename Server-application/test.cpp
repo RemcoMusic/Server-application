@@ -126,6 +126,10 @@ void Test::testAlgorihmSpeed_data()
     QTest::newRow("halfCircleAlgorithm-30bots") << "halfCircleAlgorithm" << "30";
     QTest::newRow("halfCircleAlgorithm-100bots") << "halfCircleAlgorithm" << "100";
     QTest::newRow("RemcoAlgoritm-10bots") << "RemcoAlgoritm" << "10";
+    QTest::newRow("rectangle-10bots") << "RectangleAlgoritm" << "10";
+    QTest::newRow("rectangle-30bots") << "RectangleAlgoritm" << "30";
+    QTest::newRow("rectangle-100bots") << "RectangleAlgoritm" << "100";
+
 }
 
 void Test::testAlgorihmSpeed()

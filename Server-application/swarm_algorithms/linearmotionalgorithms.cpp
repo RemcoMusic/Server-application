@@ -454,7 +454,7 @@ void LinearMotionAlgorithms::connectDestinationsToRobots()
     int lowestHighest = UINT16_MAX;//the highest destinance, the lowest when compared to other searches
     for(int i = 0;i < data.amountOfRobots;i++)
     {
-        //swapOptimize();
+        swapOptimize();
 
         //save the current state
         int highestIndex = getHighestDistanceIndex();

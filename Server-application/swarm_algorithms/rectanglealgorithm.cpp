@@ -55,13 +55,21 @@ void RectangleAlgorithm::findRobotMovementInputs()
         {
             point1->setX(currentRobot->x);
             point1->setY(currentRobot->y);
-            qDebug("1");
         }
         else if(distanceBetweenPoints(currentRobot->x,currentRobot->y,point2->x(),point2->y()) < 200)
         {
             point2->setX(currentRobot->x);
             point2->setY(currentRobot->y);
-            qDebug("2");
+        }
+        else if(distanceBetweenPoints(currentRobot->x,currentRobot->y,point1->x(),point2->y()) < 200)
+        {
+            point1->setX(currentRobot->x);
+            point2->setY(currentRobot->y);
+        }
+        else if(distanceBetweenPoints(currentRobot->x,currentRobot->y,point2->x(),point1->y()) < 200)
+        {
+            point2->setX(currentRobot->x);
+            point1->setY(currentRobot->y);
         }
     }
     calculatePoints();
@@ -83,15 +91,15 @@ void RectangleAlgorithm::calculatePoints()
 {
     inputValidation();
     //calculate distance between markers
-    int deltaX = point2->rx() - point1->rx();//pytagoras A
-    int deltaY = point2->ry() - point1->ry();//pytagoras b
+    int deltaX = abs(point2->rx() - point1->rx());//pytagoras A
+    int deltaY = abs(point2->ry() - point1->ry());//pytagoras b
 
 
-    int amountOfRobotsFittingXLines = deltaX/swarmAlgorithmsSettings.distanceBetweenRobots;
-    int amountOfRobotsFittingYLines = deltaY/swarmAlgorithmsSettings.distanceBetweenRobots;
+    int amountOfRobotsFittingXLines = deltaX/swarmAlgorithmsSettings.distanceBetweenRobots + 1;
+    int amountOfRobotsFittingYLines = deltaY/swarmAlgorithmsSettings.distanceBetweenRobots + 1;
 
     //calculate the amount of robots fitting in each of the for lines and sum them
-    int amountOfRobotsFitting = amountOfRobotsFittingXLines*2 + amountOfRobotsFittingYLines*2;
+    int amountOfRobotsFitting = amountOfRobotsFittingXLines*2 + amountOfRobotsFittingYLines*2 - 4;
 
     int amountOfRobotsUsing = std::min(amountOfRobotsFitting, data.swarmRobots.size());
     if(amountOfRobotsUsing <= 3)
@@ -100,17 +108,19 @@ void RectangleAlgorithm::calculatePoints()
         return;
     }
 
-    double xyRatio = amountOfRobotsUsing / amountOfRobotsFitting;
-    int amountOfRobotsUsingXLines = amountOfRobotsFittingXLines * xyRatio * 0.5 + 2;
+    double xyRatio = ((double)amountOfRobotsUsing) / amountOfRobotsFitting;
+    int amountOfRobotsUsingXLines = amountOfRobotsFittingXLines * xyRatio + 1;
     int amountOfRobotsUsingYLines = (amountOfRobotsUsing - amountOfRobotsUsingXLines*2) / 2;
 
-    int distanceBetweenRobotsXLines = deltaX/amountOfRobotsUsingXLines;
-    int distanceBetweenRobotsYLines = deltaY/amountOfRobotsUsingYLines;
+    int distanceBetweenRobotsXLines = (amountOfRobotsUsingYLines > 0) ? deltaX/(amountOfRobotsUsingXLines-1) : deltaX/2;
+    int distanceBetweenRobotsYLines = deltaY/(amountOfRobotsUsingYLines+1   );
 
     if(swarmAlgorithmsSettings.debugLinearMotionSources)
     {
-        qDebug("amount of bots fitting %d",amountOfRobotsFitting);
+
     }
+    qDebug("%d  %d",amountOfRobotsUsing, amountOfRobotsFitting);
+     qDebug("%d  %d     %d %d",amountOfRobotsUsingXLines, amountOfRobotsUsingYLines, distanceBetweenRobotsXLines, distanceBetweenRobotsYLines);
     for(int i=0;i<amountOfRobotsUsingXLines;i++)
     {
         Destination *newDestination = new Destination;
@@ -127,19 +137,19 @@ void RectangleAlgorithm::calculatePoints()
         newDestination->endAngle = 0;
         destinations.append(newDestination);
     }
-    for(int i=0;i<amountOfRobotsUsingYLines;i++)
+    for(int i=1;i<amountOfRobotsUsingYLines + 1;i++)
     {
         Destination *newDestination = new Destination;
-        newDestination->x = point1->rx() ;
+        newDestination->x = point1->rx();
         newDestination->y = point1->ry() + i * distanceBetweenRobotsYLines;
         newDestination->endAngle = 0;
         destinations.append(newDestination);
     }
-    for(int i=0;i<amountOfRobotsUsingYLines;i++)
+    for(int i=1;i<amountOfRobotsUsingYLines + 1;i++)
     {
         Destination *newDestination = new Destination;
-        newDestination->x = point1->rx() ;
-        newDestination->y = point2->ry() + i * distanceBetweenRobotsYLines;
+        newDestination->x = point2->rx();
+        newDestination->y = point1->ry() + i * distanceBetweenRobotsYLines;
         newDestination->endAngle = 0;
         destinations.append(newDestination);
     }
