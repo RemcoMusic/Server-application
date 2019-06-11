@@ -1,75 +1,83 @@
-#include <Arduino.h>
 #include "motorDriver.h"
-
-int motorSpeed = map(udpData.speed, 0, 100, 0, 1024);
 
 void MotorDriver::driveMotor()
 {
-    if(udpData.status == NORMAL)
+    if(udpData.status == NORMAL && globalData.motorsEnabled)
     {
-        if (udpData.newX > udpData.currentX - 10 && udpData.newX < udpData.currentX + 10 && udpData.newY > udpData.currentY - 10 && udpData.newY < udpData.currentY + 10) 
+        if ((udpData.newX > udpData.currentX - 10) && (udpData.newX < udpData.currentX + 10) && (udpData.newY > udpData.currentY - 10) && (udpData.newY < udpData.currentY + 10)) 
         {
             setMotorSpeed(0,0); //destination reached
+            debugE("Target found!");
+            globalData.targetFound = true;
         }
-        else
+        else //move te new coordinates
         {
-            if(udpData.currentX != udpData.newX || udpData.currentY != udpData.newY)
+            globalData.targetFound = false; //set target found to false for debug purposes
+            
+            int16_t deltaX = udpData.currentX - udpData.newX; //calculate difference in Y and X   
+            int16_t deltaY = udpData.currentY - udpData.newY;
+
+
+            double angleRad = atan2(deltaY, deltaX); //calculate new angle angleRad has a value between 180 and -180 -pi to pi
+            int16_t angleDeg = degrees(angleRad) + 180; //angle degree has a value between 180 and -180 0 == facing right 90 = top
+
+            MappedMotorSpeed = map(udpData.speed, 0, 255, 0, 1024); //map speed from server to MappedMotorSpeed
+
+            if(moveToAngle(angleDeg)) //if desired angle is reached
             {
-                int16_t deltaX = udpData.newX - udpData.currentX;   
-                int16_t deltaY = udpData.newY - udpData.currentY;
-
-                int16_t angleRad = atan2(deltaY, deltaX);
-                int16_t angleDeg = angleRad * 180 / PI;
-
-                if(angleDeg < 0)
-                {
-                    angleDeg = 360 + angleDeg; 
-                }
-
-                if(moveToAngle(udpData.currentAngle, angleDeg))
-                {
-                    goToCoordinates(udpData.speed, angleDeg, udpData.currentAngle);    
-                } 
-            }
+                goToCoordinates(MappedMotorSpeed, angleDeg, udpData.currentAngle); //move towards the coordinates   
+            } 
         }
     }
     else
     {
-        setMotorSpeed(0,0);
+        setMotorSpeed(0,0);  //do nothing
     }
     
 }
 
 void MotorDriver::goToCoordinates(uint8_t speed, uint16_t desiredAngle, uint16_t currentAngle)
 {  
-    int speedL = map(currentAngle, desiredAngle - angleDeadband, desiredAngle + angleDeadband, motorSpeed, maxSpeed); 
-    int speedR = map(currentAngle, desiredAngle - angleDeadband, desiredAngle + angleDeadband, maxSpeed, motorSpeed);
+    int speedR = map(currentAngle, desiredAngle - angleDeadband, desiredAngle + angleDeadband, speed, maxSpeed);
+    int speedL = map(currentAngle, desiredAngle - angleDeadband, desiredAngle + angleDeadband, maxSpeed, speed);
+
+
+
+    //speed = current angle, ()
+
+
+    // int speedR = MappedMotorSpeed;
+    // int speedL = MappedMotorSpeed;
+
+    //set motorspeed based on the desired angle, the desired speed and the defined maximum speed.
+    //debugE("* speedL: %u", speedL);
+    //debugE("* speedR: %u", speedR);
 
     setMotorSpeed(speedL, speedR);
 }
 
 void MotorDriver::setMotorSpeed(int speedL, int speedR) 
 {
-    if(speedL >= 0)
+    if(speedL >= 0) //turn forward 
     {
     ledcWrite(0, speedL);
     ledcWrite(1, 0);
     }
-    else
+    else //turn backward
     {
     ledcWrite(0, 0);
-    ledcWrite(1, speedL * -1);
+    ledcWrite(1, abs(speedL));
     }
     
-    if(speedR >= 0)
+    if(speedR >= 0) //turn forward
     {
     ledcWrite(2, speedR);
     ledcWrite(3, 0);  
     }
-    else
+    else //turn backward
     {
     ledcWrite(2, 0);
-    ledcWrite(3, speedR * -1);  
+    ledcWrite(3, abs(speedR));  
     }
 }
 
@@ -77,49 +85,67 @@ void MotorDriver::rotateAxis(int direction)
 {
     if(direction == 1) //Turn right
     {
-        ledcWrite(0, 0);
-        ledcWrite(1, motorSpeed);
-
-        ledcWrite(2, motorSpeed);
-        ledcWrite(3, 0);
-    }
-    else //Turn left
-    {
-        ledcWrite(0, motorSpeed);
+        ledcWrite(0, MappedMotorSpeed);
         ledcWrite(1, 0);
 
         ledcWrite(2, 0);
-        ledcWrite(3, motorSpeed);  
+        ledcWrite(3, MappedMotorSpeed); 
+    }
+    else //Turn left
+    {
+        ledcWrite(0, 0);
+        ledcWrite(1, MappedMotorSpeed);
+
+        ledcWrite(2, MappedMotorSpeed);
+        ledcWrite(3, 0);
     }
 }
 
 
-bool MotorDriver::moveToAngle(int16_t oldAngle, int16_t newAngle)
+bool MotorDriver::moveToAngle(int16_t newAngle)
 {
-    int16_t angleDelta = newAngle - oldAngle;
+    int16_t angleDelta = newAngle - udpData.currentAngle;
 
-    if(angleDelta < 0) //if number is negative
+    //debugE("* currentAngle: %u", udpData.currentAngle);
+    //debugE("* newAngle: %u", newAngle);
+
+
+    if(angleDelta > 180)
     {
-        angleDelta = angleDelta * (-1);
+        angleDelta = angleDelta - 360;
+    }
+    if(angleDelta < -180)
+    {
+        angleDelta = angleDelta + 360;
+    }
+
+    //debugE("* current delta: %d", angleDelta);
+
+    //debugE("* degrees till destination: %u", angleDelta);
+
+    if(angleDelta < 0) //if number is negative move right
+    {
+        angleDelta = abs(angleDelta);
 
         if(angleDelta > angleDeadband) //if angle > angleDeadband rotate around axis
         {
-            rotateAxis(1); 
+            rotateAxis(2); //turn left
         }
         else
-        {
-            return true;
-        }   
-    }
+        {  
+            return true; //ready   
+        }  
+    }   
     else
     {
         if(angleDelta > angleDeadband) //if angle > angleDeadband rotate around axis
         {
-            rotateAxis(2); 
+            rotateAxis(1); //turn right
         }
         else
         {
-            return true;
+            return true; //ready
         }
     }
+    return false;
 }

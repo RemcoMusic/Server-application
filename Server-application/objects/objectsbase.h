@@ -13,6 +13,7 @@ public:
     virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)=0;
     int x;
     int y;
+    int collisionRadius;
     enum class Type
     {
         REAL = 1,

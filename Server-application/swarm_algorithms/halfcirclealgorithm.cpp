@@ -50,7 +50,7 @@ void HalfCircleAlgorithm::findRobotMovementInputs()
             userInputs.append(currentRobot);
         }
     }
-    qSort(userInputs.begin(),userInputs.end(), compereUserInputs);
+    std::sort(userInputs.begin(),userInputs.end(), compereUserInputs);
     if(userInputs.size() == 0)
     {
         calculateDestinationsCenterOuter();

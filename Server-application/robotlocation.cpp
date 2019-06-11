@@ -4,6 +4,7 @@ RobotLocation::RobotLocation(RobotGroup *group)
 {
     x = globalSettings.botDiameter/2;
     y = globalSettings.botDiameter/2;
+    collisionRadius = globalSettings.botDiameter / 2;
     //setFlags(QGraphicsItem::ItemIsMovable);
 }
 
@@ -39,6 +40,15 @@ void RobotLocation::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
     qDebug("press");
     tempAngle = angle;
+
+    //tempory for debugging charge algorithm
+//    if(batteryVoltage == 5)
+//    {
+//        batteryVoltage = 8.4;
+//    }
+//    else {
+//        batteryVoltage = 5;
+//    }
 }
 
 void RobotLocation::mouseMoveEvent(QGraphicsSceneMouseEvent *event)

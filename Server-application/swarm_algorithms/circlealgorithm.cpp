@@ -168,7 +168,8 @@ void CircleAlgorithm::calculateDestinationsCenterOuter(double beginAngle, double
     int amountOfRobotsUsing = std::min(amountOfRobotsFitting, data.swarmRobots.size());
     if(amountOfRobotsUsing < 1)
     {
-        qFatal("fatal amount of robots using < 1");
+        //qDebug("amount of robots using < 1");
+        return;
     }
 
     double angleBetweenRobots = (endAngle - beginAngle)/(amountOfRobotsUsing);

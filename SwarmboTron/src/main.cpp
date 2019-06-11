@@ -8,20 +8,25 @@ const char* password = "swarmboTron";
 
 void connectWifi()
 {
-  WiFi.mode(WIFI_STA);
   WiFi.begin(ssid, password);
+  while(WiFi.status() != WL_CONNECTED)
+  {
+    delay(200);
+  }
 }
 
 void setup() 
 {
-  Serial.begin(115200);
-  Serial.println("Booting");
   connectWifi();
-  delay(2000);
   Tasks initTasks; 
 }
 
 void loop() 
 {
-  delay(500);
+  if(WiFi.status() != WL_CONNECTED)
+  {
+    debugE("Connection lost, reconnecting!");
+    WiFi.reconnect();
+  }
+  delay(200);
 }

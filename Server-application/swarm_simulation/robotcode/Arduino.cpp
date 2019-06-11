@@ -2,25 +2,27 @@
 
 double simulatedLeftSpeed;
 double simulatedRightSpeed;
+
+int pinSpeed[4] = {0,0,0,0};
 void ledcWrite(int pin, int dutyCycle)
 {
-    if(dutyCycle == 0)return;
+    pinSpeed[pin] = dutyCycle;
     double devider = 50;
-    if(pin == 2)
+
+    if(pinSpeed[0]==0)
     {
-        simulatedLeftSpeed = dutyCycle/devider;
+        simulatedRightSpeed = -pinSpeed[1]/devider;
     }
-    if(pin == 3)
-    {
-        simulatedLeftSpeed = -dutyCycle/devider;
+    else {
+        simulatedRightSpeed = pinSpeed[0]/devider;
     }
-    if(pin == 0)
+
+    if(pinSpeed[2]==0)
     {
-        simulatedRightSpeed = dutyCycle/devider;
+        simulatedLeftSpeed = -pinSpeed[3]/devider;
     }
-    if(pin == 1)
-    {
-        simulatedRightSpeed = -dutyCycle/devider;
+    else {
+        simulatedLeftSpeed = pinSpeed[2]/devider;
     }
 }
 
@@ -29,6 +31,13 @@ void pinMode(int pin,int mode){}
 void ledcSetup(int pin, int a, int b){}
 void ledcAttachPin(int pin, int mode){}
 
+void debugE(va_list args)
+{
+    if(swarmSimulationSettings.enableArduinoLogging)
+    {
+        qDebug(args);
+    }
+}
 
 
 double getLeftSpeedFromLastArduinoSimulation()
