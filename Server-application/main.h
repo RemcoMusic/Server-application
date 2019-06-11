@@ -1,7 +1,7 @@
 #ifndef MAIN_H
 #define MAIN_H
 
-//#define RUN_TESTS //to prevent having 2 main functions, when defined it will run the test
+#define RUN_TESTS //to prevent having 2 main functions, when defined it will run the test
 
 #include "mainwindow.h"
 #include <QApplication>

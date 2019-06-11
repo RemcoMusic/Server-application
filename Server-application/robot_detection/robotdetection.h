@@ -14,6 +14,7 @@
 #include <QList>
 #include <QPoint>
 #include <QtDebug>
+#include <QTimer>
 #include <iostream>
 #include <sstream>
 #include <string>

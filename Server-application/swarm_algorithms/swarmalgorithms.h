@@ -12,6 +12,7 @@ class SwarmAlgorithms: public QObject
     Q_OBJECT
 public:
     SwarmAlgorithms();
+    void doTheAlgoritm();
 private:
     RobotDisplacementDetection robotDisplacementDetection;
     ChargeAlgorithm chargeAlgorithm;
