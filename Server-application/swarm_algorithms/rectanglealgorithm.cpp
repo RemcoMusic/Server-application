@@ -91,15 +91,16 @@ void RectangleAlgorithm::calculatePoints()
 {
     inputValidation();
     //calculate distance between markers
-    int deltaX = abs(point2->rx() - point1->rx());//pytagoras A
-    int deltaY = abs(point2->ry() - point1->ry());//pytagoras b
+    //point1 is left top, point2 is right bottom
+    int deltaX = abs(point2->rx() - point1->rx());
+    int deltaY = abs(point2->ry() - point1->ry());
 
-
-    int amountOfRobotsFittingXLines = deltaX/swarmAlgorithmsSettings.distanceBetweenRobots + 1;
-    int amountOfRobotsFittingYLines = deltaY/swarmAlgorithmsSettings.distanceBetweenRobots + 1;
+    //the rectangle have 4 lines, 2 x lines and 2 y lines
+    int amountOfRobotsFittingXLines = deltaX/swarmAlgorithmsSettings.distanceBetweenRobots;
+    int amountOfRobotsFittingYLines = deltaY/swarmAlgorithmsSettings.distanceBetweenRobots;
 
     //calculate the amount of robots fitting in each of the for lines and sum them
-    int amountOfRobotsFitting = amountOfRobotsFittingXLines*2 + amountOfRobotsFittingYLines*2 - 4;
+    int amountOfRobotsFitting = amountOfRobotsFittingXLines*2 + amountOfRobotsFittingYLines*2;
 
     int amountOfRobotsUsing = std::min(amountOfRobotsFitting, data.swarmRobots.size());
     if(amountOfRobotsUsing <= 3)
@@ -109,18 +110,12 @@ void RectangleAlgorithm::calculatePoints()
     }
 
     double xyRatio = ((double)amountOfRobotsUsing) / amountOfRobotsFitting;
-    int amountOfRobotsUsingXLines = amountOfRobotsFittingXLines * xyRatio + 1;
+    int amountOfRobotsUsingXLines = amountOfRobotsFittingXLines * xyRatio;
     int amountOfRobotsUsingYLines = (amountOfRobotsUsing - amountOfRobotsUsingXLines*2) / 2;
 
-    int distanceBetweenRobotsXLines = (amountOfRobotsUsingYLines > 0) ? deltaX/(amountOfRobotsUsingXLines-1) : deltaX/2;
-    int distanceBetweenRobotsYLines = deltaY/(amountOfRobotsUsingYLines+1   );
+    int distanceBetweenRobotsXLines = (amountOfRobotsUsingXLines > 0) ? deltaX/(amountOfRobotsUsingXLines) : deltaX/2;
+    int distanceBetweenRobotsYLines = (amountOfRobotsUsingYLines > 0) ? deltaY/(amountOfRobotsUsingYLines) : deltaY/2;
 
-    if(swarmAlgorithmsSettings.debugLinearMotionSources)
-    {
-
-    }
-    qDebug("%d  %d",amountOfRobotsUsing, amountOfRobotsFitting);
-     qDebug("%d  %d     %d %d",amountOfRobotsUsingXLines, amountOfRobotsUsingYLines, distanceBetweenRobotsXLines, distanceBetweenRobotsYLines);
     for(int i=0;i<amountOfRobotsUsingXLines;i++)
     {
         Destination *newDestination = new Destination;
@@ -129,12 +124,12 @@ void RectangleAlgorithm::calculatePoints()
         newDestination->endAngle = 0;
         destinations.append(newDestination);
     }
-    for(int i=0;i<amountOfRobotsUsingXLines;i++)
+    for(int i=1;i<amountOfRobotsUsingXLines+1;i++)
     {
         Destination *newDestination = new Destination;
         newDestination->x = point1->rx()  + i * distanceBetweenRobotsXLines;
         newDestination->y = point2->ry();
-        newDestination->endAngle = 0;
+        newDestination->endAngle = 0.5 * M_PI;
         destinations.append(newDestination);
     }
     for(int i=1;i<amountOfRobotsUsingYLines + 1;i++)
@@ -142,15 +137,15 @@ void RectangleAlgorithm::calculatePoints()
         Destination *newDestination = new Destination;
         newDestination->x = point1->rx();
         newDestination->y = point1->ry() + i * distanceBetweenRobotsYLines;
-        newDestination->endAngle = 0;
+        newDestination->endAngle = M_PI;
         destinations.append(newDestination);
     }
-    for(int i=1;i<amountOfRobotsUsingYLines + 1;i++)
+    for(int i=0;i<amountOfRobotsUsingYLines;i++)
     {
         Destination *newDestination = new Destination;
         newDestination->x = point2->rx();
         newDestination->y = point1->ry() + i * distanceBetweenRobotsYLines;
-        newDestination->endAngle = 0;
+        newDestination->endAngle = 1.5 *  M_PI;
         destinations.append(newDestination);
     }
 }
