@@ -138,8 +138,50 @@ void MainWindow::updateGui()
 
     updateNumberOfRobots();
     removeUnusedRobots();
+    updateRobotStatusLabel();
     on_pushButton_clicked(); // resize the scenes
     dataScene->update();
+}
+void MainWindow::updateRobotStatusLabel(){
+    RobotLocation *ptr = RobotLocation::currentSelectedRobotptr;
+    if(ptr){
+        //location
+        QString locationText = "X:";
+        locationText.append(QString::number(ptr->x));
+        locationText.append(" Y:");
+        locationText.append(QString::number(ptr->y));
+        ui->robotLocationLabel->setText(locationText);
+
+        //destination
+        QString destination = "X:";
+        destination.append(QString::number(ptr->destinationX));
+        destination.append(" Y:");
+        destination.append(QString::number(ptr->destinationY));
+        ui->robotDestinationLabel->setText(destination);
+
+        //angle
+        ui->robotAngleLabel->setText(QString::number(ptr->angle));
+
+        //ip
+        ui->robotIPLabel->setText(ptr->ip);
+
+        //type
+        if(ptr->type == RobotLocation::Type::REAL){
+            ui->robotTypeLabel->setText("Real");
+        }else{ // simulated
+            ui->robotTypeLabel->setText("Simulated");
+        }
+
+        //voltage
+        ui->robotVoltageLabel->setText(QString::number(ptr->batteryVoltage));
+
+        if(ptr->group){
+            ui->robotGroupLabel->setText(ptr->group->name);
+        }else{
+            ui->robotGroupLabel->setText("Default");
+        }
+    }
+
 }
 
 void MainWindow::updateNumberOfRobots()

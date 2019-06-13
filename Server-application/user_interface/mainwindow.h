@@ -30,6 +30,7 @@ public:
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
+    void updateRobotStatusLabel();
 private slots:
     void colorSlidersChanged(int c);
     void on_pushButton_clicked();
