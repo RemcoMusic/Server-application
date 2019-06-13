@@ -80,6 +80,16 @@ private:
     QTime *fpsTimer;
     Ui::MainWindow *ui;
     bool flipFlop = true;
+
+    // QWidget interface
+
+    bool wPressed = false;
+    bool sPressed = false;
+    bool aPressed = false;
+    bool dPressed = false;
+    void keyPressEvent(QKeyEvent *event);
+    void keyReleaseEvent(QKeyEvent *event);
+    void updateManualControl();
 };
 
 #endif // MAINWINDOW_H
