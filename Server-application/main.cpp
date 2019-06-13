@@ -1,3 +1,5 @@
+#include "main.h"
+
 #include "mainwindow.h"
 #include <QApplication>
 #include "swarmalgorithms.h"
@@ -9,10 +11,10 @@
 #include <QObject>
 
 
+#ifndef RUN_TESTS
 int main(int argc, char *argv[])
 {
 
-    //visualisation
     QApplication a(argc, argv);
     MainWindow w;
     w.show();
@@ -41,3 +43,4 @@ int main(int argc, char *argv[])
 
     return a.exec();
 }
+#endif

@@ -1,5 +1,4 @@
 #include "linealgorithm.h"
-#include "linearmotionalgorithms.h"
 
 LineAlgorithm::LineAlgorithm()
 {
@@ -35,12 +34,7 @@ void LineAlgorithm::update()
     }
     LinearMotionAlgorithms::update();
 }
-static int distanceBetweenPoints(int x1, int y1, int x2, int y2)
-{
-    int deltaX = x1 - x2;//pytagoras A
-    int deltaY = y1 - y2;//pytagoras b
-    return sqrt(deltaX*deltaX + deltaY*deltaY);//pytagoras C, distance between points
-}
+
 void LineAlgorithm::findRobotMovementInputs()
 {
     QList<RobotLocation*> userInputs;
@@ -61,13 +55,11 @@ void LineAlgorithm::findRobotMovementInputs()
         {
             point1->setX(currentRobot->x);
             point1->setY(currentRobot->y);
-            qDebug("1");
         }
         else if(distanceBetweenPoints(currentRobot->x,currentRobot->y,point2->x(),point2->y()) < 200)
         {
             point2->setX(currentRobot->x);
             point2->setY(currentRobot->y);
-            qDebug("2");
         }
     }
     calculatePoints();
@@ -98,7 +90,7 @@ void LineAlgorithm::calculatePoints()
     int amountOfRobotsUsing = std::min(amountOfRobotsFitting, data.swarmRobots.size());
     if(amountOfRobotsUsing <= 1)
     {
-        qDebug("amountOfRobotsUsing <= 1");
+        //qDebug("amountOfRobotsUsing <= 1");
         return;
     }
     int distanceBetweenBots = c/(amountOfRobotsUsing-1);

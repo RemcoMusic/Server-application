@@ -31,7 +31,7 @@ void RobotDisplacementDetection::update()
             currentRobot->userInput = true;
         }
         else {
-            if((clock()-currentRobot->lastDisplacement)/CLOCKS_PER_SEC > 2)
+            if((clock()-currentRobot->lastDisplacement) > swarmAlgorithmsSettings.displacementKeepTimeMS)
             {
                 currentRobot->userInput = false;
             }

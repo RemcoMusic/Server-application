@@ -106,7 +106,7 @@ void RobotConnection::updateRobots()
             ptr->sharedData.currentX = ptr->x;
             ptr->sharedData.currentY = ptr->y;
             ptr->sharedData.currentAngle = toDeg(ptr->angle);
-            ptr->sharedData.speed = 130; // not tested
+            ptr->sharedData.speed = (uint8_t)ptr->speed; // not tested
             if(ptr->type == Object::Type::REAL){
             //send new packet to the robots
                 socket->writeDatagram(reinterpret_cast<char*>(&ptr->sharedData), sizeof(UdpData) ,QHostAddress(ptr->ip), 4210);

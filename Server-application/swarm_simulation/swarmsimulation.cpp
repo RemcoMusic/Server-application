@@ -254,7 +254,6 @@ void SwarmSimulation::startSimulation()
                 robotCodeSimulation(currentRobot->simulatedRobot,currentRobot);
                 //moveRobotRealistic(currentRobot);
                 //moveRobotRealistic(currentRobot->simulatedRobot);
-
             }
             else {
                 moveRobot(currentRobot);

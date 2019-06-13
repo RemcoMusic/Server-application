@@ -3,23 +3,32 @@
 #include "halfcirclealgorithm.h"
 #include "linealgorithm.h"
 #include "moveshapealgorithm.h"
+#include "rectanglealgorithm.h"
 SwarmAlgorithmsSettings swarmAlgorithmsSettings;
 
 SwarmAlgorithmsSettings::SwarmAlgorithmsSettings()
 {
     anvailableAlgoritms << "RemcoAlgoritm"\
                            << "CircleAlgorirm"\
-                        << "LineAlgoritm" << "halfCircleAlgorithm";
+                        << "LineAlgoritm" << "halfCircleAlgorithm" << "RectangleAlgorithm";
 }
 
-void SwarmAlgorithmsSettings::runNewAlgortim(QString newAlgoritm)
+void SwarmAlgorithmsSettings::runNewAlgortim(QString newAlgoritm, bool clearOthers)
 {
     //as of this time only one algoritm is allowed
     //clear the list
-    if(activeAlgorithms.size() > 0){
-
-        delete(activeAlgorithms.takeAt(0));
+    if(clearOthers)
+    {
+        for(int i=0;i<activeAlgorithms.size();i++)
+        {
+            if(activeAlgorithms.at(i)->algorithmDiscription.systemAlgorithm == false)
+            {
+                delete activeAlgorithms.takeAt(i);
+                i--;
+            }
+        }
     }
+
 
     //activeAlgorithms.clear();
 
@@ -31,5 +40,8 @@ void SwarmAlgorithmsSettings::runNewAlgortim(QString newAlgoritm)
     }
     else if(newAlgoritm == "halfCircleAlgorithm"){
         activeAlgorithms.append(new HalfCircleAlgorithm());
+    }
+    else if(newAlgoritm == "RectangleAlgorithm"){
+        activeAlgorithms.append(new RectangleAlgorithm());
     }
 }

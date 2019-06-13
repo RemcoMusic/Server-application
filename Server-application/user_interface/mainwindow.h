@@ -4,7 +4,6 @@
 #include <QMainWindow>
 #include <QGraphicsScene>
 #include <QGraphicsView>
-#include <algrorithmvisualisation.h>
 #include "robotlocation.h"
 #include "locationmanager.h"
 #include "ball.h"
@@ -31,6 +30,7 @@ public:
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
+    void updateRobotStatusLabel();
 private slots:
     void colorSlidersChanged(int c);
     void on_pushButton_clicked();
@@ -76,6 +76,7 @@ private:
     //QGraphicsScene *dataScene;
     //QGraphicsScene *cameraScene;
     void updateNumberOfRobots();
+    void removeUnusedRobots();
     QTime *fpsTimer;
     Ui::MainWindow *ui;
     bool flipFlop = true;

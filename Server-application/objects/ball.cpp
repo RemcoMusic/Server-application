@@ -2,7 +2,7 @@
 
 Ball::Ball()
 {
-
+    collisionRadius = 0;
 }
 
 QRectF Ball::boundingRect() const

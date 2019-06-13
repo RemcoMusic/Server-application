@@ -50,7 +50,7 @@ void HalfCircleAlgorithm::findRobotMovementInputs()
             userInputs.append(currentRobot);
         }
     }
-    qSort(userInputs.begin(),userInputs.end(), compereUserInputs);
+    std::sort(userInputs.begin(),userInputs.end(), compereUserInputs);
     if(userInputs.size() == 0)
     {
         calculateDestinationsCenterOuter();
@@ -107,7 +107,6 @@ void HalfCircleAlgorithm::calculateDestinationsCenterOuter()
 
     //calculate the height of the line in the circle
     int lineHight = sqrt(currentRadius*currentRadius - halfDistance*halfDistance);
-    qDebug("radius %d, halfdistance %d, lineheight %d",currentRadius,halfDistance,lineHight);
     double lineAngle = atan2(deltaY,deltaX);
 
     int lineMiddleX = cos(lineAngle) * halfDistance;
