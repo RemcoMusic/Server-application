@@ -4,7 +4,7 @@ void MotorDriver::driveMotor()
 {
     if(udpData.status == NORMAL && globalData.motorsEnabled)
     {
-        if ((udpData.newX > udpData.currentX - 10) && (udpData.newX < udpData.currentX + 10) && (udpData.newY > udpData.currentY - 10) && (udpData.newY < udpData.currentY + 10))
+        if ((udpData.newX > udpData.currentX - 10) && (udpData.newX < udpData.currentX + 10) && (udpData.newY > udpData.currentY - 10) && (udpData.newY < udpData.currentY + 10)) 
         {
             setMotorSpeed(0,0); //destination reached
             debugE("Target found!");

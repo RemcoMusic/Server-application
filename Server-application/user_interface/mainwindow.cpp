@@ -267,7 +267,7 @@ void MainWindow::on_addSimulatedObjectButton_clicked()
 
      //temperory fix add no ball but a charge station
      //Ball *b = new Ball();
-     Object* b = new ChargeStation();
+     Object* b = new Ball();
      b->x = x;
      b->y = y;
      dataScene->addItem(b);
