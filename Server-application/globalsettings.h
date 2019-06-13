@@ -7,8 +7,8 @@ class GlobalSettings
 {
 public:
     GlobalSettings();
-    int fieldSizeX=1400;//mm
-    int fieldSizeY=800;//mm
+    int fieldSizeX=1720;//mm
+    int fieldSizeY=1150;//mm
 
     int cameraX= 640;
     int cameraY= 480;
