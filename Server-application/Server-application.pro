@@ -70,6 +70,7 @@ HEADERS += \
     swarm_algorithms/linearmotionalgorithms.h \
     swarm_algorithms/robotdisplacementdetection.h \
     swarm_simulation/robotcode/Arduino.h \
+    swarm_simulation/robotcode/debug.h \
     user_interface\mainwindow.h \
     swarm_algorithms\swarmalgorithms.h \
     robot_detection\robotdetection.h \
