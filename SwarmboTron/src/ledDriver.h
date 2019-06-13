@@ -1,6 +1,7 @@
 #include <Arduino.h>
 #include <FastLED.h>
 #include "globals.h"
+#include "debug.h"
 
 class LedDriver
 {
@@ -15,14 +16,11 @@ class LedDriver
         int brightness = 75; 
         int middleLedPosition = 24;
         int directionLedPostition = 12; //calibrate so the led is facing forward
-        int currentMode = 10;
-	    int offset = 0;
+        int currentMode = 200;
 
         void off();
         void startup();
         void normal();
-
         void charging();
-        void connectingWifi();
         void targetFound();
 };

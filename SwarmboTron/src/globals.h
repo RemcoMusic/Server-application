@@ -1,7 +1,7 @@
  #pragma once
  #include <Arduino.h>
 
- #ifdef ARDUINO
+//  #ifdef ARDUINO
         enum robotStatus{
         OFF = 0,
         STARTUP = 1,
@@ -18,9 +18,9 @@
         uint8_t speed = 0;
         uint8_t status = robotStatus::OFF;
         };
-#endif
+// #endif
         extern UdpData udpData;
-
+        
         struct GlobalData {
         bool motorsEnabled = true;  
         bool targetFound = false;   
@@ -29,7 +29,10 @@
         bool DriveForward = false;   
         bool TurnLeft = false; 
         bool TurnRight = false; 
+        bool Stop = false;
         uint8_t status = 0;
+        bool Map = false;
+        bool Led = false;
         };
 
        extern GlobalData globalData;

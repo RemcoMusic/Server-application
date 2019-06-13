@@ -20,6 +20,11 @@ void OTA::startOTA()
     });
 
     ArduinoOTA.begin();
+
+    while(true)
+    {
+      ArduinoOTA.handle();
+    }
 }
 
 void OTA::handle()

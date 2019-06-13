@@ -1,4 +1,4 @@
-#include "OTA.h"
+//#include "OTA.h"
 #include "serverCommunication.h"
 #include "motorDriver.h"
 #include "readVoltage.h"
@@ -12,7 +12,7 @@ class Tasks
         Tasks();
         static void serverCommunication(void * parameter);
         static void motorDriver(void * parameter);
-        static void OTAtask(void * parameter);
+        //static void OTAtask(void * parameter);
         static void LEDtask(void * parameter);
         static void debuggerTask(void * parameter);
 };
