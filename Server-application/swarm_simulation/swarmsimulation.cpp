@@ -250,8 +250,9 @@ void SwarmSimulation::startSimulation()
         {
             if(swarmSimulationSettings.realisticSimulationEnabled)
             {
-                robotCodeSimulation(currentRobot);
-                //moveRobotRealistic(currentRobot);
+                //robotCodeSimulation(currentRobot);
+                //robotCodeSimulation(currentRobot->simulatedRobot);
+                moveRobotRealistic(currentRobot);
                 moveRobotRealistic(currentRobot->simulatedRobot);
 
             }

@@ -76,6 +76,10 @@ void LinearMotionAlgorithms::collisionAvoidance(Object* object)
 
         //calculate distance from center to center
         int distance = distanceBetweenPoints(object->x, object->y, robot2->x, robot2->y);
+        if(object->collisionRadius == 0)//if collision radius is 0 it means that collision avoidance is not needed
+        {
+            break;
+        }
         int collisianRadius = object->collisionRadius + robot2->collisionRadius + swarmAlgorithmsSettings.collisionDistance;
         if(distance < collisianRadius)//collision
         {
