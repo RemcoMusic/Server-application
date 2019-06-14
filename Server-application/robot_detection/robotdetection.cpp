@@ -85,11 +85,6 @@ void robotDetection::startDetecting() {
             cap >> originalFrame;
             cv::cvtColor(originalFrame,HSV,cv::COLOR_BGR2HSV);
 
-            threshold = detectColors(HSV,"Orange");
-            morphOps(threshold);
-            cv::cvtColor(threshold,O, cv::COLOR_BGR2RGB);
-            robotDetectionSettings.processedOrangeFrame = O;
-
             threshold = detectColors(HSV,"Blue");
             morphOps(threshold);
             cv::cvtColor(threshold,B, cv::COLOR_BGR2RGB);
@@ -107,6 +102,12 @@ void robotDetection::startDetecting() {
             cv::cvtColor(threshold,R, cv::COLOR_BGR2RGB);
             robotDetectionSettings.processedRedFrame = R;
             trackFilteredObject(threshold,originalFrame);
+
+            threshold = detectColors(HSV,"Orange");
+            morphOps(threshold);
+            cv::cvtColor(threshold,O, cv::COLOR_BGR2RGB);
+            robotDetectionSettings.processedOrangeFrame = O;
+            detectBall(threshold, originalFrame);
 
             cv::cvtColor(originalFrame,RGB, cv::COLOR_BGR2RGB);
             robotDetectionSettings.processedFrame = RGB;
@@ -191,7 +192,7 @@ void robotDetection::trackFilteredObject(cv::Mat threshold, cv::Mat &originalFra
             } else objectFound = false;
         }
         if(objectFound ==true) {
-            drawObjects(originalFrame);
+            drawRobots(originalFrame);
         }
     }
 }
@@ -263,13 +264,10 @@ void robotDetection::detectBall(cv::Mat threshold, cv::Mat &originalFrame) {
                     }
                 }
                 if (newBall) {
-                    Object* nieuweBalle = new Ball();
-                    nieuweBalle->x = calibratedX;
-                    nieuweBalle->y = calibratedY;
-                    locationManager.objects.append(nieuweBalle);
+                    emit makeObject(calibratedX, calibratedY, 1);
                     newBall = true;
                 }
-            } objectFound = false;
+            } else objectFound = false;
         }
         if(objectFound) {
             drawObjects(originalFrame);
@@ -312,7 +310,7 @@ cv::Mat robotDetection::detectColors(cv::Mat frame, QString color) {
 void robotDetection::calculateAngle() {
     for (int i =0;i<locationManager.robots.size(); i++) {
         RobotLocation* ptr = locationManager.robots.at(i);
-        if(ptr->type == Object::Type::REAL) {
+        if(ptr->type == RobotLocation::Type::REAL) {
             if(ptr->sharedData.status == robotStatus::NORMAL) {
                 for (int i = 0; i<bluePoints.size(); i++) {
                     int deltaX = ptr->x - bluePoints.at(i).x();
@@ -344,9 +342,24 @@ void robotDetection::morphOps(cv::Mat &thresh) {
     dilate(thresh,thresh,dilateElement);
 }
 
-void robotDetection::drawObjects(cv::Mat &frame) {
+void robotDetection::drawRobots(cv::Mat &frame) {
     for(int i =0; i<locationManager.robots.size(); i++) {
         RobotLocation* ptr = locationManager.robots.at(i);
+        double uncalibratedXCordinate = ptr->x / (double(globalSettings.fieldSizeX)/double(globalSettings.cameraX));
+        double uncalibratedYCordinate = ptr->y / (double(globalSettings.fieldSizeY)/double(globalSettings.cameraY));
+        if(ptr->type == RobotLocation::Type::REAL) {
+            cv::circle(frame,cv::Point(uncalibratedXCordinate,uncalibratedYCordinate),10,cv::Scalar(0,0,255));
+            cv::putText(frame,std::to_string(int(uncalibratedXCordinate))+ " , " + std::to_string(int(uncalibratedYCordinate)),
+                        cv::Point(uncalibratedXCordinate,uncalibratedYCordinate),1,1,cv::Scalar(0,255,0));
+            std::string str =std::to_string(i);
+            cv::putText(frame,str,cv::Point(uncalibratedXCordinate,uncalibratedYCordinate),1,2,cv::Scalar(0,0,255));
+        }
+    }
+}
+
+void robotDetection::drawObjects(cv::Mat &frame) {
+    for (int i =0; i<locationManager.objects.size(); i++) {
+        Object* ptr = locationManager.objects.at(i);
         double uncalibratedXCordinate = ptr->x / (double(globalSettings.fieldSizeX)/double(globalSettings.cameraX));
         double uncalibratedYCordinate = ptr->y / (double(globalSettings.fieldSizeY)/double(globalSettings.cameraY));
         if(ptr->type == Object::Type::REAL) {

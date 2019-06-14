@@ -34,7 +34,8 @@ class robotDetection: public QThread
         void detectBlueDots(cv::Mat threshold);
         void detectBall(cv::Mat threshold, cv::Mat &originalFrame);
         void calculateAngle();
-        void drawObjects(cv::Mat &frame);
+        void drawRobots(cv::Mat &frame);
+        void drawObjects(cv:: Mat &frame);
         void morphOps(cv::Mat &thresh);
         cv::Mat detectColors(cv::Mat frame, QString color);
 
@@ -48,5 +49,6 @@ class robotDetection: public QThread
     signals:
         void newFrameFinished();
         void makeANewRobot(int x,int y);
+        void makeObject(int x, int y, int i);
 };
 #endif // ROBOTDETECTION_H
