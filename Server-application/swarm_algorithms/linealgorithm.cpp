@@ -8,6 +8,12 @@ LineAlgorithm::LineAlgorithm()
     algorithmDiscription.maximalAmountOfBots = 100;
 }
 
+LineAlgorithm::~LineAlgorithm()
+{
+    delete point1;
+    delete point2;
+}
+
 void LineAlgorithm::update()
 {
     LinearMotionAlgorithms::generateRobotList();
@@ -48,13 +54,6 @@ void LineAlgorithm::processUserInputs()
         }
     }
     calculatePoints();
-}
-static void constrainPoint(QPoint *point, int xMin, int yMin, int xMax, int yMax)
-{
-    point->rx() = std::max(xMin, point->x());
-    point->ry() = std::max(yMin, point->y());
-    point->rx() = std::min(xMax, point->x());
-    point->ry() = std::min(yMax, point->y());
 }
 void LineAlgorithm::inputValidation()
 {

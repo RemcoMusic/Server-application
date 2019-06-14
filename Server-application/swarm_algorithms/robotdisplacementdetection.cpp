@@ -1,16 +1,9 @@
 #include "robotdisplacementdetection.h"
 
-#include <simulatedrobot.h>
 
 RobotDisplacementDetection::RobotDisplacementDetection()
 {
 
-}
-inline uint16_t distanceBetweenPoints(RobotLocation* robot1, RobotLocation* robot2)
-{
-    int deltaX = robot1->x - robot2->x;//pytagoras A
-    int deltaY = robot1->y - robot2->y;//pytagoras b
-    return sqrt(deltaX*deltaX + deltaY*deltaY);//pytagoras C, distance between points
 }
 void RobotDisplacementDetection::applyComplementeryFilter(RobotLocation* robot)
 {

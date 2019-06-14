@@ -9,6 +9,7 @@ class LineAlgorithm : public LinearMotionAlgorithms, public UserInputFunctions
 {
 public:
     LineAlgorithm();
+    ~LineAlgorithm();
     void update();
     QPoint *point1 = new QPoint(800,800);
     QPoint *point2 = new QPoint(100,100);

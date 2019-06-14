@@ -6,6 +6,12 @@ RectangleAlgorithm::RectangleAlgorithm()
     algorithmDiscription.discription = "bots drive in the shape of a rectangle, user inputs with balls or robot displacement are supported";
 }
 
+RectangleAlgorithm::~RectangleAlgorithm()
+{
+    delete point1;
+    delete point2;
+}
+
 void RectangleAlgorithm::update()
 {
     LinearMotionAlgorithms::generateRobotList();
@@ -13,6 +19,10 @@ void RectangleAlgorithm::update()
     userInputs.clear();
     if(swarmAlgorithmsSettings.inputSource == SwarmAlgorithmsSettings::AlgorithmInputSource::NONE)
     {
+        point1->setX(200);
+        point1->setY(200);
+        point2->setX(700);
+        point2->setY(700);
         calculatePoints();
     }
     else if(swarmAlgorithmsSettings.inputSource == SwarmAlgorithmsSettings::AlgorithmInputSource::OBJECTS)
@@ -58,13 +68,6 @@ void RectangleAlgorithm::processUserInputs()
         }
     }
     calculatePoints();
-}
-static void constrainPoint(QPoint *point, int xMin, int yMin, int xMax, int yMax)
-{
-    point->rx() = std::max(xMin, point->x());
-    point->ry() = std::max(yMin, point->y());
-    point->rx() = std::min(xMax, point->x());
-    point->ry() = std::min(yMax, point->y());
 }
 //if the input points are out of the scene the robots will also drive out of the scene, this validations keeps the points in the scene
 void RectangleAlgorithm::inputValidation()

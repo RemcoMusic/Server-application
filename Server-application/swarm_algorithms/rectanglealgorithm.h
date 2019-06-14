@@ -9,6 +9,7 @@ class RectangleAlgorithm : public LinearMotionAlgorithms, public UserInputFuncti
 {
 public:
     RectangleAlgorithm();
+    ~RectangleAlgorithm();
     void update();
     QPoint *point1 = new QPoint(200,200);
     QPoint *point2 = new QPoint(700,700);

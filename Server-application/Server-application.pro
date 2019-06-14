@@ -26,7 +26,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 CONFIG += c++11
 QMAKE_CXXFLAGS += "-Wno-old-style-cast"
-
+QMAKE_CXXFLAGS += "-Wconversion"
 SOURCES += \
     globalhelperfunctions.cpp \
     locationmanager.cpp \
@@ -57,7 +57,6 @@ SOURCES += \
     robot_connection\swarmbotcommunicationsettings.cpp \
     robotlocation.cpp \
     swarm_algorithms/swarmalgorithmbase.cpp \
-    swarm_algorithms/moveshapealgorithm.cpp \
     globalsettings.cpp \
     robotgroup.cpp \
     swarm_simulation/robotcode/motorDriver.cpp \
@@ -93,7 +92,6 @@ HEADERS += \
     swarm_simulation\swarmsimulationsettings.h \
     robotlocation.h \
     swarm_algorithms/swarmalgorithmbase.h \
-    swarm_algorithms/moveshapealgorithm.h \
     globalsettings.h \
     robotgroup.h \
     swarm_simulation/robotcode/motorDriver.h \

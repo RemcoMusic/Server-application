@@ -10,6 +10,7 @@ class CircleAlgorithm : public LinearMotionAlgorithms, public UserInputFunctions
 {
 public:
     CircleAlgorithm();
+    ~CircleAlgorithm();
     virtual void update();
     QPoint *center = new QPoint(500,500);
     QPoint *outer1 = new QPoint(250,500);

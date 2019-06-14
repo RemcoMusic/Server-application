@@ -40,3 +40,10 @@ void UserInputFunctions::findObjectInputs(bool simulated)
         }
     }
 }
+void UserInputFunctions::constrainPoint(QPoint *point, int xMin, int yMin, int xMax, int yMax)
+{
+    point->rx() = std::max(xMin, point->x());
+    point->ry() = std::max(yMin, point->y());
+    point->rx() = std::min(xMax, point->x());
+    point->ry() = std::min(yMax, point->y());
+}

@@ -5,6 +5,13 @@ CircleAlgorithm::CircleAlgorithm()
     algorithmDiscription.name = "circle algorithm";
     algorithmDiscription.discription = "bots drive in a circle, position and size can be changed using yellow and orange objects or robots displacements";
 }
+
+CircleAlgorithm::~CircleAlgorithm()
+{
+    delete outer1;
+    delete outer2;
+    delete center;
+}
 void CircleAlgorithm::update()
 {
     LinearMotionAlgorithms::generateRobotList();
@@ -78,14 +85,10 @@ void CircleAlgorithm::processUserInputs()
     else {
         calculateDestinationsOuterOuter();
     }
-
 }
-
 int CircleAlgorithm::distanceFromCenter(int x, int y)
 {
-    int deltaX = center->rx() - x;//pytagoras A
-    int deltaY = center->ry() - y;//pytagoras b
-    return  sqrt(deltaX*deltaX + deltaY*deltaY);
+    return distanceBetweenPoints(center->x(),center->y(),x,y);
 }
 void CircleAlgorithm::calculateDestinationsOuterAngle()
 {
@@ -106,13 +109,6 @@ void CircleAlgorithm::calculateDestinationsCenterOuter()
     int deltaY = outer1->ry() - center->ry();//pytagoras b
     double beginAngle = atan2(deltaY, deltaX);
     calculateDestinationsCenterOuter(beginAngle,beginAngle + 2*M_PI);
-}
-static void constrainPoint(QPoint *point, int xMin, int yMin, int xMax, int yMax)
-{
-    point->rx() = std::max(xMin, point->x());
-    point->ry() = std::max(yMin, point->y());
-    point->rx() = std::min(xMax, point->x());
-    point->ry() = std::min(yMax, point->y());
 }
 void CircleAlgorithm::inputValidation()
 {
@@ -136,8 +132,7 @@ void CircleAlgorithm::calculateDestinationsCenterOuter(double beginAngle, double
 
     int amountOfRobotsUsing = std::min(amountOfRobotsFitting, data.swarmRobots.size());
     if(amountOfRobotsUsing < 1)
-    {
-        //qDebug("amount of robots using < 1");
+    {//its not possible to make the line with 0 or 1 robots
         return;
     }
 
@@ -160,7 +155,6 @@ void CircleAlgorithm::calculateDestinationsCenterOuter(double beginAngle, double
         newDestination->y = center->y() + sin(angle) * c;
         newDestination->endAngle = angle;
         destinations.append(newDestination);
-        //qDebug("new position %d, %d",newDestination->x,newDestination->y);
 
         angle+=angleBetweenRobots;
     }
