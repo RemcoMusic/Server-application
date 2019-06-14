@@ -135,6 +135,11 @@ void MainWindow::updateGui()
     int hb = ui->cameraBlueFeed->height();
     ui->cameraBlueFeed->setPixmap(pb.scaled(wb,hb,Qt::KeepAspectRatio));
 
+    QImage imgo((uchar*)robotDetectionSettings.processedOrangeFrame.data, robotDetectionSettings.processedOrangeFrame.cols, robotDetectionSettings.processedOrangeFrame.rows, QImage::Format_RGB888);
+    QPixmap po = QPixmap::fromImage(imgo);
+    int wo = ui->cameraObjectFeed->width();
+    int ho = ui->cameraObjectFeed->height();
+    ui->cameraObjectFeed->setPixmap(po.scaled(wo,ho,Qt::KeepAspectRatio));
 
     updateNumberOfRobots();
     removeUnusedRobots();

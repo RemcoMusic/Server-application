@@ -33,5 +33,6 @@ public:
     void resetEverything();
 public slots:
     void makeNewRealRobot(int x,int y);
+    void makeObject(int x, int y, int i);
 };
 extern LocationManager locationManager;
