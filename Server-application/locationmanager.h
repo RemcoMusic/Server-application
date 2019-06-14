@@ -26,8 +26,6 @@ public:
 
     void printAllRobots();
     RobotLocation* addSimulatedRobot(RobotGroup* group = nullptr);
-    void deleteAllSimulatedRobots();
-    void deleteAllSimulatedRobotsFromGroup(RobotGroup* group = nullptr);
     void addObject(Object* object);
     void turnOffAllRobots();
     void resetEverything();

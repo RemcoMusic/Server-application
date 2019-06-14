@@ -42,32 +42,6 @@ RobotLocation *LocationManager::addSimulatedRobot(RobotGroup *group)
 
     return l;
 }
-void LocationManager::deleteAllSimulatedRobots()
-{
-    QMutableListIterator<RobotLocation*> i(robots);
-    while (i.hasNext())
-    {
-        if(i.next()->type == Object::Type::SIMULATED)
-        {
-            i.remove();
-        }
-    }
-}
-void LocationManager::deleteAllSimulatedRobotsFromGroup(RobotGroup *group)
-{
-    QMutableListIterator<RobotLocation*> i(robots);
-    while (i.hasNext())
-    {
-        auto val = i.next();
-        if(val->type == Object::Type::SIMULATED)
-        {
-            if(val->group == group)
-            {
-                i.remove();
-            }
-        }
-    }
-}
 
 void LocationManager::addObject(Object *object)
 {

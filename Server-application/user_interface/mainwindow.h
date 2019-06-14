@@ -69,6 +69,10 @@ private slots:
 
     void on_comboBox_currentIndexChanged(const QString &arg1);
 
+    void on_deleteSelected_clicked();
+
+    void on_emptyBattery_clicked();
+
 public slots:
     void updateGui();
 private:

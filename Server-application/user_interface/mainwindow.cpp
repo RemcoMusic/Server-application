@@ -190,6 +190,16 @@ void MainWindow::updateRobotStatusLabel(){
         }else{
             ui->robotGroupLabel->setText("Default");
         }
+
+        ui->deleteSelected->setEnabled(true);
+        if(ptr->type == RobotLocation::Type::REAL)
+        {
+            ui->emptyBattery->setEnabled(false);
+        }
+        else {
+            ui->emptyBattery->setEnabled(true);
+        }
+
     }
     else {
         //location
@@ -211,6 +221,9 @@ void MainWindow::updateRobotStatusLabel(){
         ui->robotVoltageLabel->setText("");
 
         ui->robotGroupLabel->setText("");
+
+        ui->deleteSelected->setEnabled(false);
+        ui->emptyBattery->setEnabled(false);
     }
 
 }
@@ -460,4 +473,37 @@ void MainWindow::on_comboBox_currentIndexChanged(const QString &arg1)  // sorry 
          locationManager.addObject(b);
     }
     ui->comboBox->setCurrentIndex(0);
+}
+
+
+void MainWindow::on_deleteSelected_clicked()
+{
+    while(LocationManager::currentSelectedObjects.size() > 0){
+        Object* toDelete = LocationManager::currentSelectedObjects.takeAt(0);
+
+        RobotLocation *robot = dynamic_cast<RobotLocation*>(toDelete);
+        if(robot)
+        {
+            locationManager.robots.removeOne(robot);
+        }
+        dataScene->removeItem(toDelete);
+        delete toDelete;
+    }
+}
+
+void MainWindow::on_emptyBattery_clicked()
+{
+    for(int i = 0;i < LocationManager::currentSelectedObjects.size(); i++)
+    {
+        //check if this object is a robot object
+        RobotLocation *robot = dynamic_cast<RobotLocation*>(LocationManager::currentSelectedObjects.at(i));
+        if(robot)
+        {
+            robot->batteryVoltage += 1.0;
+            if(robot->batteryVoltage > 8.4)
+            {
+                robot->batteryVoltage = 6;
+            }
+        }
+    }
 }
