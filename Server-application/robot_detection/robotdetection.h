@@ -29,9 +29,10 @@ class robotDetection: public QThread
         void run();
 
     private:
-        void detectNewRobots(cv::Mat threshold, cv::Mat &originalFrame);
+        void detectNewRobots(cv::Mat threshold);
         void trackFilteredObject(cv::Mat threshold, cv::Mat &originalFrame);
-        void detectBlueDots(cv::Mat threshold, cv::Mat &originalFrame);
+        void detectBlueDots(cv::Mat threshold);
+        void detectBall(cv::Mat threshold, cv::Mat &originalFrame);
         void calculateAngle();
         void drawObjects(cv::Mat &frame);
         void morphOps(cv::Mat &thresh);
