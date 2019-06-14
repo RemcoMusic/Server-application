@@ -333,19 +333,7 @@ void MainWindow::on_AddSimulatedRobotButton_clicked()
     locationManager.addSimulatedRobot();
 }
 
-void MainWindow::on_addSimulatedObjectButton_clicked()
-{
-    int x = qrand() % globalSettings.fieldSizeX;
-     int y = qrand() % globalSettings.fieldSizeY;
 
-     //temperory fix add no ball but a charge station
-     //Ball *b = new Ball();
-     Object* b = new Ball();
-     b->x = x;
-     b->y = y;
-     dataScene->addItem(b);
-     locationManager.addObject(b);
-}
 
 void MainWindow::on_ActiveAlgoritmList_currentIndexChanged(const QString &arg1)
 {
@@ -436,4 +424,30 @@ void MainWindow::updateManualControl()
             }
         }
     }
+}
+
+void MainWindow::on_comboBox_currentIndexChanged(const QString &arg1)  // sorry for the horrible name
+{
+    if(arg1 == "Charge Station"){
+        int x = 0.5 * globalSettings.fieldSizeX;
+        int y = 0.5 * globalSettings.fieldSizeY;
+
+         Object* b = new ChargeStation();
+         b->x = x;
+         b->y = y;
+         dataScene->addItem(b);
+         locationManager.addObject(b);
+    }else if (arg1 == "Simulated Ball Yellow") {
+        int x = qrand() % globalSettings.fieldSizeX;
+        int y = qrand() % globalSettings.fieldSizeY;
+
+         Object* b = new Ball();
+         b->x = x;
+         b->y = y;
+         dataScene->addItem(b);
+         locationManager.addObject(b);
+    }else if (arg1 == "Simulated Ball Orange") {
+
+    }
+    ui->comboBox->setCurrentIndex(0);
 }
