@@ -25,7 +25,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 CONFIG += c++11
-CONFIG +=-Wold-style-cast
+QMAKE_CXXFLAGS += "-Wno-old-style-cast"
 
 SOURCES += \
     globalhelperfunctions.cpp \
@@ -43,6 +43,7 @@ SOURCES += \
     swarm_algorithms/linearmotionalgorithms.cpp \
     swarm_algorithms/rectanglealgorithm.cpp \
     swarm_algorithms/robotdisplacementdetection.cpp \
+    swarm_algorithms/userinputfunctions.cpp \
     swarm_simulation/robotcode/arduino.cpp \
     test.cpp \
     user_interface\mainwindow.cpp \
@@ -77,6 +78,7 @@ HEADERS += \
     swarm_algorithms/linearmotionalgorithms.h \
     swarm_algorithms/rectanglealgorithm.h \
     swarm_algorithms/robotdisplacementdetection.h \
+    swarm_algorithms/userinputfunctions.h \
     swarm_simulation/robotcode/Arduino.h \
     swarm_simulation/robotcode/debug.h \
     test.h \

@@ -3,8 +3,9 @@
 #include "linearmotionalgorithms.h"
 #include "swarmalgorithmssettings.h"
 #include "math.h"
+#include "userinputfunctions.h"
 
-class RectangleAlgorithm : public LinearMotionAlgorithms
+class RectangleAlgorithm : public LinearMotionAlgorithms, public UserInputFunctions
 {
 public:
     RectangleAlgorithm();
@@ -15,5 +16,5 @@ protected:
     void inputValidation();
     void calculatePoints();
     void calculateDestination();
-    void findRobotMovementInputs();
+    void processUserInputs();
 };

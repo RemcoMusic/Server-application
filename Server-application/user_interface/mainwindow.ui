@@ -406,17 +406,7 @@
               </item>
               <item>
                <property name="text">
-                <string>Real Objects Center Outer</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>Real Objects Outer Outer</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>Hand gesture</string>
+                <string>Objects</string>
                </property>
               </item>
               <item>

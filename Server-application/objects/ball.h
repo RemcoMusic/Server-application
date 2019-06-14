@@ -12,7 +12,12 @@ class Ball : public Object
 {
 public:
     Ball();
-    QColor myColor = Qt::yellow;
+    enum class BallColor
+    {
+        YELLOW,
+        ORANGE
+    }BallColor;
+
     int size = 50;//mm
 
     QRectF boundingRect() const;
