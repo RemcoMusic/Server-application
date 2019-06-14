@@ -5,7 +5,6 @@
 #include "chargealgorithm.h"
 #include "robotdisplacementdetection.h"
 #include "swarmalgorithmssettings.h"
-extern SwarmAlgorithmsSettings swarmAlgorithmsSettings;
 
 class SwarmAlgorithms: public QObject
 {

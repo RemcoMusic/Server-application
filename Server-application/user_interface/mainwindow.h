@@ -61,13 +61,13 @@ private slots:
 
     void on_AddSimulatedRobotButton_clicked();
 
-    void on_addSimulatedObjectButton_clicked();
-
     void on_ActiveAlgoritmList_currentIndexChanged(const QString &arg1);
 
     void on_resetSimulationButton_clicked();
 
     void on_algorithmInputComboBox_currentIndexChanged(int index);
+
+    void on_comboBox_currentIndexChanged(const QString &arg1);
 
 public slots:
     void updateGui();

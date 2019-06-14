@@ -11,7 +11,9 @@ enum ColorNames{
     BLUE_LOW = 2,
     BLUE_HIGH = 3,
     GREEN_LOW = 4,
-    GREEN_HIGH = 5
+    GREEN_HIGH = 5,
+    ORANGE_LOW = 6,
+    ORANGE_HIGH = 7,
 };
 
 struct Hsv{
@@ -37,6 +39,7 @@ public:
     cv::Mat processedRedFrame;
     cv::Mat processedGreenFrame;
     cv::Mat processedBlueFrame;
+    cv::Mat processedOrangeFrame;
 
 
 

@@ -18,9 +18,19 @@ void Ball::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWid
     pen.setWidth(4);
     painter->setPen(pen);
 
+    QColor color;
+    if(BallColor == BallColor::ORANGE)
+    {
+        color = QColor("orange");
+    }
+    if(BallColor == BallColor::YELLOW)
+    {
+        color = Qt::yellow;
+    }
+
     QPainterPath path;
     path.addEllipse(0,0,size,size);
-    painter->fillPath(path, myColor);
+    painter->fillPath(path, color);
     for(int i=0;i<LocationManager::currentSelectedObjects.size();i++)
     {
         if(LocationManager::currentSelectedObjects.at(i) == this)

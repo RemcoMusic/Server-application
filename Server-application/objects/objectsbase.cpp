@@ -17,13 +17,16 @@ void Object::mousePressEvent(QGraphicsSceneMouseEvent *event)
     if(QGuiApplication::keyboardModifiers().testFlag(Qt::ControlModifier))
     {
         LocationManager::currentSelectedObjects.append(this);
-        qDebug("shift pressed");
     }
     else {
         LocationManager::currentSelectedObjects.clear();
         LocationManager::currentSelectedObjects.append(this);
-
     }
+}
+
+void Object::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
+{
+    LocationManager::currentSelectedObjects.clear();
 }
 void Object::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {

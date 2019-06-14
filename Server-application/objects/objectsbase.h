@@ -21,6 +21,7 @@ public:
     }type;
 protected:
     virtual void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
+    void mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event);
 };
 
 #endif // OBJECT_H

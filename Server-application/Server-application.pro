@@ -25,8 +25,8 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 CONFIG += c++11
-CONFIG +=-Wold-style-cast
-
+QMAKE_CXXFLAGS += "-Wno-old-style-cast"
+QMAKE_CXXFLAGS += "-Wconversion"
 SOURCES += \
     globalhelperfunctions.cpp \
     locationmanager.cpp \
@@ -43,6 +43,7 @@ SOURCES += \
     swarm_algorithms/linearmotionalgorithms.cpp \
     swarm_algorithms/rectanglealgorithm.cpp \
     swarm_algorithms/robotdisplacementdetection.cpp \
+    swarm_algorithms/userinputfunctions.cpp \
     swarm_simulation/robotcode/arduino.cpp \
     test.cpp \
     user_interface\mainwindow.cpp \
@@ -56,7 +57,6 @@ SOURCES += \
     robot_connection\swarmbotcommunicationsettings.cpp \
     robotlocation.cpp \
     swarm_algorithms/swarmalgorithmbase.cpp \
-    swarm_algorithms/moveshapealgorithm.cpp \
     globalsettings.cpp \
     robotgroup.cpp \
     swarm_simulation/robotcode/motorDriver.cpp \
@@ -77,6 +77,7 @@ HEADERS += \
     swarm_algorithms/linearmotionalgorithms.h \
     swarm_algorithms/rectanglealgorithm.h \
     swarm_algorithms/robotdisplacementdetection.h \
+    swarm_algorithms/userinputfunctions.h \
     swarm_simulation/robotcode/Arduino.h \
     swarm_simulation/robotcode/debug.h \
     test.h \
@@ -91,7 +92,6 @@ HEADERS += \
     swarm_simulation\swarmsimulationsettings.h \
     robotlocation.h \
     swarm_algorithms/swarmalgorithmbase.h \
-    swarm_algorithms/moveshapealgorithm.h \
     globalsettings.h \
     robotgroup.h \
     swarm_simulation/robotcode/motorDriver.h \

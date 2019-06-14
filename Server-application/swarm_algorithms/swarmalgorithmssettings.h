@@ -25,14 +25,13 @@ public:
 
     int distanceBetweenRobots = 120;//distance between the destinations of the robots, //1
 
+    //can be chosen in the ui, when changing this list the ui list must also be changed
     enum class AlgorithmInputSource
     {
         NONE = 0, //only distanceBetweenRobots as user input
-        REAL_OBJECTS_CENTER_OUTER = 1, //with objects like red balls
-        REAL_OBJECTS_OUTER_OUTER = 2, //with objects like red balls
-        HAND_GESTURE = 3, //by hand gestures(hand object)
-        ROBOT_MOVEMENT = 4, //by displacing the robot, displaced robot is the orientation for the algorithm
-        ROBOT_MOVEMENT_WITH_ANGLE = 5 //by displacing the robot, displaced robot is the orientation for the algorithm
+        OBJECTS = 1, //with objects like red balls
+        ROBOT_MOVEMENT = 2, //by displacing the robot, displaced robot is the orientation for the algorithm
+        ROBOT_MOVEMENT_WITH_ANGLE = 3 //by displacing the robot, displaced robot is the orientation for the algorithm
     }inputSource = AlgorithmInputSource::NONE;
 
     bool algorithmAllowSimulatedObject = true;    //1

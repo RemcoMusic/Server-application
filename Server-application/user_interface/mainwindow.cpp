@@ -135,6 +135,11 @@ void MainWindow::updateGui()
     int hb = ui->cameraBlueFeed->height();
     ui->cameraBlueFeed->setPixmap(pb.scaled(wb,hb,Qt::KeepAspectRatio));
 
+    QImage imgo((uchar*)robotDetectionSettings.processedOrangeFrame.data, robotDetectionSettings.processedOrangeFrame.cols, robotDetectionSettings.processedOrangeFrame.rows, QImage::Format_RGB888);
+    QPixmap po = QPixmap::fromImage(imgo);
+    int wo = ui->cameraObjectFeed->width();
+    int ho = ui->cameraObjectFeed->height();
+    ui->cameraObjectFeed->setPixmap(po.scaled(wo,ho,Qt::KeepAspectRatio));
 
     updateNumberOfRobots();
     removeUnusedRobots();
@@ -328,19 +333,7 @@ void MainWindow::on_AddSimulatedRobotButton_clicked()
     locationManager.addSimulatedRobot();
 }
 
-void MainWindow::on_addSimulatedObjectButton_clicked()
-{
-    int x = qrand() % globalSettings.fieldSizeX;
-     int y = qrand() % globalSettings.fieldSizeY;
 
-     //temperory fix add no ball but a charge station
-     //Ball *b = new Ball();
-     Object* b = new Ball();
-     b->x = x;
-     b->y = y;
-     dataScene->addItem(b);
-     locationManager.addObject(b);
-}
 
 void MainWindow::on_ActiveAlgoritmList_currentIndexChanged(const QString &arg1)
 {
@@ -432,4 +425,39 @@ void MainWindow::updateManualControl()
             }
         }
     }
+}
+
+void MainWindow::on_comboBox_currentIndexChanged(const QString &arg1)  // sorry for the horrible name
+{
+    if(arg1 == "Charge Station"){
+        int x = 0.5 * globalSettings.fieldSizeX;
+        int y = 0.5 * globalSettings.fieldSizeY;
+
+         ChargeStation* b = new ChargeStation();
+         b->x = x;
+         b->y = y;
+         dataScene->addItem(b);
+         locationManager.addObject(b);
+    }else if (arg1 == "Simulated Ball Yellow") {
+        int x = qrand() % globalSettings.fieldSizeX;
+        int y = qrand() % globalSettings.fieldSizeY;
+
+         Ball* b = new Ball();
+         b->x = x;
+         b->y = y;
+         b->BallColor = Ball::BallColor::YELLOW;
+         dataScene->addItem(b);
+         locationManager.addObject(b);
+    }else if (arg1 == "Simulated Ball Orange") {
+        int x = qrand() % globalSettings.fieldSizeX;
+        int y = qrand() % globalSettings.fieldSizeY;
+
+         Ball* b = new Ball();
+         b->x = x;
+         b->y = y;
+         b->BallColor = Ball::BallColor::ORANGE;
+         dataScene->addItem(b);
+         locationManager.addObject(b);
+    }
+    ui->comboBox->setCurrentIndex(0);
 }
