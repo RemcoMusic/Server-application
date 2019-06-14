@@ -22,6 +22,7 @@ public:
 
     QList<Object*>objects;//list of objects in the field
 
+    static QList<Object*> currentSelectedObjects;
 
     void printAllRobots();
     RobotLocation* addSimulatedRobot(RobotGroup* group = nullptr);

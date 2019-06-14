@@ -149,7 +149,11 @@ void MainWindow::updateGui()
     dataScene->update();
 }
 void MainWindow::updateRobotStatusLabel(){
-    RobotLocation *ptr = RobotLocation::currentSelectedRobotptr;
+    RobotLocation *ptr = nullptr;
+    if(!LocationManager::currentSelectedObjects.isEmpty())
+    {
+        ptr = dynamic_cast<RobotLocation*>(LocationManager::currentSelectedObjects.last());
+    }
     if(ptr){
         //location
         QString locationText = "X:";
@@ -166,7 +170,7 @@ void MainWindow::updateRobotStatusLabel(){
         ui->robotDestinationLabel->setText(destination);
 
         //angle
-        ui->robotAngleLabel->setText(QString::number(ptr->angle));
+        ui->robotAngleLabel->setText(QString::number(ptr->angle*57,10,1));
 
         //ip
         ui->robotIPLabel->setText(ptr->ip);
@@ -179,13 +183,34 @@ void MainWindow::updateRobotStatusLabel(){
         }
 
         //voltage
-        ui->robotVoltageLabel->setText(QString::number(ptr->batteryVoltage));
+        ui->robotVoltageLabel->setText(QString::number(ptr->batteryVoltage,10,2));
 
         if(ptr->group){
             ui->robotGroupLabel->setText(ptr->group->name);
         }else{
             ui->robotGroupLabel->setText("Default");
         }
+    }
+    else {
+        //location
+        ui->robotLocationLabel->setText("");
+
+        //destination
+        ui->robotDestinationLabel->setText("");
+
+        //angle
+        ui->robotAngleLabel->setText("");
+
+        //ip
+        ui->robotIPLabel->setText("");
+
+        //type
+        ui->robotTypeLabel->setText("");
+
+        //voltage
+        ui->robotVoltageLabel->setText("");
+
+        ui->robotGroupLabel->setText("");
     }
 
 }
@@ -355,31 +380,60 @@ void MainWindow::keyReleaseEvent(QKeyEvent *event)
 }
 void MainWindow::updateManualControl()
 {
-    RobotLocation *robot = RobotLocation::currentSelectedRobotptr;
-    if(robot){
-        int speed;//  mm/frame
-        double angle = robot->angle;
-        if(wPressed)
+
+    for(int i = 0;i < LocationManager::currentSelectedObjects.size(); i++)
+    {
+        RobotLocation *robot = dynamic_cast<RobotLocation*>(LocationManager::currentSelectedObjects.at(i));
+        Object *object = LocationManager::currentSelectedObjects.at(i);
+
+        if(robot)//if the selected object is a robot
         {
-            speed = 1000;
+            int speed = 0;//  mm/frame
+            double angle = robot->angle;
+            if(wPressed)
+            {
+                speed = 1000;
+            }
+            if(sPressed)
+            {
+                speed = -1000;
+            }
+            if(aPressed)
+            {
+                angle -= 0.2 * M_PI;
+            }
+            if(dPressed)
+            {
+                angle += 0.2 * M_PI;
+            }
+            if(wPressed || sPressed || aPressed || dPressed)
+            {
+                if(angle >= 2*M_PI) angle-=2 * M_PI;
+                if(angle < 0) angle+=2 * M_PI;
+                robot->destinationX = robot->x + cos(angle) * speed;
+                robot->destinationY = robot->y + sin(angle) * speed;
+                robot->endAngle = angle;
+                robot->speed = swarmAlgorithmsSettings.robotSpeed;
+            }
         }
-        if(sPressed)
+        else if(object)
         {
-            speed = -1000;
+            if(wPressed)
+            {
+                object->y -= 10;
+            }
+            if(sPressed)
+            {
+                object->y += 10;
+            }
+            if(aPressed)
+            {
+                object->x -= 10;
+            }
+            if(dPressed)
+            {
+                object->x += 10;
+            }
         }
-        if(aPressed)
-        {
-            angle -= 0.2 * M_PI;
-        }
-        if(dPressed)
-        {
-            angle += 0.2 * M_PI;
-        }
-        if(angle >= 2*M_PI) angle-=2 * M_PI;
-        if(angle < 0) angle+=2 * M_PI;
-        robot->destinationX = robot->x + cos(angle) * speed;
-        robot->destinationY = robot->y + sin(angle) * speed;
-        robot->endAngle = angle;
-        robot->speed = swarmAlgorithmsSettings.robotSpeed;
     }
 }

@@ -36,6 +36,7 @@ void ChargeStation::paint(QPainter *painter, const QStyleOptionGraphicsItem *opt
 void ChargeStation::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
     //qDebug() << "pressed!";
+    Object::mousePressEvent(event);//call super class
 }
 
 void ChargeStation::mouseMoveEvent(QGraphicsSceneMouseEvent *event)

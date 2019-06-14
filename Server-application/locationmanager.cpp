@@ -1,6 +1,6 @@
 #include "locationmanager.h"
 
-LocationManager robotLocationManager;
+QList<Object*> LocationManager::currentSelectedObjects;
 LocationManager locationManager;
 LocationManager::LocationManager()
 {
@@ -103,7 +103,7 @@ void LocationManager::resetEverything(){
         delete toDelete;
     }
 
-    RobotLocation::currentSelectedRobotptr = nullptr;
+    LocationManager::currentSelectedObjects.clear();
     //remove all robots in the robotLocation
     //locationManager.robots.clear();
     //reset IP list tracker

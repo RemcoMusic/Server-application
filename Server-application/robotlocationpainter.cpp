@@ -1,4 +1,5 @@
 #include <robotlocation.h>
+#include "locationmanager.h"
 #define toRad(angleDegrees) ((angleDegrees) * M_PI / 180.0)
 #define toDeg(angleRadians) ((angleRadians) * 180.0 / M_PI)
 QRectF RobotLocation::boundingRect() const
@@ -24,6 +25,14 @@ void RobotLocation::paint(QPainter *painter, const QStyleOptionGraphicsItem *opt
         painter->setPen(pen);
         painter->setBrush(brush);
 
+        for(int i=0;i<LocationManager::currentSelectedObjects.size();i++)
+        {
+            if(LocationManager::currentSelectedObjects.at(i) == this)
+            {
+                painter->setBrush(Qt::red);
+                break;
+            }
+        }
         painter->drawEllipse(0,0,d,d);
 
         if(type == Type::SIMULATED)
