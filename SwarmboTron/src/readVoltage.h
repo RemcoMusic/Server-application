@@ -1,10 +1,11 @@
 #include <Arduino.h>
+#include "debug.h"
 
 class ReadVoltage
 {
     public:
         void setup();
-        int read();
+        double read();
     private:
         const static int voltageReadPin = 35; 
         int voltageDeviderValue = 4095;

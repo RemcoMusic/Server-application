@@ -225,9 +225,9 @@ void SwarmSimulation::moveWheels(double Vl, double Vr, RobotLocation* robot)
     while(robot->angle < 0) robot->angle +=2 * M_PI;
 
 }
-void SwarmSimulation::robotCodeSimulation(RobotLocation* robot)
+void SwarmSimulation::robotCodeSimulation(RobotLocation* robot, RobotLocation* robotData)
 {
-    udpData = robot->sharedData;
+    udpData = robotData->sharedData;
     MotorDriver* motorDriver = new MotorDriver();
     motorDriver->driveMotor();
     double leftSpeed = getLeftSpeedFromLastArduinoSimulation();
@@ -250,11 +250,10 @@ void SwarmSimulation::startSimulation()
         {
             if(swarmSimulationSettings.realisticSimulationEnabled)
             {
-                //robotCodeSimulation(currentRobot);
-                //robotCodeSimulation(currentRobot->simulatedRobot);
-                moveRobotRealistic(currentRobot);
-                moveRobotRealistic(currentRobot->simulatedRobot);
-
+                robotCodeSimulation(currentRobot, currentRobot);
+                robotCodeSimulation(currentRobot->simulatedRobot,currentRobot);
+                //moveRobotRealistic(currentRobot);
+                //moveRobotRealistic(currentRobot->simulatedRobot);
             }
             else {
                 moveRobot(currentRobot);

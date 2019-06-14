@@ -17,15 +17,17 @@ void connectWifi()
 
 void setup() 
 {
+  Serial.begin(115200);
   connectWifi();
+  Serial.println("Wifi connected");
   Tasks initTasks; 
+  Serial.println("Tasks started");
 }
 
 void loop() 
 {
   if(WiFi.status() != WL_CONNECTED)
   {
-    debugE("Connection lost, reconnecting!");
     WiFi.reconnect();
   }
   delay(200);

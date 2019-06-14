@@ -1,5 +1,5 @@
 #include "locationmanager.h"
-#include "simulatedrobot.h"
+
 LocationManager robotLocationManager;
 LocationManager locationManager;
 LocationManager::LocationManager()
@@ -102,6 +102,8 @@ void LocationManager::resetEverything(){
         dataScene->removeItem(toDelete);
         delete toDelete;
     }
+
+    RobotLocation::currentSelectedRobotptr = nullptr;
     //remove all robots in the robotLocation
     //locationManager.robots.clear();
     //reset IP list tracker

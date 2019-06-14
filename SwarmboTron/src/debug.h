@@ -2,6 +2,7 @@
 #include <Arduino.h>
 #include "globals.h"
 #include "RemoteDebug.h" 
+#include "OTA.h"
 
 class debug
 {

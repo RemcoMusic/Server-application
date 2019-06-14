@@ -7,23 +7,39 @@ void MotorDriver::driveMotor()
         if ((udpData.newX > udpData.currentX - 10) && (udpData.newX < udpData.currentX + 10) && (udpData.newY > udpData.currentY - 10) && (udpData.newY < udpData.currentY + 10)) 
         {
             setMotorSpeed(0,0); //destination reached
-            debugE("Target found!");
             globalData.targetFound = true;
         }
-        else //move te new coordinates
+        else //move to new coordinates
         {
-            globalData.targetFound = false; //set target found to false for debug purposes
+            if ((udpData.newX > udpData.currentX - 70) && (udpData.newX < udpData.currentX + 70) && (udpData.newY > udpData.currentY - 70) && (udpData.newY < udpData.currentY + 70)) 
+            {
+                angleDeadband = 5;
+                maxSpeed = minSpeed + 200;
+            }
+            else
+            {
+                angleDeadband = oldAngleDeadband;
+                maxSpeed = oldMaxSpeed;
+            }
+            
+            globalData.targetFound = false; //set target found to false
             
             int16_t deltaX = udpData.currentX - udpData.newX; //calculate difference in Y and X   
             int16_t deltaY = udpData.currentY - udpData.newY;
 
-
             double angleRad = atan2(deltaY, deltaX); //calculate new angle angleRad has a value between 180 and -180 -pi to pi
             int16_t angleDeg = degrees(angleRad) + 180; //angle degree has a value between 180 and -180 0 == facing right 90 = top
 
-            MappedMotorSpeed = map(udpData.speed, 0, 255, 0, 1024); //map speed from server to MappedMotorSpeed
-
-            if(moveToAngle(angleDeg)) //if desired angle is reached
+            if(udpData.speed == 0)
+            {
+                MappedMotorSpeed = 0;
+            }
+            else
+            {
+                MappedMotorSpeed = map(udpData.speed, 0, 255, minSpeed, maxSpeed); //map speed from server to MappedMotorSpeed
+            }
+            
+            if(moveToAngle(angleDeg)) //if angle is within deadband
             {
                 goToCoordinates(MappedMotorSpeed, angleDeg, udpData.currentAngle); //move towards the coordinates   
             } 
@@ -38,20 +54,37 @@ void MotorDriver::driveMotor()
 
 void MotorDriver::goToCoordinates(uint8_t speed, uint16_t desiredAngle, uint16_t currentAngle)
 {  
-    int speedR = map(currentAngle, desiredAngle - angleDeadband, desiredAngle + angleDeadband, speed, maxSpeed);
-    int speedL = map(currentAngle, desiredAngle - angleDeadband, desiredAngle + angleDeadband, maxSpeed, speed);
+    // int speedL = map(currentAngle, desiredAngle - angleDeadband, desiredAngle + angleDeadband, speed, maxSpeed);
+    // int speedR = map(currentAngle, desiredAngle - angleDeadband, desiredAngle + angleDeadband, maxSpeed, speed);
 
+    //currentAngle = 100
+    //desiredAngle = 70
 
+    //lower = 40
+    //upper = 100
 
-    //speed = current angle, ()
-
-
-    // int speedR = MappedMotorSpeed;
-    // int speedL = MappedMotorSpeed;
+    //left motor should be faster
 
     //set motorspeed based on the desired angle, the desired speed and the defined maximum speed.
     //debugE("* speedL: %u", speedL);
     //debugE("* speedR: %u", speedR);
+
+    int speedL = 0;
+    int speedR = 0;
+
+    if(globalData.Map)
+    {
+        speedL = map(currentAngle, desiredAngle - angleDeadband, desiredAngle + angleDeadband, minSpeed, MappedMotorSpeed);
+        speedR = map(currentAngle, desiredAngle + angleDeadband, desiredAngle - angleDeadband, minSpeed, MappedMotorSpeed);
+    }
+    else
+    {
+        speedR = MappedMotorSpeed;
+        speedL = MappedMotorSpeed;
+    }
+
+    // debugW("* speedL: %d", speedL);
+    // debugW("* speedR: %d", speedR);
 
     setMotorSpeed(speedL, speedR);
 }

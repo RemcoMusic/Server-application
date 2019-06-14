@@ -16,6 +16,10 @@
 #include <QFrame>
 #include <math.h>
 #include "objectsbase.h"
+
+
+
+
 enum robotStatus{
     OFF = 0,
     STARTUP = 1,
@@ -43,7 +47,9 @@ struct  UdpData {
 
 class RobotLocation: public Object
 {
-public:
+
+public:    
+    static RobotLocation *currentSelectedRobotptr; //should be in locationManager... but it's not working
     UdpData sharedData; // <-- must be used for all data that the bots must know
 
     QRectF boundingRect() const;

@@ -13,43 +13,55 @@ bool lastTargetFound = false;
 
 void LedDriver::selectMode()
 {
-	if(lastTargetFound != globalData.targetFound)
-	{
-		if(globalData.targetFound)
+		if(udpData.status != currentMode)
+		{
+			currentMode = udpData.status;		
+			switch (udpData.status) 
+			{
+				case 0: off();		//all leds off
+						break;
+				case 1: startup();	//turn on middle led to green
+						break;
+				case 2: normal();	//middle led red and direction led blue
+						break;
+				case 3: charging();	//charging animation
+						break;
+				default:
+						off();
+			}
+		}
+
+		if(globalData.targetFound && (globalData.targetFound != lastTargetFound) && udpData.status == 2)
 		{
 			targetFound();
+			debugE("targetLed on");
 			lastTargetFound = true;
 		}
-		else
+		else if(!globalData.targetFound && udpData.status == 2)
 		{
-			normal();
 			lastTargetFound = false;
+			debugE("targetLed off");
+			normal();
 		}
-	
-	}
-	else
-	{
-		lastTargetFound = false;
-	}
-
-
-	if(udpData.status != currentMode)
-	{
-		currentMode = udpData.status;		
-		switch (udpData.status) 
-		{
-			case 0: off();		//all leds off
-					break;
-			case 1: startup();	//turn on middle led to green
-					break;
-			case 2: normal();	//middle led red and direction led blue
-					break;
-			case 3: charging();	//charging animation
-					break;
-			default:
-					off();
-		}
-	}
+		
+		// if(lastTargetFound != globalData.targetFound)
+		// {
+		// 	if(globalData.targetFound)
+		// 	{
+		// 		targetFound();
+		// 		lastTargetFound = true;
+		// 	}
+		// 	else
+		// 	{
+		// 		normal();
+		// 		lastTargetFound = false;
+		// 	}
+		// }
+		// else
+		// {
+		// 	lastTargetFound = false;
+		// }
+		
 }
 
 void LedDriver::charging()
@@ -98,26 +110,24 @@ void LedDriver::normal()
 	leds[middleLedPosition] = CRGB::Red;
 	leds[directionLedPostition] = CRGB::Blue;
 	FastLED.show();
+	delay(200);
 }
 
 void LedDriver::targetFound()
 {	
-		FastLED.clear();
-		for(int i = 0; i < NUM_LEDS; i++) 
-			{
-				FastLED.setBrightness(10);
-				leds[i] = CRGB::DarkViolet;	
-			}
+	FastLED.clear();
+	for(int i = 0; i < NUM_LEDS; i++) 
+		{
+			FastLED.setBrightness(10);
+			leds[i] = CRGB::DarkViolet;	
+		}
 
-		FastLED.setBrightness(brightness);
-		leds[middleLedPosition] = CRGB::Red;
-		leds[directionLedPostition - 1] = CRGB::Black;
-		leds[directionLedPostition] = CRGB::Blue;
-		leds[directionLedPostition + 1] = CRGB::Black;
-
-		FastLED.show();
-		delay(500);
-		normal();
+	FastLED.setBrightness(brightness);
+	leds[middleLedPosition] = CRGB::Red;
+	leds[directionLedPostition - 1] = CRGB::Black;
+	leds[directionLedPostition] = CRGB::Blue;
+	leds[directionLedPostition + 1] = CRGB::Black;
+	FastLED.show();
 }
 
 

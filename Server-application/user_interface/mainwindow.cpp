@@ -138,8 +138,51 @@ void MainWindow::updateGui()
 
     updateNumberOfRobots();
     removeUnusedRobots();
+    updateRobotStatusLabel();
+    updateManualControl();
     on_pushButton_clicked(); // resize the scenes
     dataScene->update();
+}
+void MainWindow::updateRobotStatusLabel(){
+    RobotLocation *ptr = RobotLocation::currentSelectedRobotptr;
+    if(ptr){
+        //location
+        QString locationText = "X:";
+        locationText.append(QString::number(ptr->x));
+        locationText.append(" Y:");
+        locationText.append(QString::number(ptr->y));
+        ui->robotLocationLabel->setText(locationText);
+
+        //destination
+        QString destination = "X:";
+        destination.append(QString::number(ptr->destinationX));
+        destination.append(" Y:");
+        destination.append(QString::number(ptr->destinationY));
+        ui->robotDestinationLabel->setText(destination);
+
+        //angle
+        ui->robotAngleLabel->setText(QString::number(ptr->angle));
+
+        //ip
+        ui->robotIPLabel->setText(ptr->ip);
+
+        //type
+        if(ptr->type == RobotLocation::Type::REAL){
+            ui->robotTypeLabel->setText("Real");
+        }else{ // simulated
+            ui->robotTypeLabel->setText("Simulated");
+        }
+
+        //voltage
+        ui->robotVoltageLabel->setText(QString::number(ptr->batteryVoltage));
+
+        if(ptr->group){
+            ui->robotGroupLabel->setText(ptr->group->name);
+        }else{
+            ui->robotGroupLabel->setText("Default");
+        }
+    }
+
 }
 
 void MainWindow::updateNumberOfRobots()
@@ -287,4 +330,51 @@ void MainWindow::on_resetSimulationButton_clicked()
 void MainWindow::on_algorithmInputComboBox_currentIndexChanged(int index)
 {
     swarmAlgorithmsSettings.inputSource = (SwarmAlgorithmsSettings::AlgorithmInputSource)index;
+}
+
+//for manual control
+void MainWindow::keyPressEvent(QKeyEvent *event)
+{
+    if(event->key() == Qt::Key_W)wPressed = true;
+    else if(event->key() == Qt::Key_S)sPressed = true;
+    else if(event->key() == Qt::Key_A)aPressed = true;
+    else if(event->key() == Qt::Key_D)dPressed = true;
+}
+
+void MainWindow::keyReleaseEvent(QKeyEvent *event)
+{
+    if(event->key() == Qt::Key_W)wPressed = false;
+    else if(event->key() == Qt::Key_S)sPressed = false;
+    else if(event->key() == Qt::Key_A)aPressed = false;
+    else if(event->key() == Qt::Key_D)dPressed = false;
+}
+void MainWindow::updateManualControl()
+{
+    RobotLocation *robot = RobotLocation::currentSelectedRobotptr;
+    if(robot){
+        int speed;//  mm/frame
+        double angle = robot->angle;
+        if(wPressed)
+        {
+            speed = 1000;
+        }
+        if(sPressed)
+        {
+            speed = -1000;
+        }
+        if(aPressed)
+        {
+            angle -= 0.2 * M_PI;
+        }
+        if(dPressed)
+        {
+            angle += 0.2 * M_PI;
+        }
+        if(angle >= 2*M_PI) angle-=2 * M_PI;
+        if(angle < 0) angle+=2 * M_PI;
+        robot->destinationX = robot->x + cos(angle) * speed;
+        robot->destinationY = robot->y + sin(angle) * speed;
+        robot->endAngle = angle;
+        robot->speed = swarmAlgorithmsSettings.robotSpeed;
+    }
 }

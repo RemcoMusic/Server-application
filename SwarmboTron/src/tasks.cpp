@@ -1,7 +1,7 @@
 #include <Arduino.h>
 #include "tasks.h"
 
-OTA OTAUpdate;
+//OTA OTAUpdate;
 serverCommunication server;
 MotorDriver motor;
 ReadVoltage voltageReader;
@@ -30,13 +30,13 @@ Tasks::Tasks()
     1,
     NULL);
 
-  xTaskCreate(
-    OTAtask,
-    "OTA",
-    10000,
-    NULL,
-    1,
-    NULL);
+  // xTaskCreate(
+  //   OTAtask,
+  //   "OTA",
+  //   10000,
+  //   NULL,
+  //   1,
+  //   NULL);
 
   xTaskCreate(
     LEDtask,
@@ -62,24 +62,26 @@ void Tasks::serverCommunication(void * parameter)
   startMillis = millis(); 
   for(;;)
   {
-    if(udpData.status == OFF)
+    if(!globalData.motorDebug)
     {
-      period = 100;
+      if(udpData.status == OFF)
+      {
+        period = 100;
+      }
+      else
+      {
+        period = 10000;
+      }
+      
+      currentMillis = millis(); 
+      if (currentMillis - startMillis >= period)  
+      {
+        startMillis = currentMillis; 
+        server.send(voltageReader.read());
+        //server.send(5);
+      } 
+      server.listen();
     }
-    else
-    {
-      period = 10000;
-    }
-    
-    currentMillis = millis(); 
-    if (currentMillis - startMillis >= period)  
-    {
-      startMillis = currentMillis; 
-      //server.send(voltageReader.read());
-      debugE("Sending data");
-      server.send(5);
-    } 
-    server.listen();
     vTaskDelay(10/portTICK_PERIOD_MS);
   }
 }
@@ -97,33 +99,41 @@ void Tasks::motorDriver(void * parameter)
     {
       if(globalData.DriveForward)
       {
-        motor.setMotorSpeed(1000,1000);
+        motor.setMotorSpeed(550,550);
+        debugW("going forward");
       }
       if(globalData.TurnLeft)
       {
-        motor.setMotorSpeed(300,1024);
+        motor.setMotorSpeed(0,1000);
+        //motor.rotateAxis(2);
       }
       if(globalData.TurnRight)
       {
-        motor.setMotorSpeed(1024,300);
+        motor.setMotorSpeed(1000,0);
+        //motor.rotateAxis(1);
       }
-      else
+      if(globalData.Stop)
       {
         motor.setMotorSpeed(0,0);
-      } 
+        //motor.rotateAxis(1);
+      }
+      // else
+      // {
+      //   motor.setMotorSpeed(0,0);
+      // } 
     }
   }
 }
 
-void Tasks::OTAtask(void * parameter)
-{
-  OTAUpdate.startOTA();
-  for(;;)
-  {
-    OTAUpdate.handle();
-    vTaskDelay(10/portTICK_PERIOD_MS);
-  }
-}
+// void Tasks::OTAtask(void * parameter)
+// {
+//   OTAUpdate.startOTA();
+//   for(;;)
+//   {
+//     OTAUpdate.handle();
+//     vTaskDelay(10/portTICK_PERIOD_MS);
+//   }
+// }
 
 void Tasks::LEDtask(void * parameter)
 {

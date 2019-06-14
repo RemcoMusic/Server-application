@@ -25,7 +25,7 @@ class SwarmSimulation: public QObject
     clock_t lastTime;
     double deltaT=0;
 
-    void robotCodeSimulation(RobotLocation *robot);
+    void robotCodeSimulation(RobotLocation *robot, RobotLocation *robotData);
 public:
     SwarmSimulation();
 public slots:
