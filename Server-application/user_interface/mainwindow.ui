@@ -496,7 +496,7 @@
         <item>
          <widget class="QTabWidget" name="tabWidget_2">
           <property name="currentIndex">
-           <number>3</number>
+           <number>4</number>
           </property>
           <widget class="QWidget" name="tab_4">
            <attribute name="title">
@@ -555,6 +555,20 @@
              <widget class="QLabel" name="cameraBlueFeed">
               <property name="text">
                <string>No blue feed</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+          <widget class="QWidget" name="tab_8">
+           <attribute name="title">
+            <string>Object</string>
+           </attribute>
+           <layout class="QVBoxLayout" name="verticalLayout_11">
+            <item>
+             <widget class="QLabel" name="cameraObjectFeed">
+              <property name="text">
+               <string>No object feed</string>
               </property>
              </widget>
             </item>

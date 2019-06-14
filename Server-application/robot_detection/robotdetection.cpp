@@ -47,8 +47,8 @@ robotDetection::robotDetection()
         Hsv* temporaryOL = new Hsv();
         temporaryOL->c = ColorNames::ORANGE_LOW;
         temporaryOL->h = 0;
-        temporaryOL->s = 100;
-        temporaryOL->v = 100;
+        temporaryOL->s = 120;
+        temporaryOL->v = 180;
         robotDetectionSettings.HSVColorValues.append(temporaryOL);
 
         Hsv* temporaryOH = new Hsv();
@@ -85,6 +85,11 @@ void robotDetection::startDetecting() {
             cap >> originalFrame;
             cv::cvtColor(originalFrame,HSV,cv::COLOR_BGR2HSV);
 
+            threshold = detectColors(HSV,"Orange");
+            morphOps(threshold);
+            cv::cvtColor(threshold,O, cv::COLOR_BGR2RGB);
+            robotDetectionSettings.processedOrangeFrame = O;
+
             threshold = detectColors(HSV,"Blue");
             morphOps(threshold);
             cv::cvtColor(threshold,B, cv::COLOR_BGR2RGB);
@@ -102,11 +107,6 @@ void robotDetection::startDetecting() {
             cv::cvtColor(threshold,R, cv::COLOR_BGR2RGB);
             robotDetectionSettings.processedRedFrame = R;
             trackFilteredObject(threshold,originalFrame);
-
-            threshold = detectColors(HSV, "Orange");
-            morphOps(threshold);
-            cv::cvtColor(threshold, O, cv::COLOR_BGR2RGB);
-            //robotDetectionSettings.processedRedFrame = O;
 
             cv::cvtColor(originalFrame,RGB, cv::COLOR_BGR2RGB);
             robotDetectionSettings.processedFrame = RGB;
@@ -233,6 +233,7 @@ void robotDetection::detectBlueDots(cv::Mat threshold) {
 
 void robotDetection::detectBall(cv::Mat threshold, cv::Mat &originalFrame) {
     bool newBall = true;
+    bool objectFound = false;
     cv::Mat temp;
     threshold.copyTo(temp);
     std::vector< std::vector<cv::Point> > contours;
@@ -253,6 +254,7 @@ void robotDetection::detectBall(cv::Mat threshold, cv::Mat &originalFrame) {
                         if (ptr->x >= (calibratedX - 30) && ptr->x <= (calibratedX + 30)) {
                             if(ptr->y >= (calibratedY -30) && ptr->y <= (calibratedY + 30)) {
                                 newBall = false;
+                                objectFound = true;
                                 ptr->x = calibratedX;
                                 ptr->y = calibratedY;
                                 break;
@@ -267,7 +269,10 @@ void robotDetection::detectBall(cv::Mat threshold, cv::Mat &originalFrame) {
                     locationManager.objects.append(nieuweBalle);
                     newBall = true;
                 }
-            }
+            } objectFound = false;
+        }
+        if(objectFound) {
+            drawObjects(originalFrame);
         }
     }
 }
