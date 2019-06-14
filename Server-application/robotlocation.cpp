@@ -1,5 +1,5 @@
 #include "robotlocation.h"
-RobotLocation* RobotLocation::currentSelectedRobotptr = nullptr;
+#include "locationmanager.h"
 
 RobotLocation::RobotLocation(RobotGroup *group)
 {
@@ -39,20 +39,7 @@ void RobotLocation::print()
 double tempAngle;
 void RobotLocation::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
-    qDebug("press");
-    tempAngle = angle;
-
-    //set the robot as the selected robot
-    RobotLocation::currentSelectedRobotptr = this;  // currentSelectedRobotPointer is a static variable of this class (sorry)
-
-    //tempory for debugging charge algorithm
-//    if(batteryVoltage == 5)
-//    {
-//        batteryVoltage = 8.4;
-//    }
-//    else {
-//        batteryVoltage = 5;
-//    }
+    Object::mousePressEvent(event);//call super class
 }
 
 void RobotLocation::mouseMoveEvent(QGraphicsSceneMouseEvent *event)

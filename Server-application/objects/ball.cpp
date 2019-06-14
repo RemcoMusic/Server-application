@@ -1,4 +1,5 @@
 #include "ball.h"
+#include "locationmanager.h"
 
 Ball::Ball()
 {
@@ -13,21 +14,27 @@ QRectF Ball::boundingRect() const
 void Ball::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
     setPos(x-0.5*size,y-0.5*size);
-    QRectF rect = boundingRect();
-    QBrush brush(myColor);
     QPen pen(Qt::red);
-    pen.setWidth(1);
+    pen.setWidth(4);
     painter->setPen(pen);
-    painter->setBrush(brush);
 
-    painter->drawEllipse(0,0,size,size);
+    QPainterPath path;
+    path.addEllipse(0,0,size,size);
+    painter->fillPath(path, myColor);
+    for(int i=0;i<LocationManager::currentSelectedObjects.size();i++)
+    {
+        if(LocationManager::currentSelectedObjects.at(i) == this)
+        {
+            painter->drawPath(path);
+        }
+    }
 
 
 }
 
 void Ball::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
-    //qDebug() << "pressed!";
+    Object::mousePressEvent(event);//call super class
 }
 
 void Ball::mouseMoveEvent(QGraphicsSceneMouseEvent *event)

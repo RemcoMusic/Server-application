@@ -47,9 +47,7 @@ struct  UdpData {
 
 class RobotLocation: public Object
 {
-
 public:    
-    static RobotLocation *currentSelectedRobotptr; //should be in locationManager... but it's not working
     UdpData sharedData; // <-- must be used for all data that the bots must know
 
     QRectF boundingRect() const;

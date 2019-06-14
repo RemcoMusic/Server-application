@@ -19,6 +19,8 @@ public:
         REAL = 1,
         SIMULATED=2
     }type;
+protected:
+    virtual void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
 };
 
 #endif // OBJECT_H
