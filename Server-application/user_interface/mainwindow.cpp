@@ -138,8 +138,8 @@ void MainWindow::updateGui()
 
     updateNumberOfRobots();
     removeUnusedRobots();
-    updateRobotStatusLabel();
     updateManualControl();
+    updateRobotStatusLabel();
     on_pushButton_clicked(); // resize the scenes
     dataScene->update();
 }
@@ -387,19 +387,20 @@ void MainWindow::updateManualControl()
             double angle = robot->angle;
             if(wPressed)
             {
-                speed = 1000;
+                speed = 100;
             }
             if(sPressed)
             {
-                speed = -1000;
+                speed = 100;
+                angle += M_PI;
             }
             if(aPressed)
             {
-                angle -= 0.2 * M_PI;
+                angle -= 0.4 * M_PI;
             }
             if(dPressed)
             {
-                angle += 0.2 * M_PI;
+                angle += 0.4 * M_PI;
             }
             if(wPressed || sPressed || aPressed || dPressed)
             {
