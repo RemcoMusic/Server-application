@@ -1,6 +1,5 @@
 #include "ball.h"
 #include "locationmanager.h"
-
 Ball::Ball()
 {
     collisionRadius = 0;
@@ -13,6 +12,7 @@ QRectF Ball::boundingRect() const
 
 void Ball::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
+    constrainObjectInField(this);
     setPos(x-0.5*size,y-0.5*size);
     QPen pen(Qt::red);
     pen.setWidth(4);

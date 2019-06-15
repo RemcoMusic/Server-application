@@ -21,6 +21,7 @@ QRectF ChargeStation::boundingRect() const
 
 void ChargeStation::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
+    constrainObjectInField(this);
     setPos(x-0.5*size,y-0.5*size);
     QRectF rect = boundingRect();
     QBrush brush(Qt::black);

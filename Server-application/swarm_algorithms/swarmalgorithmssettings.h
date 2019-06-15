@@ -13,12 +13,6 @@ public:
 
     QList<SwarmAlgorithmBase*> activeAlgorithms;
 
-    int updateIntervalMs=100;  //3
-
-    bool visualisationEnabled = false;  // 2
-    bool allVisualisationEnabled = false;  //2
-    bool experimentalVisualisationEnbaled = false;//for new feature testing  //2
-
     bool debugLinearMotion = false;  //2
     bool debugLinearMotionVerbose = false; //2
     bool debugLinearMotionSources = false; //2
@@ -36,7 +30,7 @@ public:
 
     bool algorithmAllowSimulatedObject = true;    //1
 
-    int robotSpeed = 5;//10-100  //1
+    int robotSpeed = 5;//0-255  //1
     bool dynamicSpeed = true; // with dynamic robot speed depents on the other robot, they will arive on the same time //1
     bool useLineAlgorithmRotationTime = true;  //2
     int lineAlgorithmRotationWeight = 10;      //2
@@ -45,19 +39,12 @@ public:
 
     bool enableCollisionAvoidance = true;   //1
     int collisionDistance = 20;            //1
-    int collisionAggression = 5;//0-10      //1
+    int collisionAggression = 5;//0-10      //1 //todo implement
     double collisionAvoidanceAngle = 0.6 * M_PI;
 
-    double batteryVoltageThreshold = 6.0;
-    double batteryVoltageFull = 8.4;
 
     int displacementKeepTimeMS = 1000;
     double dispacementComplementeryFilter = 0.95;//0.8 - 0.99
-    //en verder
-    //update rate
-    //kiezen van algorithmes en informatie weergeven
-
-
 
 
     QList<QString> anvailableAlgoritms;

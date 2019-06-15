@@ -10,7 +10,7 @@ protected:
     UserInputFunctions();
 
     void findRobotMovementInputs(QList<RobotLocation*>& swarmRobots);
-    void findObjectInputs(bool simulated);
+    void findObjectInputs();
     QList<Object *> userInputs;
     void constrainPoint(QPoint *point, int xMin, int yMin, int xMax, int yMax);
 };

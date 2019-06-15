@@ -18,8 +18,6 @@
 #include "objectsbase.h"
 
 
-
-
 enum robotStatus{
     OFF = 0,
     STARTUP = 1,

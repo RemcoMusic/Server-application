@@ -1,5 +1,4 @@
 #include "robotlocation.h"
-#include "locationmanager.h"
 
 RobotLocation::RobotLocation(RobotGroup *group)
 {

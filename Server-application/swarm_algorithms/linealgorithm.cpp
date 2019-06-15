@@ -25,7 +25,7 @@ void LineAlgorithm::update()
     }
     else if(swarmAlgorithmsSettings.inputSource == SwarmAlgorithmsSettings::AlgorithmInputSource::OBJECTS)
     {
-        findObjectInputs(true);
+        findObjectInputs();
         processUserInputs();
     }
     else if(swarmAlgorithmsSettings.inputSource == SwarmAlgorithmsSettings::AlgorithmInputSource::ROBOT_MOVEMENT)

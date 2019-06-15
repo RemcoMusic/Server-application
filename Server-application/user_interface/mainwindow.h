@@ -73,6 +73,8 @@ private slots:
 
     void on_emptyBattery_clicked();
 
+    void on_SimulationSpeedSlider_valueChanged(int value);
+
 public slots:
     void updateGui();
 private:

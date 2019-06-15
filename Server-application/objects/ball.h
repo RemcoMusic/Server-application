@@ -5,6 +5,7 @@
 #include <QDebug>
 #include <QColor>
 #include <QGraphicsSceneMouseEvent>
+#include "globalhelperfunctions.h"
 
 
 

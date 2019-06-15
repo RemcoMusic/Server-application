@@ -1,5 +1,4 @@
-#include "robotlocation.h"
-
+#include "globalhelperfunctions.h"
 double map(double x, double x1, double x2, double y1, double y2)
 {
  return (x - x1) * (y2 - y1) / (x2 - x1) + y1;
@@ -29,3 +28,16 @@ bool isMoving(RobotLocation* robot)
     }
     return true;
 }
+void constrainObject(Object* object, int xMin, int yMin, int xMax, int yMax)
+{
+    object->x = std::max(xMin, object->x);
+    object->y = std::max(yMin, object->y);
+    object->x = std::min(xMax, object->x);
+    object->y = std::min(yMax, object->y);
+}
+void constrainObjectInField(Object* object)
+{
+    int clearance = object->collisionRadius;
+    constrainObject(object, clearance, clearance, globalSettings.fieldSizeX-clearance, globalSettings.fieldSizeY - clearance);
+}
+

@@ -340,6 +340,10 @@ void MainWindow::on_SliderRobotSpeed_valueChanged(int value)
 {
     swarmAlgorithmsSettings.robotSpeed = value;
 }
+void MainWindow::on_SimulationSpeedSlider_valueChanged(int value)
+{
+    swarmSimulationSettings.simulationSpeed = value;
+}
 
 void MainWindow::on_AddSimulatedRobotButton_clicked()
 {
@@ -402,11 +406,11 @@ void MainWindow::updateManualControl()
             }
             if(aPressed)
             {
-                angle -= 0.4 * M_PI;
+                angle -= 0.2 * M_PI;
             }
             if(dPressed)
             {
-                angle += 0.4 * M_PI;
+                angle += 0.2 * M_PI;
             }
             if(wPressed || sPressed || aPressed || dPressed)
             {
@@ -500,10 +504,11 @@ void MainWindow::on_emptyBattery_clicked()
         if(robot)
         {
             robot->batteryVoltage += 1.0;
-            if(robot->batteryVoltage > 8.4)
+            if(robot->batteryVoltage > globalSettings.batteryVoltageFull)
             {
-                robot->batteryVoltage = 6;
+                robot->batteryVoltage = globalSettings.batteryVoltageThreshold;
             }
         }
     }
 }
+

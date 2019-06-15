@@ -7,7 +7,7 @@ int pinSpeed[4] = {0,0,0,0};
 void ledcWrite(int pin, int dutyCycle)
 {
     pinSpeed[pin] = dutyCycle;
-    double devider = 50;
+    double devider = 1;
 
     if(pinSpeed[0]==0)
     {

@@ -51,8 +51,8 @@ void SwarmSimulation::moveRobot(RobotLocation *robot)
     else {
         if(abs(difference) < 0.5)
         {
-            robot->x = robot->x + std::fmin(cos(goalAngle) * robot->speed * swarmSimulationSettings.maxSpeed, abs(deltaX));
-            robot->y = robot->y + std::fmin(sin(goalAngle) * robot->speed * swarmSimulationSettings.maxSpeed, abs(deltaY));
+            robot->x = robot->x + std::fmin(cos(goalAngle) * robot->speed, abs(deltaX));
+            robot->y = robot->y + std::fmin(sin(goalAngle) * robot->speed, abs(deltaY));
         }
     }
 
@@ -195,7 +195,7 @@ void SwarmSimulation::moveWheels(double Vl, double Vr, RobotLocation* robot)
     }
     double r = (l/2) * (Vl + Vr) / (Vr - Vl);
 
-    double wdt = (Vr - Vl) * deltaT * globalSettings.simulationSpeed / l;
+    double wdt = (Vr - Vl) * deltaT * swarmSimulationSettings.simulationSpeed / l;
 
     double ICCx = robot->x - r * sin(currentAngle);
     double ICCy = robot->y + r * cos(currentAngle);

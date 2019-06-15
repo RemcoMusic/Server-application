@@ -24,7 +24,7 @@ void UserInputFunctions::findRobotMovementInputs(QList<RobotLocation*>& swarmRob
     }
     std::sort(userInputs.begin(),userInputs.end(), compereUserInputs);
 }
-void UserInputFunctions::findObjectInputs(bool simulated)
+void UserInputFunctions::findObjectInputs()
 {
     QListIterator<Object*> i(locationManager.objects);
     while (i.hasNext())
@@ -33,7 +33,7 @@ void UserInputFunctions::findObjectInputs(bool simulated)
         Ball* ball = dynamic_cast<Ball*>(currentObject);
         if(ball != nullptr)
         {
-            if((ball->type == Ball::Type::REAL)||(simulated))
+            if((ball->type == Ball::Type::REAL)||(swarmAlgorithmsSettings.algorithmAllowSimulatedObject))
             {
                 userInputs.append(currentObject);
             }

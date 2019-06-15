@@ -1,4 +1,7 @@
 #include <robotlocation.h>
+
+//included in the cpp file to prevent include loop
+#include "globalhelperfunctions.h"
 #include "locationmanager.h"
 #define toRad(angleDegrees) ((angleDegrees) * M_PI / 180.0)
 #define toDeg(angleRadians) ((angleRadians) * 180.0 / M_PI)
@@ -9,6 +12,7 @@ QRectF RobotLocation::boundingRect() const
 
 void RobotLocation::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
+    constrainObjectInField(this);
     setPos(x-globalSettings.botDiameter*0.5,y-globalSettings.botDiameter*0.5);
     QRectF rect = boundingRect();
         QBrush brush(Qt::black);

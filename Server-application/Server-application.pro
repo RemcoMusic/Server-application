@@ -29,6 +29,7 @@ QMAKE_CXXFLAGS += "-Wno-old-style-cast"
 QMAKE_CXXFLAGS += "-Wconversion"
 SOURCES += \
     globalhelperfunctions.cpp \
+    globalsettings.cpp \
     locationmanager.cpp \
     main.cpp \
     objects/ball.cpp \
@@ -57,7 +58,6 @@ SOURCES += \
     robot_connection\swarmbotcommunicationsettings.cpp \
     robotlocation.cpp \
     swarm_algorithms/swarmalgorithmbase.cpp \
-    globalsettings.cpp \
     robotgroup.cpp \
     swarm_simulation/robotcode/motorDriver.cpp \
     swarm_simulation/robotcode/globals.cpp
