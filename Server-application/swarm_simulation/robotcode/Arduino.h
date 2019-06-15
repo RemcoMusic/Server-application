@@ -9,6 +9,7 @@
 #define PI M_PI
 
 #define degrees(angleRadians) ((angleRadians) * 180.0 / M_PI)
+#define radians(angleDegrees) ((angleDegrees) * M_PI / 180.0)
 
 
 extern void ledcWrite(int pin, int dutyCycle);

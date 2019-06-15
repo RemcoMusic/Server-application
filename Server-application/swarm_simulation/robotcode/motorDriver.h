@@ -37,5 +37,6 @@ class MotorDriver
         int MappedMotorSpeed = 0; //motorspeed mapped from the serverspeed to the speed of the robot
         void goToCoordinates(uint8_t speed, uint16_t desiredAngle, uint16_t currentAngle);
         bool moveToAngle(int16_t newAngle);
-    
+
+        void moveRobotRealistic();
 };
