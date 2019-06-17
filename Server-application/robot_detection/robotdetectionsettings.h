@@ -32,7 +32,7 @@ public:
     int erodeObject = 1; //Default 1-20
     int dilateObject = 4; //Default 1-20
     int xyDeviationMilimeter = 50; //Has to be implemented
-    int selectCamera = 0;
+    int selectCamera = 1;
     bool drawRobots = false; //Default
     bool enableDetection = true; //Default
     cv::Mat processedFrame;

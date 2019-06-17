@@ -79,11 +79,12 @@ void LocationManager::makeNewRealRobot(int x, int y)
 
 void LocationManager::makeObject(int x, int y, long i)
 {
-    Object* nieuweBalle = new Ball();
+    Ball* nieuweBalle = new Ball();
     nieuweBalle->type = Ball::Type::REAL;
     nieuweBalle->x = x;
     nieuweBalle->y = y;
     nieuweBalle->lastUpdated = i;
+    nieuweBalle->BallColor = Ball::BallColor::ORANGE;
     locationManager.addObject(nieuweBalle);
 }
 void LocationManager::resetEverything(){

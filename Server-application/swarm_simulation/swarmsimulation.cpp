@@ -195,7 +195,7 @@ void SwarmSimulation::moveWheels(double Vl, double Vr, RobotLocation* robot)
     }
     double r = (l/2) * (Vl + Vr) / (Vr - Vl);
 
-    double wdt = (Vr - Vl) * deltaT * swarmSimulationSettings.simulationSpeed / l;
+    double wdt = (Vr - Vl) * deltaT * (1.0/swarmSimulationSettings.simulationSpeed) / l;
 
     double ICCx = robot->x - r * sin(currentAngle);
     double ICCy = robot->y + r * cos(currentAngle);

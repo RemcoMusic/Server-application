@@ -450,7 +450,7 @@ void MainWindow::on_comboBox_currentIndexChanged(const QString &arg1)  // sorry 
          ChargeStation* b = new ChargeStation();
          b->x = x;
          b->y = y;
-         dataScene->addItem(b);
+         b->type = Object::Type::SIMULATED;
          locationManager.addObject(b);
     }else if (arg1 == "Simulated Ball Yellow") {
         int x = qrand() % globalSettings.fieldSizeX;
@@ -460,7 +460,7 @@ void MainWindow::on_comboBox_currentIndexChanged(const QString &arg1)  // sorry 
          b->x = x;
          b->y = y;
          b->BallColor = Ball::BallColor::YELLOW;
-         dataScene->addItem(b);
+         b->type = Object::Type::SIMULATED;
          locationManager.addObject(b);
     }else if (arg1 == "Simulated Ball Orange") {
         int x = qrand() % globalSettings.fieldSizeX;
@@ -470,7 +470,7 @@ void MainWindow::on_comboBox_currentIndexChanged(const QString &arg1)  // sorry 
          b->x = x;
          b->y = y;
          b->BallColor = Ball::BallColor::ORANGE;
-         dataScene->addItem(b);
+         b->type = Object::Type::SIMULATED;
          locationManager.addObject(b);
     }
     ui->comboBox->setCurrentIndex(0);

@@ -375,10 +375,13 @@ void robotDetection::deleteUndetectedObject() {
     long expiredTime;
     for (int i = 0; i<locationManager.objects.size(); i++) {
         Object* ptr = locationManager.objects.at(i);
-        expiredTime = ((clock()/CLOCKS_PER_SEC) - ptr->lastUpdated);
-        if (expiredTime >= 0.1) {
-            locationManager.deleteRealObject(ptr);
-            break;
+        if(ptr->type == Object::Type::REAL)
+        {
+            expiredTime = ((clock()/CLOCKS_PER_SEC) - ptr->lastUpdated);
+            if (expiredTime >= 0.1) {
+                locationManager.deleteRealObject(ptr);
+                break;
+            }
         }
     }
 }
