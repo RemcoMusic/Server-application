@@ -1,7 +1,7 @@
 #include <Arduino.h>
 #include "tasks.h"
 
-//OTA OTAUpdate;
+OTA OTAUpdate;
 serverCommunication server;
 MotorDriver motor;
 ReadVoltage voltageReader;
@@ -30,13 +30,13 @@ Tasks::Tasks()
     1,
     NULL);
 
-  // xTaskCreate(
-  //   OTAtask,
-  //   "OTA",
-  //   10000,
-  //   NULL,
-  //   1,
-  //   NULL);
+  xTaskCreate(
+    OTAtask,
+    "OTA",
+    10000,
+    NULL,
+    1,
+    NULL);
 
   xTaskCreate(
     LEDtask,
@@ -125,15 +125,15 @@ void Tasks::motorDriver(void * parameter)
   }
 }
 
-// void Tasks::OTAtask(void * parameter)
-// {
-//   OTAUpdate.startOTA();
-//   for(;;)
-//   {
-//     OTAUpdate.handle();
-//     vTaskDelay(10/portTICK_PERIOD_MS);
-//   }
-// }
+void Tasks::OTAtask(void * parameter)
+{
+  OTAUpdate.startOTA();
+  for(;;)
+  {
+    OTAUpdate.handle();
+    vTaskDelay(10/portTICK_PERIOD_MS);
+  }
+}
 
 void Tasks::LEDtask(void * parameter)
 {

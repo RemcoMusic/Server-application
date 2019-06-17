@@ -2,16 +2,10 @@
 #include "debug.h"
 
 RemoteDebug Debug;
-OTA OTAUpdater;
 
 void processCmdRemoteDebug() 
 {
 	String lastCmd = Debug.getLastCommand();
-
-    if (lastCmd == "ota") {
-        OTAUpdater.startOTA();
-        debugE("ota started");
-    }
 
 	if (lastCmd == "reset") {
         udpData.status = OFF;
@@ -77,15 +71,7 @@ void processCmdRemoteDebug()
     }
 
     if (lastCmd == "test") {
-        debugE("turning left");
-        udpData.status = NORMAL;
-        globalData.TurnLeft = true;
-        delay(2000);
-        globalData.TurnLeft = false;
-        debugE("turning right");
-        globalData.TurnRight = true;
-        delay(2000);
-        globalData.TurnRight = false;
+        debugE("Test succeeded");
     }
 
     if (lastCmd == "stop") {
@@ -98,15 +84,15 @@ void processCmdRemoteDebug()
         globalData.Stop = false;
     }
 
-    if (lastCmd == "map") {
-        globalData.Map = true;
-        debugE("Using mapped speed");
-    }
+    // if (lastCmd == "map") {
+    //     globalData.Map = true;
+    //     debugE("Using mapped speed");
+    // }
 
-    if (lastCmd == "stopMap") {
-        globalData.Map = false;
-        debugE("Using fixed speed");
-    }
+    // if (lastCmd == "stopMap") {
+    //     globalData.Map = false;
+    //     debugE("Using fixed speed");
+    // }
 
     if (lastCmd == "led") 
     {
@@ -115,11 +101,6 @@ void processCmdRemoteDebug()
        delay(3000);
        globalData.Led = false;
        debugE("ledOff");
-    }
-
-    if (lastCmd == "enableMotor") {
-        debugE("Motors enabled");
-        globalData.motorsEnabled = true;
     }
 }
 

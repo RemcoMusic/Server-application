@@ -5,6 +5,7 @@
 #include "ledDriver.h"
 #include "globals.h"
 #include "debug.h"
+#include "OTA.h"
 
 class Tasks
 {
@@ -12,7 +13,7 @@ class Tasks
         Tasks();
         static void serverCommunication(void * parameter);
         static void motorDriver(void * parameter);
-        //static void OTAtask(void * parameter);
+        static void OTAtask(void * parameter);
         static void LEDtask(void * parameter);
         static void debuggerTask(void * parameter);
 };

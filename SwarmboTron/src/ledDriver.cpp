@@ -34,13 +34,11 @@ void LedDriver::selectMode()
 		if(globalData.targetFound && (globalData.targetFound != lastTargetFound) && udpData.status == 2)
 		{
 			targetFound();
-			debugE("targetLed on");
 			lastTargetFound = true;
 		}
 		else if(!globalData.targetFound && udpData.status == 2)
 		{
 			lastTargetFound = false;
-			debugE("targetLed off");
 			normal();
 		}
 		
