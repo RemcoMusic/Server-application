@@ -1,10 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
-#include <opencv2/core/core.hpp>
-#include <opencv2/highgui/highgui.hpp>
 #include <chargestation.h>
-#include <simulatedrobot.h>
 
 
 QGraphicsScene *dataScene;   //global
