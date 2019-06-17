@@ -6,6 +6,7 @@
 
 QT       += core gui
 QT       += network
+QT       += testlib
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -27,19 +28,23 @@ CONFIG += c++11
 
 
 SOURCES += \
+    globalhelperfunctions.cpp \
     locationmanager.cpp \
     main.cpp \
     objects/ball.cpp \
+    objects/chargestation.cpp \
     objects/objectsbase.cpp \
     robotlocationpainter.cpp \
     simulatedrobot.cpp \
-    swarm_algorithms/algrorithmvisualisation.cpp \
+    swarm_algorithms/chargealgorithm.cpp \
     swarm_algorithms/circlealgorithm.cpp \
     swarm_algorithms/halfcirclealgorithm.cpp \
     swarm_algorithms/linealgorithm.cpp \
     swarm_algorithms/linearmotionalgorithms.cpp \
+    swarm_algorithms/rectanglealgorithm.cpp \
     swarm_algorithms/robotdisplacementdetection.cpp \
     swarm_simulation/robotcode/arduino.cpp \
+    test.cpp \
     user_interface\mainwindow.cpp \
     swarm_algorithms\swarmalgorithms.cpp \
     swarm_algorithms\swarmalgorithmssettings.cpp \
@@ -59,18 +64,22 @@ SOURCES += \
 
 HEADERS += \
     globalhelperfunctions.h \
+    main.h \
+    objects/chargestation.h \
     simulatedrobot.h \
     locationmanager.h \
     objects/ball.h \
     objects/objectsbase.h \
-    swarm_algorithms/algrorithmvisualisation.h \
+    swarm_algorithms/chargealgorithm.h \
     swarm_algorithms/circlealgorithm.h \
     swarm_algorithms/halfcirclealgorithm.h \
     swarm_algorithms/linealgorithm.h \
     swarm_algorithms/linearmotionalgorithms.h \
+    swarm_algorithms/rectanglealgorithm.h \
     swarm_algorithms/robotdisplacementdetection.h \
     swarm_simulation/robotcode/Arduino.h \
     swarm_simulation/robotcode/debug.h \
+    test.h \
     user_interface\mainwindow.h \
     swarm_algorithms\swarmalgorithms.h \
     robot_detection\robotdetection.h \

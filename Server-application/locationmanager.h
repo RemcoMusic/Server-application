@@ -9,7 +9,7 @@
 #include "robotgroup.h"
 #include <QList>
 #include "objectsbase.h"
-
+#include "simulatedrobot.h"
 #include "mainwindow.h"
 
 class LocationManager: public QObject
@@ -22,12 +22,14 @@ public:
 
     QList<Object*>objects;//list of objects in the field
 
+
     void printAllRobots();
     RobotLocation* addSimulatedRobot(RobotGroup* group = nullptr);
     void deleteAllSimulatedRobots();
     void deleteAllSimulatedRobotsFromGroup(RobotGroup* group = nullptr);
     void addObject(Object* object);
     void turnOffAllRobots();
+    void resetEverything();
 public slots:
     void makeNewRealRobot(int x,int y);
 };

@@ -3,6 +3,7 @@
 
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
+#include <chargestation.h>
 #include <simulatedrobot.h>
 
 
@@ -57,21 +58,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
 
     for(int i =0;i<1;i++){
-        int x = qrand() % globalSettings.fieldSizeX;
-        int y = qrand() % globalSettings.fieldSizeY;
-        int a = qrand() % 360;
-
-        RobotLocation *l = locationManager.addSimulatedRobot();
-        l->x = x;
-        l->y = y;
-        l->setX(x-0.5*globalSettings.botDiameter);
-        l->setY(y-0.5*globalSettings.botDiameter);
-        l->destinationX = x;
-        l->destinationY = y;
-        l->setRotation(a);
-        l->simulatedRobot = new SimulatedRobot(l);
-        dataScene->addItem(l->simulatedRobot);
-        dataScene->addItem(l);
+        locationManager.addSimulatedRobot();
     }
 
 
@@ -150,9 +137,51 @@ void MainWindow::updateGui()
 
 
     updateNumberOfRobots();
-
+    removeUnusedRobots();
+    updateRobotStatusLabel();
     on_pushButton_clicked(); // resize the scenes
     dataScene->update();
+}
+void MainWindow::updateRobotStatusLabel(){
+    RobotLocation *ptr = RobotLocation::currentSelectedRobotptr;
+    if(ptr){
+        //location
+        QString locationText = "X:";
+        locationText.append(QString::number(ptr->x));
+        locationText.append(" Y:");
+        locationText.append(QString::number(ptr->y));
+        ui->robotLocationLabel->setText(locationText);
+
+        //destination
+        QString destination = "X:";
+        destination.append(QString::number(ptr->destinationX));
+        destination.append(" Y:");
+        destination.append(QString::number(ptr->destinationY));
+        ui->robotDestinationLabel->setText(destination);
+
+        //angle
+        ui->robotAngleLabel->setText(QString::number(ptr->angle));
+
+        //ip
+        ui->robotIPLabel->setText(ptr->ip);
+
+        //type
+        if(ptr->type == RobotLocation::Type::REAL){
+            ui->robotTypeLabel->setText("Real");
+        }else{ // simulated
+            ui->robotTypeLabel->setText("Simulated");
+        }
+
+        //voltage
+        ui->robotVoltageLabel->setText(QString::number(ptr->batteryVoltage));
+
+        if(ptr->group){
+            ui->robotGroupLabel->setText(ptr->group->name);
+        }else{
+            ui->robotGroupLabel->setText("Default");
+        }
+    }
+
 }
 
 void MainWindow::updateNumberOfRobots()
@@ -171,9 +200,25 @@ void MainWindow::updateNumberOfRobots()
     ui->lcdNumberRealRobots->display(real);
     ui->lcdNumberTotalObstacles->display(locationManager.objects.size());
 }
+
+void MainWindow::removeUnusedRobots()
+{
+    for(int i = 0; i < locationManager.robots.size();i++){
+        RobotLocation * ptr = locationManager.robots.at(i);
+        if(ptr->sharedData.status == robotStatus::STARTUP){
+            //now delete ptr
+            //int index = locationManager.robots.indexOf(ptr);
+
+            locationManager.robots.removeOne(ptr);
+            dataScene->removeItem(ptr->simulatedRobot);
+            dataScene->removeItem(ptr);
+
+             // delete ptr;
+        }
+    }
+}
 void MainWindow::colorSlidersChanged(int c)
 {
-
     if(flipFlop){
         int currentColor = ui->colorComboBox->currentIndex();
         int h = ui->sliderHue->value();
@@ -254,23 +299,7 @@ void MainWindow::on_SliderRobotSpeed_valueChanged(int value)
 
 void MainWindow::on_AddSimulatedRobotButton_clicked()
 {
-    //for(int i =0;i<10;i++){
-        int x = qrand() % globalSettings.fieldSizeX;
-        int y = qrand() % globalSettings.fieldSizeY;
-        int a = qrand() % 360;
-
-        RobotLocation *l = locationManager.addSimulatedRobot();
-        l->x = x;
-        l->y = y;
-        l->setX(x-0.5*globalSettings.botDiameter);
-        l->setY(y-0.5*globalSettings.botDiameter);
-        l->destinationX = x;
-        l->destinationY = y;
-        l->setRotation(a);
-        l->simulatedRobot = new SimulatedRobot(l);
-        dataScene->addItem(l->simulatedRobot);
-        dataScene->addItem(l);
-    //}
+    locationManager.addSimulatedRobot();
 }
 
 void MainWindow::on_addSimulatedObjectButton_clicked()
@@ -278,7 +307,9 @@ void MainWindow::on_addSimulatedObjectButton_clicked()
     int x = qrand() % globalSettings.fieldSizeX;
      int y = qrand() % globalSettings.fieldSizeY;
 
-     Ball *b = new Ball();
+     //temperory fix add no ball but a charge station
+     //Ball *b = new Ball();
+     Object* b = new Ball();
      b->x = x;
      b->y = y;
      dataScene->addItem(b);
@@ -292,22 +323,7 @@ void MainWindow::on_ActiveAlgoritmList_currentIndexChanged(const QString &arg1)
 
 void MainWindow::on_resetSimulationButton_clicked()
 {
-    //turn off all robots.
-    communicationSettings.turnOffAllRobots();  // will also reset IP list
-
-    //clear qgraphicsscene
-    dataScene->clear();
-    for(int i =locationManager.robots.size()-1; i>=0 ;i--){
-        locationManager.robots.removeAt(i);
-    }
-    //remove all robots in the robotLocation
-    //locationManager.robots.clear();
-    //reset IP list tracker
-
-
-    //add fieldsize back
-    dataScene->addRect(0,0,globalSettings.fieldSizeX,globalSettings.fieldSizeY);
-
+    locationManager.resetEverything();
 }
 
 void MainWindow::on_algorithmInputComboBox_currentIndexChanged(int index)

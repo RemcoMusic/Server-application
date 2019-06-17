@@ -1,10 +1,10 @@
 #pragma once
-
 #include <QObject>
 #include "swarmalgorithmbase.h"
 #include <math.h>
 #include <QList>
 #include <QString>
+
 
 class SwarmAlgorithmsSettings
 {
@@ -45,9 +45,15 @@ public:
     bool useAllDestinationsWhenLessRobots = true;  //2
 
     bool enableCollisionAvoidance = true;   //1
-    int collisionDistance = 100;            //1
+    int collisionDistance = 20;            //1
     int collisionAggression = 5;//0-10      //1
     double collisionAvoidanceAngle = 0.6 * M_PI;
+
+    double batteryVoltageThreshold = 6.0;
+    double batteryVoltageFull = 8.4;
+
+    int displacementKeepTimeMS = 1000;
+    double dispacementComplementeryFilter = 0.95;//0.8 - 0.99
     //en verder
     //update rate
     //kiezen van algorithmes en informatie weergeven
@@ -56,7 +62,7 @@ public:
 
 
     QList<QString> anvailableAlgoritms;
-    void runNewAlgortim(QString newAlgoritm);
+    void runNewAlgortim(QString newAlgoritm, bool clearOthers = true);
 
 };
 extern SwarmAlgorithmsSettings swarmAlgorithmsSettings;

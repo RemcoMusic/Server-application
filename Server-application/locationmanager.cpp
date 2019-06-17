@@ -1,5 +1,5 @@
 #include "locationmanager.h"
-#include "simulatedrobot.h"
+
 LocationManager robotLocationManager;
 LocationManager locationManager;
 LocationManager::LocationManager()
@@ -17,11 +17,30 @@ void LocationManager::printAllRobots()
 }
 RobotLocation *LocationManager::addSimulatedRobot(RobotGroup *group)
 {
-    RobotLocation *newRobot = new RobotLocation(group);
-    newRobot->type = Object::Type::SIMULATED;
-    newRobot->sharedData.status = robotStatus::NORMAL;
-    robots.append(newRobot);
-    return newRobot;
+    RobotLocation *l = new RobotLocation(group);
+    l->type = Object::Type::SIMULATED;
+    l->sharedData.status = robotStatus::NORMAL;
+
+
+
+    int x = qrand() % globalSettings.fieldSizeX;
+    int y = qrand() % globalSettings.fieldSizeY;
+    int a = qrand() % 360;
+
+
+    l->x = x;
+    l->y = y;
+    l->setX(x-0.5*globalSettings.botDiameter);
+    l->setY(y-0.5*globalSettings.botDiameter);
+    l->destinationX = x;
+    l->destinationY = y;
+    l->setRotation(a);
+    l->simulatedRobot = new SimulatedRobot(l);
+    dataScene->addItem(l->simulatedRobot);
+    dataScene->addItem(l);
+    robots.append(l);
+
+    return l;
 }
 void LocationManager::deleteAllSimulatedRobots()
 {
@@ -69,7 +88,27 @@ void LocationManager::makeNewRealRobot(int x, int y)
     robots.append(newRobot);
     //dataScene.addItem(newRobot);
     //Ui::ui->dataSene->addItem(newRobot);
+
     dataScene->addItem(newRobot->simulatedRobot);
     dataScene->addItem(newRobot);
     qDebug() << "MADE A NEW ROBOT";
+}
+void LocationManager::resetEverything(){
+    //turn off all robots.
+    communicationSettings.turnOffAllRobots();  // will also reset IP list
+
+    while(robots.size() > 0){
+        RobotLocation* toDelete = robots.takeAt(0);
+        dataScene->removeItem(toDelete);
+        delete toDelete;
+    }
+
+    RobotLocation::currentSelectedRobotptr = nullptr;
+    //remove all robots in the robotLocation
+    //locationManager.robots.clear();
+    //reset IP list tracker
+
+
+    //add fieldsize back
+    dataScene->addRect(0,0,globalSettings.fieldSizeX,globalSettings.fieldSizeY);
 }
