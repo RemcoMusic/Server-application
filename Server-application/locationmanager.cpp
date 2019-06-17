@@ -69,6 +69,14 @@ void LocationManager::deleteAllSimulatedRobotsFromGroup(RobotGroup *group)
     }
 }
 
+void LocationManager::deleteRealObject(Object *object)
+{
+
+    //objects.takeAt(objects.indexOf(object));
+    objects.removeOne(object);
+    dataScene->removeItem(object);
+}
+
 void LocationManager::addObject(Object *object)
 {
     objects.append(object);
@@ -95,14 +103,14 @@ void LocationManager::makeNewRealRobot(int x, int y)
     qDebug() << "MADE A NEW ROBOT";
 }
 
-void LocationManager::makeObject(int x, int y, int i)
+void LocationManager::makeObject(int x, int y, long i)
 {
     Object* nieuweBalle = new Ball();
     nieuweBalle->type = Ball::Type::REAL;
     nieuweBalle->x = x;
     nieuweBalle->y = y;
+    nieuweBalle->lastUpdated = i;
     locationManager.addObject(nieuweBalle);
-    dataScene->addItem(nieuweBalle);
 }
 void LocationManager::resetEverything(){
     //turn off all robots.

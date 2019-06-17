@@ -28,11 +28,12 @@ public:
     RobotLocation* addSimulatedRobot(RobotGroup* group = nullptr);
     void deleteAllSimulatedRobots();
     void deleteAllSimulatedRobotsFromGroup(RobotGroup* group = nullptr);
+    void deleteRealObject(Object* object);
     void addObject(Object* object);
     void turnOffAllRobots();
     void resetEverything();
 public slots:
     void makeNewRealRobot(int x,int y);
-    void makeObject(int x, int y, int i);
+    void makeObject(int x, int y, long i);
 };
 extern LocationManager locationManager;

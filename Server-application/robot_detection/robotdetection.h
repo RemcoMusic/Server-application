@@ -37,6 +37,7 @@ class robotDetection: public QThread
         void drawRobots(cv::Mat &frame);
         void drawObjects(cv:: Mat &frame);
         void morphOps(cv::Mat &thresh);
+        void deleteUndetectedObject();
         cv::Mat detectColors(cv::Mat frame, QString color);
 
         int oldCameraInput = robotDetectionSettings.selectCamera;
@@ -49,6 +50,6 @@ class robotDetection: public QThread
     signals:
         void newFrameFinished();
         void makeANewRobot(int x,int y);
-        void makeObject(int x, int y, int i);
+        void makeObject(int x, int y, long i);
 };
 #endif // ROBOTDETECTION_H

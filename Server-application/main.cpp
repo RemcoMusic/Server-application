@@ -33,7 +33,7 @@ int main(int argc, char *argv[])
     qDebug() << "setting up signals and slots" << endl;
 
     QObject::connect(&robotDetection,SIGNAL(makeANewRobot(int,int)),&locationManager,SLOT(makeNewRealRobot(int,int)));
-    QObject::connect(&robotDetection,SIGNAL(makeObject(int,int,int)),&locationManager,SLOT(makeObject(int,int,int)));
+    QObject::connect(&robotDetection,SIGNAL(makeObject(int,int,long)),&locationManager,SLOT(makeObject(int,int,long)));
 
     //robotLocationManager.makeNewRealRobot(500,500);
     QObject::connect(&robotDetection,SIGNAL(newFrameFinished()),&swarmSimulation,SLOT(startSimulation()));

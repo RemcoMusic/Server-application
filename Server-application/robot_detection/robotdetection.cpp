@@ -111,6 +111,7 @@ void robotDetection::startDetecting() {
 
             cv::cvtColor(originalFrame,RGB, cv::COLOR_BGR2RGB);
             robotDetectionSettings.processedFrame = RGB;
+            deleteUndetectedObject();
             emit newFrameFinished();
         }
     }
@@ -251,20 +252,18 @@ void robotDetection::detectBall(cv::Mat threshold, cv::Mat &originalFrame) {
             if(area>100) {
                 for(int i =0;i<locationManager.objects.size(); i++) {
                     Object* ptr = locationManager.objects.at(i);
-                    if(ptr->type == Object::Type::REAL) {
-                        if (ptr->x >= (calibratedX - 30) && ptr->x <= (calibratedX + 30)) {
-                            if(ptr->y >= (calibratedY -30) && ptr->y <= (calibratedY + 30)) {
-                                newBall = false;
-                                objectFound = true;
-                                ptr->x = calibratedX;
-                                ptr->y = calibratedY;
-                                break;
-                            }
-                        }
+                    if (ptr->type == Object::Type::REAL && ptr->x >= (calibratedX - 100) && ptr->x <= (calibratedX + 100) && ptr->y >= (calibratedY -100) && ptr->y <= (calibratedY + 100)) {
+                        newBall = false;
+                        objectFound = true;
+                        ptr->x = calibratedX;
+                        ptr->y = calibratedY;
+                        ptr->lastUpdated = (clock()/CLOCKS_PER_SEC);
+                        break;
                     }
                 }
                 if (newBall) {
-                    emit makeObject(calibratedX, calibratedY, 1);
+                    long startTime = clock()/CLOCKS_PER_SEC;
+                    emit makeObject(calibratedX, calibratedY, startTime);
                     newBall = true;
                 }
             } else objectFound = false;
@@ -368,6 +367,18 @@ void robotDetection::drawObjects(cv::Mat &frame) {
                         cv::Point(uncalibratedXCordinate,uncalibratedYCordinate),1,1,cv::Scalar(0,255,0));
             std::string str =std::to_string(i);
             cv::putText(frame,str,cv::Point(uncalibratedXCordinate,uncalibratedYCordinate),1,2,cv::Scalar(0,0,255));
+        }
+    }
+}
+
+void robotDetection::deleteUndetectedObject() {
+    long expiredTime;
+    for (int i = 0; i<locationManager.objects.size(); i++) {
+        Object* ptr = locationManager.objects.at(i);
+        expiredTime = ((clock()/CLOCKS_PER_SEC) - ptr->lastUpdated);
+        if (expiredTime >= 0.1) {
+            locationManager.deleteRealObject(ptr);
+            break;
         }
     }
 }

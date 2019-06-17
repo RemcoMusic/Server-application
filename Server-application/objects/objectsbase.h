@@ -14,6 +14,8 @@ public:
     int x;
     int y;
     int collisionRadius;
+    long lastUpdated = 0;
+
     enum class Type
     {
         REAL = 1,
