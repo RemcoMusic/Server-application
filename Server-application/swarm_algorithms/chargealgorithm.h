@@ -1,5 +1,4 @@
-#ifndef CHARGEALGORITHM_H
-#define CHARGEALGORITHM_H
+#pragma once
 
 #include "robotlocation.h"
 #include "robotgroup.h"
@@ -23,5 +22,3 @@ private:
     void generateLists();
     void chargeStationUpdate(ChargeStation *chargeStation);
 };
-
-#endif // CHARGEALGORITHM_H

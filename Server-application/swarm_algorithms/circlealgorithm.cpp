@@ -1,13 +1,16 @@
 #include "circlealgorithm.h"
 
-#include <simulatedrobot.h>
-
 CircleAlgorithm::CircleAlgorithm()
 {
     algorithmDiscription.name = "circle algorithm";
-    algorithmDiscription.discription = "bots drive in a circle defined by red objects";
-    algorithmDiscription.minimalAmountOfBots = 1;
-    algorithmDiscription.maximalAmountOfBots = 100;
+    algorithmDiscription.discription = "bots drive in a circle, position and size can be changed using yellow and orange objects or robots displacements";
+}
+
+CircleAlgorithm::~CircleAlgorithm()
+{
+    delete outer1;
+    delete outer2;
+    delete center;
 }
 void CircleAlgorithm::update()
 {
@@ -16,107 +19,76 @@ void CircleAlgorithm::update()
     userInputs.clear();
     if(swarmAlgorithmsSettings.inputSource == SwarmAlgorithmsSettings::AlgorithmInputSource::NONE)
     {
+        center->setX(500);
+        center->setY(500);
+        outer1->setX(250);
+        outer1->setY(500);
+        outer2->setX(750);
+        outer2->setY(500);
         calculateDestinationsCenterOuter();
     }
-    else if(swarmAlgorithmsSettings.inputSource == SwarmAlgorithmsSettings::AlgorithmInputSource::HAND_GESTURE)
+    else if(swarmAlgorithmsSettings.inputSource == SwarmAlgorithmsSettings::AlgorithmInputSource::OBJECTS)
     {
-        calculateDestinationsCenterOuter();
-    }
-    else if(swarmAlgorithmsSettings.inputSource == SwarmAlgorithmsSettings::AlgorithmInputSource::REAL_OBJECTS_CENTER_OUTER)
-    {
-        findObjectInputs(true);
-        processUserInputsCenterOuter();
-    }
-    else if(swarmAlgorithmsSettings.inputSource == SwarmAlgorithmsSettings::AlgorithmInputSource::REAL_OBJECTS_OUTER_OUTER)
-    {
-        findObjectInputs(true);
-        processUserInputsOuterOuter();
+        findObjectInputs();
+        processUserInputs();
     }
     else if(swarmAlgorithmsSettings.inputSource == SwarmAlgorithmsSettings::AlgorithmInputSource::ROBOT_MOVEMENT)
     {
-        findRobotMovementInputs();
-        processUserInputsOuterOuter();
+        findRobotMovementInputs(data.swarmRobots);
+        processUserInputs();
     }
 
     LinearMotionAlgorithms::update();
 }
-void CircleAlgorithm::findObjectInputs(bool simulated)
-{
-    QListIterator<Object*> i(locationManager.objects);
-    while (i.hasNext())
-    {
-        Object *currentObject = i.next();
-        if(dynamic_cast<Ball*>(currentObject) != nullptr)
-        {
-            userInputs.append(currentObject);
-        }
-    }
-}
-void CircleAlgorithm::findRobotMovementInputs()
-{
-    QListIterator<RobotLocation*> i(data.swarmRobots);
-    while (i.hasNext())
-    {
-        RobotLocation *currentRobot = i.next();
-        if(currentRobot->userInput)
-        {
-            userInputs.append(currentRobot);
-        }
-    }
-}
 
-void CircleAlgorithm::processUserInputsCenterOuter()
+
+void CircleAlgorithm::processUserInputs()
 {
+    int ballsOuter = 0;
+    bool centerUserInput = false;
     for(int i = 0;i<userInputs.size();i++)
     {
+        qDebug("user input");
         Object *currentObject = userInputs.at(i);
-        if(abs(distanceFromCenter(outer1->x(),outer1->y()) - distanceFromCenter(currentObject->x,currentObject->y)) < 100)
+        Ball* ball = dynamic_cast<Ball*>(currentObject);//use special color property of the ball
+        if((ball == nullptr)||( ball->BallColor == Ball::BallColor::YELLOW))
         {
-            outer1->rx() = currentObject->x;
-            outer1->ry() = currentObject->y;
+            if(abs(distanceFromCenter(outer1->x(),outer1->y()) - distanceFromCenter(currentObject->x,currentObject->y)) < 100)
+            {
+                if(ballsOuter == 0)
+                {
+                    outer1->rx() = currentObject->x;
+                    outer1->ry() = currentObject->y;
+                    ballsOuter++;
+                }
+                else if(ballsOuter == 1){
+                    outer2->rx() = currentObject->x;
+                    outer2->ry() = currentObject->y;
+                    ballsOuter++;
+                }
+            }
         }
-        else if(distanceFromCenter(currentObject->x,currentObject->y) < 100)
+        if((ball != nullptr)&&(ball->BallColor == Ball::BallColor::ORANGE))
         {
-            center->rx() = currentObject->x;
-            center->ry() = currentObject->y;
+            if(distanceFromCenter(currentObject->x,currentObject->y) < std::min(100, distanceFromCenter(outer1->x(),outer1->y())/2))
+            {
+                center->rx() = currentObject->x;
+                center->ry() = currentObject->y;
+                centerUserInput = true;
+            }
         }
     }
-    calculateDestinationsCenterOuter();
-}
-void CircleAlgorithm::processUserInputsOuterOuter()
-{
-    if(userInputs.size() == 0)
+    if((centerUserInput)||(ballsOuter <= 1))
     {
         calculateDestinationsCenterOuter();
     }
-    else if(userInputs.size() == 1)
-    {
-
-        Object *currentObject = userInputs.first();
-        //first check if the robot is near the radius of the circle
-        if(abs(distanceFromCenter(outer1->x(),outer1->y()) - distanceFromCenter(currentObject->x,currentObject->y)) < 100)
-        {
-            outer1->rx() = currentObject->x;
-            outer1->ry() = currentObject->y;
-        }
-        calculateDestinationsCenterOuter();
-    }
-    else
-    {
-        Object *object1 = userInputs.first();
-        Object *object2 = userInputs.at(1);
-        outer1->rx() = object1->x;
-        outer1->ry() = object1->y;
-        outer2->rx() = object2->x;
-        outer2->ry() = object2->y;
+    else {
         calculateDestinationsOuterOuter();
     }
 }
 int CircleAlgorithm::distanceFromCenter(int x, int y)
 {
-    int deltaX = center->rx() - x;//pytagoras A
-    int deltaY = center->ry() - y;//pytagoras b
-    return  sqrt(deltaX*deltaX + deltaY*deltaY);
+    return distanceBetweenPoints(center->x(),center->y(),x,y);
 }
 void CircleAlgorithm::calculateDestinationsOuterAngle()
 {
@@ -137,13 +109,6 @@ void CircleAlgorithm::calculateDestinationsCenterOuter()
     int deltaY = outer1->ry() - center->ry();//pytagoras b
     double beginAngle = atan2(deltaY, deltaX);
     calculateDestinationsCenterOuter(beginAngle,beginAngle + 2*M_PI);
-}
-static void constrainPoint(QPoint *point, int xMin, int yMin, int xMax, int yMax)
-{
-    point->rx() = std::max(xMin, point->x());
-    point->ry() = std::max(yMin, point->y());
-    point->rx() = std::min(xMax, point->x());
-    point->ry() = std::min(yMax, point->y());
 }
 void CircleAlgorithm::inputValidation()
 {
@@ -167,8 +132,7 @@ void CircleAlgorithm::calculateDestinationsCenterOuter(double beginAngle, double
 
     int amountOfRobotsUsing = std::min(amountOfRobotsFitting, data.swarmRobots.size());
     if(amountOfRobotsUsing < 1)
-    {
-        //qDebug("amount of robots using < 1");
+    {//its not possible to make the line with 0 or 1 robots
         return;
     }
 
@@ -191,7 +155,6 @@ void CircleAlgorithm::calculateDestinationsCenterOuter(double beginAngle, double
         newDestination->y = center->y() + sin(angle) * c;
         newDestination->endAngle = angle;
         destinations.append(newDestination);
-        //qDebug("new position %d, %d",newDestination->x,newDestination->y);
 
         angle+=angleBetweenRobots;
     }

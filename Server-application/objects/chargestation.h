@@ -3,6 +3,7 @@
 
 #include "objectsbase.h"
 #include "robotlocation.h"
+#include "globalhelperfunctions.h"
 
 
 enum class ChargeStatus

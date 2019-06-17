@@ -14,11 +14,16 @@ public:
     int x;
     int y;
     int collisionRadius;
+    long lastUpdated = 0;
+
     enum class Type
     {
         REAL = 1,
         SIMULATED=2
     }type;
+protected:
+    virtual void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
+    void mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event);
 };
 
 #endif // OBJECT_H

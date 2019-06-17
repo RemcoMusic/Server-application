@@ -520,3 +520,5 @@ void LinearMotionAlgorithms::connectDestinationsToRobots()
     //needed for deleting all allocated memory, don't forget this line otherwise we have a memory leak
     freeData();
 }
+
+

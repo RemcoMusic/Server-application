@@ -11,7 +11,9 @@ enum ColorNames{
     BLUE_LOW = 2,
     BLUE_HIGH = 3,
     GREEN_LOW = 4,
-    GREEN_HIGH = 5
+    GREEN_HIGH = 5,
+    ORANGE_LOW = 6,
+    ORANGE_HIGH = 7,
 };
 
 struct Hsv{
@@ -30,13 +32,14 @@ public:
     int erodeObject = 1; //Default 1-20
     int dilateObject = 4; //Default 1-20
     int xyDeviationMilimeter = 50; //Has to be implemented
-    int selectCamera = 0;
+    int selectCamera = 1;
     bool drawRobots = false; //Default
     bool enableDetection = true; //Default
     cv::Mat processedFrame;
     cv::Mat processedRedFrame;
     cv::Mat processedGreenFrame;
     cv::Mat processedBlueFrame;
+    cv::Mat processedOrangeFrame;
 
 
 

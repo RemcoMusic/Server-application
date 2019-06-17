@@ -61,13 +61,19 @@ private slots:
 
     void on_AddSimulatedRobotButton_clicked();
 
-    void on_addSimulatedObjectButton_clicked();
-
     void on_ActiveAlgoritmList_currentIndexChanged(const QString &arg1);
 
     void on_resetSimulationButton_clicked();
 
     void on_algorithmInputComboBox_currentIndexChanged(int index);
+
+    void on_comboBox_currentIndexChanged(const QString &arg1);
+
+    void on_deleteSelected_clicked();
+
+    void on_emptyBattery_clicked();
+
+    void on_SimulationSpeedSlider_valueChanged(int value);
 
 public slots:
     void updateGui();
@@ -80,6 +86,16 @@ private:
     QTime *fpsTimer;
     Ui::MainWindow *ui;
     bool flipFlop = true;
+
+    // QWidget interface
+
+    bool wPressed = false;
+    bool sPressed = false;
+    bool aPressed = false;
+    bool dPressed = false;
+    void keyPressEvent(QKeyEvent *event);
+    void keyReleaseEvent(QKeyEvent *event);
+    void updateManualControl();
 };
 
 #endif // MAINWINDOW_H

@@ -12,7 +12,7 @@ public:
     void update();
 private:
     int radius = 250;
-    void findRobotMovementInputs();
     void calculateDestinationsOuterOuter();
     void calculateDestinationsCenterOuter();
+    void processUserInputs();
 };

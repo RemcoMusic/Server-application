@@ -6,7 +6,6 @@
 class GlobalSettings
 {
 public:
-    GlobalSettings();
     int fieldSizeX=1720;//mm
     int fieldSizeY=1150;//mm
 
@@ -15,10 +14,12 @@ public:
 
     int botDiameter = 100;//mm
     int botDistanceBetweenWheels = 80;
-    int simulationSpeed = 10;
 
     bool printRobotDetection = 0;
     bool printSwarmAlgoritme = 0;
+
+    double batteryVoltageThreshold = 6.0;
+    double batteryVoltageFull = 8.4;
 };
 extern GlobalSettings globalSettings;
 #endif // GLOBALSETTINGS_H

@@ -3,84 +3,73 @@
 RectangleAlgorithm::RectangleAlgorithm()
 {
     algorithmDiscription.name = "rectangle algorithm";
-    algorithmDiscription.discription = "bots drive in the shape of a rectangle";
-    algorithmDiscription.minimalAmountOfBots = 1;
-    algorithmDiscription.maximalAmountOfBots = 100;
+    algorithmDiscription.discription = "bots drive in the shape of a rectangle, user inputs with balls or robot displacement are supported";
+}
+
+RectangleAlgorithm::~RectangleAlgorithm()
+{
+    delete point1;
+    delete point2;
 }
 
 void RectangleAlgorithm::update()
 {
     LinearMotionAlgorithms::generateRobotList();
     LinearMotionAlgorithms::clearDestinations();
+    userInputs.clear();
     if(swarmAlgorithmsSettings.inputSource == SwarmAlgorithmsSettings::AlgorithmInputSource::NONE)
     {
+        point1->setX(200);
+        point1->setY(200);
+        point2->setX(700);
+        point2->setY(700);
         calculatePoints();
     }
-    else if(swarmAlgorithmsSettings.inputSource == SwarmAlgorithmsSettings::AlgorithmInputSource::HAND_GESTURE)
+    else if(swarmAlgorithmsSettings.inputSource == SwarmAlgorithmsSettings::AlgorithmInputSource::OBJECTS)
     {
-        calculatePoints();
-    }
-    else if(swarmAlgorithmsSettings.inputSource == SwarmAlgorithmsSettings::AlgorithmInputSource::REAL_OBJECTS_CENTER_OUTER)
-    {
-        calculatePoints();
-    }
-    else if(swarmAlgorithmsSettings.inputSource == SwarmAlgorithmsSettings::AlgorithmInputSource::REAL_OBJECTS_OUTER_OUTER)
-    {
-        calculatePoints();
+        findObjectInputs();
+        processUserInputs();
     }
     else if(swarmAlgorithmsSettings.inputSource == SwarmAlgorithmsSettings::AlgorithmInputSource::ROBOT_MOVEMENT)
     {
-        findRobotMovementInputs();
+        findRobotMovementInputs(data.swarmRobots);
+        processUserInputs();
     }
     LinearMotionAlgorithms::update();
 }
 
-void RectangleAlgorithm::findRobotMovementInputs()
+void RectangleAlgorithm::processUserInputs()
 {
-    QList<RobotLocation*> userInputs;
-    QListIterator<RobotLocation*> i(data.swarmRobots);
-    while (i.hasNext())
-    {
-        RobotLocation *currentRobot = i.next();
-        if(currentRobot->userInput)
-        {
-            userInputs.append(currentRobot);
-        }
-    }
-    QListIterator<RobotLocation*> iterator(userInputs);
+    //all 4 outer corners can be displaced
+    int maximumDistanceToTrack = swarmAlgorithmsSettings.distanceBetweenRobots;
+    QListIterator<Object*> iterator(userInputs);
     while (iterator.hasNext())
     {
-        RobotLocation *currentRobot = iterator.next();
-        if(distanceBetweenPoints(currentRobot->x,currentRobot->y,point1->x(),point1->y()) < 200)
+        Object *currentObject = iterator.next();
+        if(distanceBetweenPoints(currentObject->x,currentObject->y,point1->x(),point1->y()) < maximumDistanceToTrack)
         {
-            point1->setX(currentRobot->x);
-            point1->setY(currentRobot->y);
+            point1->setX(currentObject->x);
+            point1->setY(currentObject->y);
         }
-        else if(distanceBetweenPoints(currentRobot->x,currentRobot->y,point2->x(),point2->y()) < 200)
+        else if(distanceBetweenPoints(currentObject->x,currentObject->y,point2->x(),point2->y()) < maximumDistanceToTrack)
         {
-            point2->setX(currentRobot->x);
-            point2->setY(currentRobot->y);
+            point2->setX(currentObject->x);
+            point2->setY(currentObject->y);
         }
-        else if(distanceBetweenPoints(currentRobot->x,currentRobot->y,point1->x(),point2->y()) < 200)
+        else if(distanceBetweenPoints(currentObject->x,currentObject->y,point1->x(),point2->y()) < maximumDistanceToTrack)
         {
-            point1->setX(currentRobot->x);
-            point2->setY(currentRobot->y);
+            point1->setX(currentObject->x);
+            point2->setY(currentObject->y);
         }
-        else if(distanceBetweenPoints(currentRobot->x,currentRobot->y,point2->x(),point1->y()) < 200)
+        else if(distanceBetweenPoints(currentObject->x,currentObject->y,point2->x(),point1->y()) < maximumDistanceToTrack)
         {
-            point2->setX(currentRobot->x);
-            point1->setY(currentRobot->y);
+            point2->setX(currentObject->x);
+            point1->setY(currentObject->y);
         }
     }
     calculatePoints();
 }
-static void constrainPoint(QPoint *point, int xMin, int yMin, int xMax, int yMax)
-{
-    point->rx() = std::max(xMin, point->x());
-    point->ry() = std::max(yMin, point->y());
-    point->rx() = std::min(xMax, point->x());
-    point->ry() = std::min(yMax, point->y());
-}
+//if the input points are out of the scene the robots will also drive out of the scene, this validations keeps the points in the scene
 void RectangleAlgorithm::inputValidation()
 {
     int clearance  = globalSettings.botDiameter/2;
@@ -90,14 +79,15 @@ void RectangleAlgorithm::inputValidation()
 void RectangleAlgorithm::calculatePoints()
 {
     inputValidation();
+
     //calculate distance between markers
     //point1 is left top, point2 is right bottom
-    int deltaX = abs(point2->rx() - point1->rx());
-    int deltaY = abs(point2->ry() - point1->ry());
+    int deltaX = point2->rx() - point1->rx();
+    int deltaY = point2->ry() - point1->ry();
 
     //the rectangle have 4 lines, 2 x lines and 2 y lines
-    int amountOfRobotsFittingXLines = deltaX/swarmAlgorithmsSettings.distanceBetweenRobots;
-    int amountOfRobotsFittingYLines = deltaY/swarmAlgorithmsSettings.distanceBetweenRobots;
+    int amountOfRobotsFittingXLines = abs(deltaX)/swarmAlgorithmsSettings.distanceBetweenRobots;
+    int amountOfRobotsFittingYLines = abs(deltaY)/swarmAlgorithmsSettings.distanceBetweenRobots;
 
     //calculate the amount of robots fitting in each of the for lines and sum them
     int amountOfRobotsFitting = amountOfRobotsFittingXLines*2 + amountOfRobotsFittingYLines*2;
@@ -109,6 +99,7 @@ void RectangleAlgorithm::calculatePoints()
         return;
     }
 
+    //devide robots between x and y lines
     double xyRatio = ((double)amountOfRobotsUsing) / amountOfRobotsFitting;
     int amountOfRobotsUsingXLines = amountOfRobotsFittingXLines * xyRatio;
     int amountOfRobotsUsingYLines = (amountOfRobotsUsing - amountOfRobotsUsingXLines*2) / 2;
@@ -116,6 +107,7 @@ void RectangleAlgorithm::calculatePoints()
     int distanceBetweenRobotsXLines = (amountOfRobotsUsingXLines > 0) ? deltaX/(amountOfRobotsUsingXLines) : deltaX/2;
     int distanceBetweenRobotsYLines = (amountOfRobotsUsingYLines > 0) ? deltaY/(amountOfRobotsUsingYLines) : deltaY/2;
 
+    //draw the 4 lines
     for(int i=0;i<amountOfRobotsUsingXLines;i++)
     {
         Destination *newDestination = new Destination;

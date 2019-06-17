@@ -8,68 +8,52 @@ LineAlgorithm::LineAlgorithm()
     algorithmDiscription.maximalAmountOfBots = 100;
 }
 
+LineAlgorithm::~LineAlgorithm()
+{
+    delete point1;
+    delete point2;
+}
+
 void LineAlgorithm::update()
 {
     LinearMotionAlgorithms::generateRobotList();
     LinearMotionAlgorithms::clearDestinations();
+    userInputs.clear();
     if(swarmAlgorithmsSettings.inputSource == SwarmAlgorithmsSettings::AlgorithmInputSource::NONE)
     {
         calculatePoints();
     }
-    else if(swarmAlgorithmsSettings.inputSource == SwarmAlgorithmsSettings::AlgorithmInputSource::HAND_GESTURE)
+    else if(swarmAlgorithmsSettings.inputSource == SwarmAlgorithmsSettings::AlgorithmInputSource::OBJECTS)
     {
-        calculatePoints();
-    }
-    else if(swarmAlgorithmsSettings.inputSource == SwarmAlgorithmsSettings::AlgorithmInputSource::REAL_OBJECTS_CENTER_OUTER)
-    {
-        calculatePoints();
-    }
-    else if(swarmAlgorithmsSettings.inputSource == SwarmAlgorithmsSettings::AlgorithmInputSource::REAL_OBJECTS_OUTER_OUTER)
-    {
-        calculatePoints();
+        findObjectInputs();
+        processUserInputs();
     }
     else if(swarmAlgorithmsSettings.inputSource == SwarmAlgorithmsSettings::AlgorithmInputSource::ROBOT_MOVEMENT)
     {
-        findRobotMovementInputs();
+        findRobotMovementInputs(data.swarmRobots);
+        processUserInputs();
     }
     LinearMotionAlgorithms::update();
 }
 
-void LineAlgorithm::findRobotMovementInputs()
+void LineAlgorithm::processUserInputs()
 {
-    QList<RobotLocation*> userInputs;
-    QListIterator<RobotLocation*> i(data.swarmRobots);
-    while (i.hasNext())
-    {
-        RobotLocation *currentRobot = i.next();
-        if(currentRobot->userInput)
-        {
-            userInputs.append(currentRobot);
-        }
-    }
-    QListIterator<RobotLocation*> iterator(userInputs);
+    QListIterator<Object*> iterator(userInputs);
     while (iterator.hasNext())
     {
-        RobotLocation *currentRobot = iterator.next();
-        if(distanceBetweenPoints(currentRobot->x,currentRobot->y,point1->x(),point1->y()) < 200)
+        Object *currentObject = iterator.next();
+        if(distanceBetweenPoints(currentObject->x,currentObject->y,point1->x(),point1->y()) < 200)
         {
-            point1->setX(currentRobot->x);
-            point1->setY(currentRobot->y);
+            point1->setX(currentObject->x);
+            point1->setY(currentObject->y);
         }
-        else if(distanceBetweenPoints(currentRobot->x,currentRobot->y,point2->x(),point2->y()) < 200)
+        else if(distanceBetweenPoints(currentObject->x,currentObject->y,point2->x(),point2->y()) < 200)
         {
-            point2->setX(currentRobot->x);
-            point2->setY(currentRobot->y);
+            point2->setX(currentObject->x);
+            point2->setY(currentObject->y);
         }
     }
     calculatePoints();
-}
-static void constrainPoint(QPoint *point, int xMin, int yMin, int xMax, int yMax)
-{
-    point->rx() = std::max(xMin, point->x());
-    point->ry() = std::max(yMin, point->y());
-    point->rx() = std::min(xMax, point->x());
-    point->ry() = std::min(yMax, point->y());
 }
 void LineAlgorithm::inputValidation()
 {
