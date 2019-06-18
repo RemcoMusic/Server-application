@@ -75,6 +75,8 @@ private slots:
 
     void on_SimulationSpeedSlider_valueChanged(int value);
 
+    void on_objectColorComboBox_currentTextChanged(const QString &arg1);
+
 public slots:
     void updateGui();
 private:
