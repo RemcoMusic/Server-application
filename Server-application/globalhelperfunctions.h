@@ -11,3 +11,4 @@ extern double distanceBetweenPoints(Object* object1, Object* object2);
 extern bool isMoving(RobotLocation* robot);
 extern void constrainObject(Object* object, int xMin, int yMin, int xMax, int yMax);
 extern void constrainObjectInField(Object* object);
+extern double calculateDeltaAngle(double angle1, double angle2);

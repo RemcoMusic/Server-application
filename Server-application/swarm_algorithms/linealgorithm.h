@@ -18,4 +18,5 @@ protected:
     void calculatePoints();
     void calculateDestination();
     void processUserInputs();
+    void processUserAngleInputs();
 };
