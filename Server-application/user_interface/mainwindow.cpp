@@ -508,3 +508,8 @@ void MainWindow::on_emptyBattery_clicked()
     }
 }
 
+
+void MainWindow::on_objectColorComboBox_currentTextChanged(const QString &color)
+{
+    robotDetectionSettings.objectColorTracking = color;
+}

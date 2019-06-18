@@ -14,6 +14,10 @@ enum ColorNames{
     GREEN_HIGH = 5,
     ORANGE_LOW = 6,
     ORANGE_HIGH = 7,
+    PINK_LOW = 8,
+    PINK_HIGH = 9,
+    YELLOW_LOW = 10,
+    YELLOW_HIGH = 11
 };
 
 struct Hsv{
@@ -29,6 +33,7 @@ public:
     RobotDetectionSettings();
 
     QList<Hsv*> HSVColorValues;
+    QString objectColorTracking = "Orange";
     int erodeObject = 1; //Default 1-20
     int dilateObject = 4; //Default 1-20
     int xyDeviationMilimeter = 50; //Has to be implemented
