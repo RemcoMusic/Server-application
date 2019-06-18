@@ -399,7 +399,6 @@ void MainWindow::updateManualControl()
             if(sPressed)
             {
                 speed = 100;
-                angle += M_PI;
             }
             if(aPressed)
             {
@@ -411,8 +410,8 @@ void MainWindow::updateManualControl()
             }
             if(wPressed || sPressed || aPressed || dPressed)
             {
-                if(angle >= 2*M_PI) angle-=2 * M_PI;
-                if(angle < 0) angle+=2 * M_PI;
+                while(angle >= 2*M_PI) angle-=2 * M_PI;
+                while(angle < 0) angle += 2 * M_PI;
                 robot->destinationX = robot->x + cos(angle) * speed;
                 robot->destinationY = robot->y + sin(angle) * speed;
                 robot->endAngle = angle;

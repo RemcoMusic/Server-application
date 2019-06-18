@@ -40,4 +40,17 @@ void constrainObjectInField(Object* object)
     int clearance = object->collisionRadius;
     constrainObject(object, clearance, clearance, globalSettings.fieldSizeX-clearance, globalSettings.fieldSizeY - clearance);
 }
+double calculateDeltaAngle(double angle1, double angle2)
+{
+    double deltaAngle = angle1 - angle2;
+    if(deltaAngle > M_PI)
+    {
+        deltaAngle = deltaAngle - 2*M_PI;
+    }
+    if(deltaAngle < -M_PI)
+    {
+        deltaAngle = deltaAngle + 2*M_PI;
+    }
+    return deltaAngle;
+}
 

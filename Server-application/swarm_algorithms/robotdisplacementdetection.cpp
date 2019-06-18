@@ -20,6 +20,8 @@ void RobotDisplacementDetection::update()
     {
         RobotLocation *currentRobot = i.next();
         int distance = distanceBetweenPoints(currentRobot, currentRobot->simulatedRobot);
+        double deltaAngle = calculateDeltaAngle(currentRobot->angle, currentRobot->simulatedRobot->angle);
+        distance += abs(deltaAngle) * 30;
         if(distance > 50)
         {
             currentRobot->lastDisplacement = clock();

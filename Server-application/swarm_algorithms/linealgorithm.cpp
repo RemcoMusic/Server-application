@@ -22,6 +22,10 @@ void LineAlgorithm::update()
     if(swarmAlgorithmsSettings.inputSource == SwarmAlgorithmsSettings::AlgorithmInputSource::NONE)
     {
         calculatePoints();
+        point1->setX(800);
+        point1->setY(800);
+        point2->setX(100);
+        point2->setY(100);
     }
     else if(swarmAlgorithmsSettings.inputSource == SwarmAlgorithmsSettings::AlgorithmInputSource::OBJECTS)
     {
@@ -32,6 +36,18 @@ void LineAlgorithm::update()
     {
         findRobotMovementInputs(data.swarmRobots);
         processUserInputs();
+    }
+    else if(swarmAlgorithmsSettings.inputSource == SwarmAlgorithmsSettings::AlgorithmInputSource::ROBOT_MOVEMENT_WITH_ANGLE)
+    {
+        findRobotMovementInputs(data.swarmRobots);
+        if(userInputs.size() == 1)
+        {
+            processUserAngleInputs();
+        }
+        else
+        {
+              processUserInputs();
+        }
     }
     LinearMotionAlgorithms::update();
 }
@@ -51,6 +67,61 @@ void LineAlgorithm::processUserInputs()
         {
             point2->setX(currentObject->x);
             point2->setY(currentObject->y);
+        }
+    }
+    calculatePoints();
+}
+
+void LineAlgorithm::processUserAngleInputs()
+{
+    qDebug("test1");
+    if(userInputs.size() != 1)return;
+    Object *currentObject = userInputs.first();
+    RobotLocation* currentRobot = dynamic_cast<RobotLocation*>(currentObject);
+    if(currentRobot == nullptr)return;
+    qDebug("test");
+    if(distanceBetweenPoints(currentRobot->x,currentRobot->y,point1->x(),point1->y()) < 100)
+    {
+        int deltaX = point2->rx() - point1->rx();
+        int deltaY = point2->ry() - point1->ry();
+        int c = sqrt(deltaX*deltaX + deltaY*deltaY);
+        double currentAngle = atan2(deltaY, deltaX);
+        if(currentAngle < 0) currentAngle += 2*M_PI;
+        double robotAngle = currentRobot->angle;
+        double deltaAngle = calculateDeltaAngle(currentAngle,robotAngle);
+
+        qDebug("%f",deltaAngle);
+        if(abs(deltaAngle) < 0.25*M_PI)
+        {
+            qDebug("line angle input");
+            point1->setX(currentObject->x);
+            point1->setY(currentObject->y);
+            int newX = point1->x() + cos(robotAngle) * c;
+            int newY = point1->y() + sin(robotAngle) * c;
+            point2->setX(newX);
+            point2->setY(newY);
+        }
+    }
+    else if(distanceBetweenPoints(currentRobot->x,currentRobot->y,point2->x(),point2->y()) < 50)
+    {
+        int deltaX = point1->rx() - point2->rx();
+        int deltaY = point1->ry() - point2->ry();
+        int c = sqrt(deltaX*deltaX + deltaY*deltaY);
+        double currentAngle = atan2(deltaY, deltaX);
+        if(currentAngle < 0) currentAngle += 2*M_PI;
+        double robotAngle = currentRobot->angle;
+        double deltaAngle = calculateDeltaAngle(currentAngle,robotAngle);
+
+        qDebug("%f",deltaAngle);
+        if(abs(deltaAngle) < 0.25*M_PI)
+        {
+            qDebug("line angle input");
+            point2->setX(currentObject->x);
+            point2->setY(currentObject->y);
+            int newX = point2->x() + cos(robotAngle) * c;
+            int newY = point2->y() + sin(robotAngle) * c;
+            point1->setX(newX);
+            point1->setY(newY);
         }
     }
     calculatePoints();
