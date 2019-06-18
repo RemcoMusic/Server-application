@@ -23,9 +23,9 @@ private slots:
     void testMapFunction();
     void testDistanceBetweenPoints();
 
-
     //locationmanager
     void testAddingANewRobot();
+    void testClearingRobots();
 
     //global settings
     void validateInitialGlobalSettings();

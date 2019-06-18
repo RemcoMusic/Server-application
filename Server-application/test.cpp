@@ -92,6 +92,16 @@ void Test::testAddingANewRobot()
 
 }
 
+void Test::testClearingRobots()
+{
+     locationManager.makeNewRealRobot(123,123); // make sure at least 1 real robot exists
+     locationManager.addSimulatedRobot(); //        make sure at least 1 simulated robot exists
+     locationManager.resetEverything();
+     QVERIFY(locationManager.robots.size() == 0);
+
+
+}
+
 void Test::validateInitialGlobalSettings()
 {
     QVERIFY(globalSettings.fieldSizeX >0);
@@ -100,13 +110,13 @@ void Test::validateInitialGlobalSettings()
     QVERIFY(globalSettings.cameraY >0);
     QVERIFY(globalSettings.botDiameter >0);
     QVERIFY(globalSettings.botDistanceBetweenWheels != 0);
-    QVERIFY(globalSettings.simulationSpeed >= 0);
+    QVERIFY(swarmSimulationSettings.simulationSpeed >= 0);
 }
 
-void Test::testGuiUpdateSpeed(){  // do nothing,, the benchmark will cause a lot of debugging because the image is a nullptr
+void Test::testGuiUpdateSpeed(){  // do nothing,, the benchmark will cause a lot of debugging because the image is a nullptr (camera is not providing input)
 //    QBENCHMARK{
 //        w->updateGui();
-    //    }
+//        }
 }
 
 void Test::testAlgorihmSpeed_data()
