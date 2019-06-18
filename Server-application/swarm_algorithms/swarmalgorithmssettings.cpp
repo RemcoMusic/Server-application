@@ -1,5 +1,6 @@
 #include "swarmalgorithmssettings.h"
 //this time headers are included in the cpp to prevent include loops
+#include "balldefinedalgorithm.h"
 #include "circlealgorithm.h"
 #include "halfcirclealgorithm.h"
 #include "linealgorithm.h"
@@ -10,7 +11,7 @@ SwarmAlgorithmsSettings::SwarmAlgorithmsSettings()
 {
     anvailableAlgoritms << "RemcoAlgoritm"\
                            << "CircleAlgorirm"\
-                        << "LineAlgoritm" << "halfCircleAlgorithm" << "RectangleAlgorithm";
+                        << "LineAlgoritm" << "halfCircleAlgorithm" << "RectangleAlgorithm" << "BallDefinedAlgorithm";
 }
 
 void SwarmAlgorithmsSettings::runNewAlgortim(QString newAlgoritm, bool clearOthers)
@@ -41,5 +42,8 @@ void SwarmAlgorithmsSettings::runNewAlgortim(QString newAlgoritm, bool clearOthe
     }
     else if(newAlgoritm == "RectangleAlgorithm"){
         activeAlgorithms.append(new RectangleAlgorithm());
+    }
+    else if(newAlgoritm == "BallDefinedAlgorithm"){
+        activeAlgorithms.append(new BallDefinedAlgorithm());
     }
 }
