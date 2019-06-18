@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
+#include <chargealgorithm.h>
 #include <chargestation.h>
 
 
@@ -189,14 +190,7 @@ void MainWindow::updateRobotStatusLabel(){
         }
 
         ui->deleteSelected->setEnabled(true);
-        if(ptr->type == RobotLocation::Type::REAL)
-        {
-            ui->emptyBattery->setEnabled(false);
-        }
-        else {
-            ui->emptyBattery->setEnabled(true);
-        }
-
+        ui->emptyBattery->setEnabled(true);
     }
     else {
         //location
@@ -499,10 +493,21 @@ void MainWindow::on_emptyBattery_clicked()
         RobotLocation *robot = dynamic_cast<RobotLocation*>(LocationManager::currentSelectedObjects.at(i));
         if(robot)
         {
-            robot->batteryVoltage += 1.0;
-            if(robot->batteryVoltage > globalSettings.batteryVoltageFull)
+            QListIterator<SwarmAlgorithmBase*> i = swarmAlgorithmsSettings.activeAlgorithms;
+            while(i.hasNext())
             {
-                robot->batteryVoltage = globalSettings.batteryVoltageThreshold;
+                SwarmAlgorithmBase* currentAlgorithm = i.next();
+                ChargeAlgorithm* chargeAlgorithm = dynamic_cast<ChargeAlgorithm*>(currentAlgorithm);
+                if(chargeAlgorithm)
+                {
+                    if(robot->group == chargeAlgorithm->chargeGroup)
+                    {
+                        robot->group = nullptr;
+                    }
+                    else {
+                        robot->group = chargeAlgorithm->chargeGroup;
+                    }
+                }
             }
         }
     }

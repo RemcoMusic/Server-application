@@ -20,7 +20,7 @@ class ChargeStation : public Object
 {
 public:
     ChargeStation();
-    double angle = 0;
+    double angle = M_PI;
     int size = 100;//mm
     int drivewayDistance = 200;
 

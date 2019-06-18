@@ -12,10 +12,10 @@ public:
     ChargeAlgorithm();
     void update();
     void scanBatteryVoltageAllRobots();
+    RobotGroup* chargeGroup;
 private:
     QList<RobotLocation*> chargeRobots;
     QList<ChargeStation*> chargeStations;
-    RobotGroup* chargeGroup;
 
     void validateChargeStationPointers();
     void driveNewRobotsToChargeStation();

@@ -130,6 +130,10 @@ void ChargeAlgorithm::chargeStationUpdate(ChargeStation* chargeStation)
         {
             chargeStation->chargeStatus = ChargeStatus::DRIVING_OUT;
         }
+        if(distanceBetweenPoints(chargeStation->x,chargeStation->y,chargeStation->chargingRobot->x, chargeStation->chargingRobot->y) > 100)//if robot is taken out
+        {
+            chargeStation->chargeStatus = ChargeStatus::DRIVING_TO_DRIVEWAY;
+        }
     }
     if(chargeStation->chargeStatus == ChargeStatus::DRIVING_OUT)
     {
