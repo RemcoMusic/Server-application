@@ -85,8 +85,28 @@ robotDetection::robotDetection()
         temporaryYH->s = 255;
         temporaryYH->v = 255;
         robotDetectionSettings.HSVColorValues.append(temporaryYH);
-}
+        listCameras();
 
+}
+void robotDetection::listCameras()
+{
+   robotDetectionSettings.availableCameras.clear();
+   cv::VideoCapture temp_camera;
+   int maxTested = 10;
+   for (int i = 0; i < maxTested; i++){
+     cv::VideoCapture temp_camera(i);
+     bool state = (temp_camera.isOpened());
+     temp_camera.release();
+     if (state)
+     {
+       qDebug("camera nr %d",i);
+       robotDetectionSettings.availableCameras.append(i);
+     }
+   }
+   robotDetectionSettings.selectCamera = robotDetectionSettings.availableCameras.last();
+   oldCameraInput = robotDetectionSettings.selectCamera;
+    qDebug("selected camera %d",robotDetectionSettings.selectCamera);
+}
 void robotDetection::run() {
     startDetecting();
 }
@@ -104,7 +124,8 @@ void robotDetection::startDetecting() {
 
     for(;;) {
         if (robotDetectionSettings.selectCamera != oldCameraInput){
-            cap = robotDetectionSettings.selectCamera;
+            cap.release();
+            cap.open(robotDetectionSettings.selectCamera);
             oldCameraInput = robotDetectionSettings.selectCamera;
         }
         if(!cap.isOpened()) {

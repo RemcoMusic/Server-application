@@ -1,5 +1,4 @@
-#ifndef SWARMBOTCOMMUNICATIONSETTINGS_H
-#define SWARMBOTCOMMUNICATIONSETTINGS_H
+#pragma once
 
 #include <QObject>
 #include "robotlocation.h"
@@ -23,4 +22,3 @@ public:
     }settingVariables;
 };
 extern SwarmBotCommunicationSettings communicationSettings;
-#endif // SWARMBOTCOMMUNICATIONSETTINGS_H

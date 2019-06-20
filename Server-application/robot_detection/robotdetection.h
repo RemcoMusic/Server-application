@@ -44,7 +44,8 @@ class robotDetection: public QThread
 
         QList<QPoint> bluePoints;
 
-    public slots:
+        void listCameras();
+public slots:
         void startDetecting();
 
     signals:

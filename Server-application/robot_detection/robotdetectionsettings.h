@@ -46,7 +46,7 @@ public:
     cv::Mat processedBlueFrame;
     cv::Mat processedOrangeFrame;
 
-
+    QList<int> availableCameras;
 
 };
 extern RobotDetectionSettings robotDetectionSettings;
