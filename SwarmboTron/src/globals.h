@@ -20,15 +20,15 @@
         };
 #endif
         extern UdpData udpData;
-        
+
         struct GlobalData {
-        bool motorsEnabled = true;  
-        bool targetFound = false;   
+        bool motorsEnabled = true;
+        bool targetFound = false;
 
         bool motorDebug = false;
-        bool DriveForward = false;   
-        bool TurnLeft = false; 
-        bool TurnRight = false; 
+        bool DriveForward = false;
+        bool TurnLeft = false;
+        bool TurnRight = false;
         bool Stop = false;
         uint8_t status = 0;
         bool Map = false;

@@ -5,9 +5,9 @@
 void OTA::startOTA()
 {
   ArduinoOTA.setHostname("SwarmboTronOTA");
-      
-    ArduinoOTA.onStart([]() 
+    ArduinoOTA.onStart([=]() mutable
     {
+      started = true;
       String type;
       if (ArduinoOTA.getCommand() == U_FLASH)
       {

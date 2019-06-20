@@ -1,4 +1,5 @@
 //#include "OTA.h"
+#pragma once
 #include "serverCommunication.h"
 #include "motorDriver.h"
 #include "readVoltage.h"
