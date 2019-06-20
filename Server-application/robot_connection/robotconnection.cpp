@@ -63,7 +63,7 @@ void RobotConnection::connectionloop()
         turnOffAllRobots();
     }
     //check of new robots have come online
-    if(myTimer.elapsed() <= 5000 && lastRequestedBotIP !="0.0.0.0"){   // 5 seconds to detect a bot when the status has been set to 'STARTUP'
+    if(myTimer.elapsed() <= 1000 && lastRequestedBotIP !="0.0.0.0"){   // 5 seconds to detect a bot when the status has been set to 'STARTUP'
            // check if there is a robot with a green led
 
         for(int i = 0; i < locationManager.robots.size();i++){

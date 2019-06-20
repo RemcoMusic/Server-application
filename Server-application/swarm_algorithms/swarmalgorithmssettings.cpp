@@ -1,8 +1,9 @@
 #include "swarmalgorithmssettings.h"
+//this time headers are included in the cpp to prevent include loops
+#include "balldefinedalgorithm.h"
 #include "circlealgorithm.h"
 #include "halfcirclealgorithm.h"
 #include "linealgorithm.h"
-#include "moveshapealgorithm.h"
 #include "rectanglealgorithm.h"
 SwarmAlgorithmsSettings swarmAlgorithmsSettings;
 
@@ -10,17 +11,17 @@ SwarmAlgorithmsSettings::SwarmAlgorithmsSettings()
 {
     anvailableAlgoritms << "RemcoAlgoritm"\
                            << "CircleAlgorirm"\
-                        << "LineAlgoritm" << "halfCircleAlgorithm" << "RectangleAlgorithm";
+                        << "LineAlgoritm" << "halfCircleAlgorithm" << "RectangleAlgorithm" << "BallDefinedAlgorithm";
 }
 
 void SwarmAlgorithmsSettings::runNewAlgortim(QString newAlgoritm, bool clearOthers)
 {
-    //as of this time only one algoritm is allowed
     //clear the list
     if(clearOthers)
     {
         for(int i=0;i<activeAlgorithms.size();i++)
         {
+            //system algorithms are algorithms that should not be deleted
             if(activeAlgorithms.at(i)->algorithmDiscription.systemAlgorithm == false)
             {
                 delete activeAlgorithms.takeAt(i);
@@ -29,8 +30,6 @@ void SwarmAlgorithmsSettings::runNewAlgortim(QString newAlgoritm, bool clearOthe
         }
     }
 
-
-    //activeAlgorithms.clear();
 
     //see which one is and add it it the list with active algiritms
     if(newAlgoritm == "CircleAlgorirm"){
@@ -43,5 +42,8 @@ void SwarmAlgorithmsSettings::runNewAlgortim(QString newAlgoritm, bool clearOthe
     }
     else if(newAlgoritm == "RectangleAlgorithm"){
         activeAlgorithms.append(new RectangleAlgorithm());
+    }
+    else if(newAlgoritm == "BallDefinedAlgorithm"){
+        activeAlgorithms.append(new BallDefinedAlgorithm());
     }
 }

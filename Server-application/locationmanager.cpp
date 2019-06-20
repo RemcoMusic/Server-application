@@ -1,6 +1,6 @@
 #include "locationmanager.h"
 
-LocationManager robotLocationManager;
+QList<Object*> LocationManager::currentSelectedObjects;
 LocationManager locationManager;
 LocationManager::LocationManager()
 {
@@ -42,36 +42,19 @@ RobotLocation *LocationManager::addSimulatedRobot(RobotGroup *group)
 
     return l;
 }
-void LocationManager::deleteAllSimulatedRobots()
+
+void LocationManager::deleteRealObject(Object *object)
 {
-    QMutableListIterator<RobotLocation*> i(robots);
-    while (i.hasNext())
-    {
-        if(i.next()->type == Object::Type::SIMULATED)
-        {
-            i.remove();
-        }
-    }
-}
-void LocationManager::deleteAllSimulatedRobotsFromGroup(RobotGroup *group)
-{
-    QMutableListIterator<RobotLocation*> i(robots);
-    while (i.hasNext())
-    {
-        auto val = i.next();
-        if(val->type == Object::Type::SIMULATED)
-        {
-            if(val->group == group)
-            {
-                i.remove();
-            }
-        }
-    }
+
+    //objects.takeAt(objects.indexOf(object));
+    objects.removeOne(object);
+    dataScene->removeItem(object);
 }
 
 void LocationManager::addObject(Object *object)
 {
     objects.append(object);
+    dataScene->addItem(object);
 }
 
 
@@ -93,6 +76,17 @@ void LocationManager::makeNewRealRobot(int x, int y)
     dataScene->addItem(newRobot);
     qDebug() << "MADE A NEW ROBOT";
 }
+
+void LocationManager::makeObject(int x, int y, long i)
+{
+    Ball* nieuweBalle = new Ball();
+    nieuweBalle->type = Ball::Type::REAL;
+    nieuweBalle->x = x;
+    nieuweBalle->y = y;
+    nieuweBalle->lastUpdated = i;
+    nieuweBalle->BallColor = Ball::BallColor::ORANGE;
+    locationManager.addObject(nieuweBalle);
+}
 void LocationManager::resetEverything(){
     //turn off all robots.
     communicationSettings.turnOffAllRobots();  // will also reset IP list
@@ -103,7 +97,7 @@ void LocationManager::resetEverything(){
         delete toDelete;
     }
 
-    RobotLocation::currentSelectedRobotptr = nullptr;
+    LocationManager::currentSelectedObjects.clear();
     //remove all robots in the robotLocation
     //locationManager.robots.clear();
     //reset IP list tracker

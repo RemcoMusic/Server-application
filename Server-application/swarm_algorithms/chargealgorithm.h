@@ -1,5 +1,4 @@
-#ifndef CHARGEALGORITHM_H
-#define CHARGEALGORITHM_H
+#pragma once
 
 #include "robotlocation.h"
 #include "robotgroup.h"
@@ -13,15 +12,13 @@ public:
     ChargeAlgorithm();
     void update();
     void scanBatteryVoltageAllRobots();
+    RobotGroup* chargeGroup;
 private:
     QList<RobotLocation*> chargeRobots;
     QList<ChargeStation*> chargeStations;
-    RobotGroup* chargeGroup;
 
     void validateChargeStationPointers();
     void driveNewRobotsToChargeStation();
     void generateLists();
     void chargeStationUpdate(ChargeStation *chargeStation);
 };
-
-#endif // CHARGEALGORITHM_H

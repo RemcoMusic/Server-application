@@ -13,22 +13,12 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET = Server-application
 TEMPLATE = app
 
-# The following define makes your compiler emit warnings if you use
-# any feature of Qt which has been marked as deprecated (the exact warnings
-# depend on your compiler). Please consult the documentation of the
-# deprecated API in order to know how to port your code away from it.
-DEFINES += QT_DEPRECATED_WARNINGS
-
-# You can also make your code fail to compile if you use deprecated APIs.
-# In order to do so, uncomment the following line.
-# You can also select to disable deprecated APIs only up to a certain version of Qt.
-#DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 CONFIG += c++11
 
-
 SOURCES += \
     globalhelperfunctions.cpp \
+    globalsettings.cpp \
     locationmanager.cpp \
     main.cpp \
     objects/ball.cpp \
@@ -36,6 +26,7 @@ SOURCES += \
     objects/objectsbase.cpp \
     robotlocationpainter.cpp \
     simulatedrobot.cpp \
+    swarm_algorithms/balldefinedalgorithm.cpp \
     swarm_algorithms/chargealgorithm.cpp \
     swarm_algorithms/circlealgorithm.cpp \
     swarm_algorithms/halfcirclealgorithm.cpp \
@@ -43,6 +34,7 @@ SOURCES += \
     swarm_algorithms/linearmotionalgorithms.cpp \
     swarm_algorithms/rectanglealgorithm.cpp \
     swarm_algorithms/robotdisplacementdetection.cpp \
+    swarm_algorithms/userinputfunctions.cpp \
     swarm_simulation/robotcode/arduino.cpp \
     test.cpp \
     user_interface\mainwindow.cpp \
@@ -56,8 +48,6 @@ SOURCES += \
     robot_connection\swarmbotcommunicationsettings.cpp \
     robotlocation.cpp \
     swarm_algorithms/swarmalgorithmbase.cpp \
-    swarm_algorithms/moveshapealgorithm.cpp \
-    globalsettings.cpp \
     robotgroup.cpp \
     swarm_simulation/robotcode/motorDriver.cpp \
     swarm_simulation/robotcode/globals.cpp
@@ -70,6 +60,7 @@ HEADERS += \
     locationmanager.h \
     objects/ball.h \
     objects/objectsbase.h \
+    swarm_algorithms/balldefinedalgorithm.h \
     swarm_algorithms/chargealgorithm.h \
     swarm_algorithms/circlealgorithm.h \
     swarm_algorithms/halfcirclealgorithm.h \
@@ -77,6 +68,7 @@ HEADERS += \
     swarm_algorithms/linearmotionalgorithms.h \
     swarm_algorithms/rectanglealgorithm.h \
     swarm_algorithms/robotdisplacementdetection.h \
+    swarm_algorithms/userinputfunctions.h \
     swarm_simulation/robotcode/Arduino.h \
     swarm_simulation/robotcode/debug.h \
     test.h \
@@ -91,7 +83,6 @@ HEADERS += \
     swarm_simulation\swarmsimulationsettings.h \
     robotlocation.h \
     swarm_algorithms/swarmalgorithmbase.h \
-    swarm_algorithms/moveshapealgorithm.h \
     globalsettings.h \
     robotgroup.h \
     swarm_simulation/robotcode/motorDriver.h \

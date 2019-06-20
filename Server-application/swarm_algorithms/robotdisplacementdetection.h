@@ -1,10 +1,9 @@
-#ifndef ROBOTDISPLACEMENTDETECTION_H
-#define ROBOTDISPLACEMENTDETECTION_H
+#pragma once
 
 #include "locationmanager.h"
 #include <QListIterator>
 #include "robotlocation.h"
-
+#include "globalhelperfunctions.h"
 class RobotDisplacementDetection
 {
 public:
@@ -16,4 +15,3 @@ private:
     void applyComplementeryFilter(RobotLocation *robotLocation);
 };
 
-#endif // ROBOTDISPLACEMENTDETECTION_H

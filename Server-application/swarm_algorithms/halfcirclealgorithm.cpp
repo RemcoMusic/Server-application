@@ -2,84 +2,80 @@
 
 HalfCircleAlgorithm::HalfCircleAlgorithm()
 {
-    algorithmDiscription.name = "circle algorithm";
-    algorithmDiscription.discription = "bots drive in a circle defined by red objects";
-    algorithmDiscription.minimalAmountOfBots = 1;
-    algorithmDiscription.maximalAmountOfBots = 100;
+    algorithmDiscription.name = "open circle algorithm";
+    algorithmDiscription.discription = "bots drive in a open circle defined by balls or robot displacement";
+
 }
 void HalfCircleAlgorithm::update()
 {
     LinearMotionAlgorithms::generateRobotList();
     LinearMotionAlgorithms::clearDestinations();
+    userInputs.clear();
     if(swarmAlgorithmsSettings.inputSource == SwarmAlgorithmsSettings::AlgorithmInputSource::NONE)
     {
+        center->setX(500);
+        center->setY(500);
+        outer1->setX(250);
+        outer1->setY(500);
+        outer2->setX(750);
+        outer2->setY(500);
         calculateDestinationsCenterOuter();
     }
-    else if(swarmAlgorithmsSettings.inputSource == SwarmAlgorithmsSettings::AlgorithmInputSource::HAND_GESTURE)
+    else if(swarmAlgorithmsSettings.inputSource == SwarmAlgorithmsSettings::AlgorithmInputSource::OBJECTS)
     {
-        calculateDestinationsCenterOuter();
-    }
-    else if(swarmAlgorithmsSettings.inputSource == SwarmAlgorithmsSettings::AlgorithmInputSource::REAL_OBJECTS_CENTER_OUTER)
-    {
-        calculateDestinationsCenterOuter();
-    }
-    else if(swarmAlgorithmsSettings.inputSource == SwarmAlgorithmsSettings::AlgorithmInputSource::REAL_OBJECTS_OUTER_OUTER)
-    {
-        calculateDestinationsOuterOuter();
+        findObjectInputs();
+        processUserInputs();
     }
     else if(swarmAlgorithmsSettings.inputSource == SwarmAlgorithmsSettings::AlgorithmInputSource::ROBOT_MOVEMENT)
     {
-        findRobotMovementInputs();
+        findRobotMovementInputs(data.swarmRobots);
+        processUserInputs();
     }
 
     LinearMotionAlgorithms::update();
 }
-static bool compereUserInputs(const RobotLocation* robot1, const RobotLocation* robot2)
+void HalfCircleAlgorithm::processUserInputs()
 {
-    return robot1->lastDisplacement > robot2->lastDisplacement;
-}
-void HalfCircleAlgorithm::findRobotMovementInputs()
-{
-    QList<RobotLocation*> userInputs;
-    QListIterator<RobotLocation*> i(data.swarmRobots);
-    while (i.hasNext())
+    bool centerUserInput = false;
+    for(int i = 0;i<userInputs.size();i++)
     {
-        RobotLocation *currentRobot = i.next();
-        if(currentRobot->userInput)
+        Object *currentObject = userInputs.at(i);
+        Ball* ball = dynamic_cast<Ball*>(currentObject);//use special color property of the ball
+        if((ball == nullptr)||( ball->BallColor == Ball::BallColor::YELLOW))
         {
-            userInputs.append(currentRobot);
+            if(abs(outer1->x() - currentObject->x) + abs(outer1->y() - currentObject->y) < 100)
+            {
+                outer1->rx() = currentObject->x;
+                outer1->ry() = currentObject->y;
+            }
+            if(abs(outer2->x() - currentObject->x) + abs(outer2->y() - currentObject->y) < 100)
+            {
+                outer2->rx() = currentObject->x;
+                outer2->ry() = currentObject->y;
+            }
+        }
+        if((ball != nullptr)&&(ball->BallColor == Ball::BallColor::ORANGE))
+        {
+            if(abs( distanceFromCenter(currentObject->x, currentObject->y) - distanceFromCenter(outer1->x(),outer2->y())) < 100)
+            {
+                if(distanceBetweenPoints(outer1->x(),outer1->y(), currentObject->x,currentObject->y) > 100)
+                {
+                    if(distanceBetweenPoints(outer2->x(),outer2->y(), currentObject->x,currentObject->y) > 100)
+                    {
+                        centerUserInput = true;
+                        radius = distanceFromCenter(currentObject->x, currentObject->y);
+                    }
+                }
+            }
         }
     }
-    std::sort(userInputs.begin(),userInputs.end(), compereUserInputs);
-    if(userInputs.size() == 0)
+    if(centerUserInput)
     {
         calculateDestinationsCenterOuter();
     }
-    else
-    {
-        for(int i=0;i<userInputs.size();i++)
-        {
-            RobotLocation *currentRobot = userInputs.at(i);
-
-            if(abs(outer1->x() - currentRobot->x) + abs(outer1->y() - currentRobot->y) < 100)
-            {
-                outer1->rx() = currentRobot->x;
-                outer1->ry() = currentRobot->y;
-            }
-            else if(abs(outer2->x() - currentRobot->x) + abs(outer2->y() - currentRobot->y) < 100)
-            {
-                outer2->rx() = currentRobot->x;
-                outer2->ry() = currentRobot->y;
-            }
-            else if(abs( distanceFromCenter(currentRobot->x, currentRobot->y) - distanceFromCenter(outer1->x(),outer1->y()) ) < 100)
-            {
-                radius = distanceFromCenter(currentRobot->x, currentRobot->y);
-            }
-
-            HalfCircleAlgorithm::calculateDestinationsCenterOuter();
-        }
+    else {
+        calculateDestinationsOuterOuter();
     }
-
 }
 void HalfCircleAlgorithm::calculateDestinationsOuterOuter()
 {

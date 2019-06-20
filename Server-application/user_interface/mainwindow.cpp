@@ -1,10 +1,8 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
-#include <opencv2/core/core.hpp>
-#include <opencv2/highgui/highgui.hpp>
+#include <chargealgorithm.h>
 #include <chargestation.h>
-#include <simulatedrobot.h>
 
 
 QGraphicsScene *dataScene;   //global
@@ -66,6 +64,7 @@ MainWindow::MainWindow(QWidget *parent) :
     //ui->graphicsView_Data->fitInView(dataScene->sceneRect(), Qt::KeepAspectRatio);
 
     update();
+
 }
 
 MainWindow::~MainWindow()
@@ -85,7 +84,6 @@ void MainWindow::on_pushButton_clicked()
     ui->graphicsView_data_large->setSceneRect(0-10, 0-10, width+10, height+10);
     ui->graphicsView_data_large->fitInView(0-10, 0-10, width+10, height+10, Qt::KeepAspectRatio);
     repaint();
-
 }
 double smoothFps=0;
 void MainWindow::updateGui()
@@ -135,15 +133,26 @@ void MainWindow::updateGui()
     int hb = ui->cameraBlueFeed->height();
     ui->cameraBlueFeed->setPixmap(pb.scaled(wb,hb,Qt::KeepAspectRatio));
 
+    QImage imgo((uchar*)robotDetectionSettings.processedOrangeFrame.data, robotDetectionSettings.processedOrangeFrame.cols, robotDetectionSettings.processedOrangeFrame.rows, QImage::Format_RGB888);
+    QPixmap po = QPixmap::fromImage(imgo);
+    int wo = ui->cameraObjectFeed->width();
+    int ho = ui->cameraObjectFeed->height();
+    ui->cameraObjectFeed->setPixmap(po.scaled(wo,ho,Qt::KeepAspectRatio));
 
     updateNumberOfRobots();
     removeUnusedRobots();
+    updateManualControl();
     updateRobotStatusLabel();
     on_pushButton_clicked(); // resize the scenes
+    loadCameraSelection();
     dataScene->update();
 }
 void MainWindow::updateRobotStatusLabel(){
-    RobotLocation *ptr = RobotLocation::currentSelectedRobotptr;
+    RobotLocation *ptr = nullptr;
+    if(!LocationManager::currentSelectedObjects.isEmpty())
+    {
+        ptr = dynamic_cast<RobotLocation*>(LocationManager::currentSelectedObjects.last());
+    }
     if(ptr){
         //location
         QString locationText = "X:";
@@ -160,7 +169,7 @@ void MainWindow::updateRobotStatusLabel(){
         ui->robotDestinationLabel->setText(destination);
 
         //angle
-        ui->robotAngleLabel->setText(QString::number(ptr->angle));
+        ui->robotAngleLabel->setText(QString::number(ptr->angle*57,10,1));
 
         //ip
         ui->robotIPLabel->setText(ptr->ip);
@@ -173,13 +182,40 @@ void MainWindow::updateRobotStatusLabel(){
         }
 
         //voltage
-        ui->robotVoltageLabel->setText(QString::number(ptr->batteryVoltage));
+        ui->robotVoltageLabel->setText(QString::number(ptr->batteryVoltage,10,2));
 
         if(ptr->group){
             ui->robotGroupLabel->setText(ptr->group->name);
         }else{
             ui->robotGroupLabel->setText("Default");
         }
+
+        ui->deleteSelected->setEnabled(true);
+        ui->emptyBattery->setEnabled(true);
+    }
+    else {
+        //location
+        ui->robotLocationLabel->setText("");
+
+        //destination
+        ui->robotDestinationLabel->setText("");
+
+        //angle
+        ui->robotAngleLabel->setText("");
+
+        //ip
+        ui->robotIPLabel->setText("");
+
+        //type
+        ui->robotTypeLabel->setText("");
+
+        //voltage
+        ui->robotVoltageLabel->setText("");
+
+        ui->robotGroupLabel->setText("");
+
+        ui->deleteSelected->setEnabled(false);
+        ui->emptyBattery->setEnabled(false);
     }
 
 }
@@ -296,25 +332,17 @@ void MainWindow::on_SliderRobotSpeed_valueChanged(int value)
 {
     swarmAlgorithmsSettings.robotSpeed = value;
 }
+void MainWindow::on_SimulationSpeedSlider_valueChanged(int value)
+{
+    swarmSimulationSettings.simulationSpeed = value;
+}
 
 void MainWindow::on_AddSimulatedRobotButton_clicked()
 {
     locationManager.addSimulatedRobot();
 }
 
-void MainWindow::on_addSimulatedObjectButton_clicked()
-{
-    int x = qrand() % globalSettings.fieldSizeX;
-     int y = qrand() % globalSettings.fieldSizeY;
 
-     //temperory fix add no ball but a charge station
-     //Ball *b = new Ball();
-     Object* b = new Ball();
-     b->x = x;
-     b->y = y;
-     dataScene->addItem(b);
-     locationManager.addObject(b);
-}
 
 void MainWindow::on_ActiveAlgoritmList_currentIndexChanged(const QString &arg1)
 {
@@ -329,4 +357,191 @@ void MainWindow::on_resetSimulationButton_clicked()
 void MainWindow::on_algorithmInputComboBox_currentIndexChanged(int index)
 {
     swarmAlgorithmsSettings.inputSource = (SwarmAlgorithmsSettings::AlgorithmInputSource)index;
+}
+
+//for manual control
+void MainWindow::keyPressEvent(QKeyEvent *event)
+{
+    if(event->key() == Qt::Key_W)wPressed = true;
+    else if(event->key() == Qt::Key_S)sPressed = true;
+    else if(event->key() == Qt::Key_A)aPressed = true;
+    else if(event->key() == Qt::Key_D)dPressed = true;
+}
+
+void MainWindow::keyReleaseEvent(QKeyEvent *event)
+{
+    if(event->key() == Qt::Key_W)wPressed = false;
+    else if(event->key() == Qt::Key_S)sPressed = false;
+    else if(event->key() == Qt::Key_A)aPressed = false;
+    else if(event->key() == Qt::Key_D)dPressed = false;
+}
+void MainWindow::updateManualControl()
+{
+
+    for(int i = 0;i < LocationManager::currentSelectedObjects.size(); i++)
+    {
+        RobotLocation *robot = dynamic_cast<RobotLocation*>(LocationManager::currentSelectedObjects.at(i));
+        Object *object = LocationManager::currentSelectedObjects.at(i);
+
+        if(robot)//if the selected object is a robot
+        {
+            int speed = 0;//  mm/frame
+            double angle = robot->angle;
+            if(wPressed)
+            {
+                speed = 100;
+            }
+            if(sPressed)
+            {
+                speed = 100;
+            }
+            if(aPressed)
+            {
+                angle -= 0.2 * M_PI;
+            }
+            if(dPressed)
+            {
+                angle += 0.2 * M_PI;
+            }
+            if(wPressed || sPressed || aPressed || dPressed)
+            {
+                while(angle >= 2*M_PI) angle-=2 * M_PI;
+                while(angle < 0) angle += 2 * M_PI;
+                robot->destinationX = robot->x + cos(angle) * speed;
+                robot->destinationY = robot->y + sin(angle) * speed;
+                robot->endAngle = angle;
+                robot->speed = swarmAlgorithmsSettings.robotSpeed;
+            }
+        }
+        else if(object)
+        {
+            if(wPressed)
+            {
+                object->y -= 10;
+            }
+            if(sPressed)
+            {
+                object->y += 10;
+            }
+            if(aPressed)
+            {
+                object->x -= 10;
+            }
+            if(dPressed)
+            {
+                object->x += 10;
+            }
+        }
+    }
+}
+
+void MainWindow::on_comboBox_currentIndexChanged(const QString &arg1)  // sorry for the horrible name
+{
+    if(arg1 == "Charge Station"){
+        int x = 0.5 * globalSettings.fieldSizeX;
+        int y = 0.5 * globalSettings.fieldSizeY;
+
+         ChargeStation* b = new ChargeStation();
+         b->x = x;
+         b->y = y;
+         b->type = Object::Type::SIMULATED;
+         locationManager.addObject(b);
+    }else if (arg1 == "Simulated Ball Yellow") {
+        int x = qrand() % globalSettings.fieldSizeX;
+        int y = qrand() % globalSettings.fieldSizeY;
+
+         Ball* b = new Ball();
+         b->x = x;
+         b->y = y;
+         b->BallColor = Ball::BallColor::YELLOW;
+         b->type = Object::Type::SIMULATED;
+         locationManager.addObject(b);
+    }else if (arg1 == "Simulated Ball Orange") {
+        int x = qrand() % globalSettings.fieldSizeX;
+        int y = qrand() % globalSettings.fieldSizeY;
+
+         Ball* b = new Ball();
+         b->x = x;
+         b->y = y;
+         b->BallColor = Ball::BallColor::ORANGE;
+         b->type = Object::Type::SIMULATED;
+         locationManager.addObject(b);
+    }
+    ui->comboBox->setCurrentIndex(0);
+}
+
+
+void MainWindow::on_deleteSelected_clicked()
+{
+    while(LocationManager::currentSelectedObjects.size() > 0){
+        Object* toDelete = LocationManager::currentSelectedObjects.takeAt(0);
+
+        RobotLocation *robot = dynamic_cast<RobotLocation*>(toDelete);
+        if(robot)
+        {
+            locationManager.robots.removeOne(robot);
+        }
+        dataScene->removeItem(toDelete);
+        delete toDelete;
+    }
+}
+
+void MainWindow::on_emptyBattery_clicked()
+{
+    for(int i = 0;i < LocationManager::currentSelectedObjects.size(); i++)
+    {
+        //check if this object is a robot object
+        RobotLocation *robot = dynamic_cast<RobotLocation*>(LocationManager::currentSelectedObjects.at(i));
+        if(robot)
+        {
+            QListIterator<SwarmAlgorithmBase*> i = swarmAlgorithmsSettings.activeAlgorithms;
+            while(i.hasNext())
+            {
+                SwarmAlgorithmBase* currentAlgorithm = i.next();
+                ChargeAlgorithm* chargeAlgorithm = dynamic_cast<ChargeAlgorithm*>(currentAlgorithm);
+                if(chargeAlgorithm)
+                {
+                    if(robot->group == chargeAlgorithm->chargeGroup)
+                    {
+                        robot->group = nullptr;
+                    }
+                    else {
+                        robot->group = chargeAlgorithm->chargeGroup;
+                    }
+                }
+            }
+        }
+    }
+}
+
+
+void MainWindow::on_objectColorComboBox_currentTextChanged(const QString &color)
+{
+    robotDetectionSettings.objectColorTracking = color;
+}
+
+void MainWindow::loadCameraSelection()
+{
+    if(ui->cameraSelectionComboBox->count() != 0) return; //its already loaded so a second time is not needed
+    ui->cameraSelectionComboBox->clear();
+
+    int currentIndex = robotDetectionSettings.availableCameras.indexOf(robotDetectionSettings.selectCamera);
+
+    for(int i = 0;i < robotDetectionSettings.availableCameras.size() ;i++)
+    {
+        ui->cameraSelectionComboBox->addItem( QString::number(robotDetectionSettings.availableCameras.at(i)) );
+    }
+
+    qDebug("current index %d  %d",currentIndex, robotDetectionSettings.selectCamera);
+    if(currentIndex != -1)
+    {
+        ui->cameraSelectionComboBox->setCurrentIndex(currentIndex);
+    }
+}
+void MainWindow::on_cameraSelectionComboBox_currentIndexChanged(int index)
+{
+    if(robotDetectionSettings.availableCameras.size() <= index)return;
+    qDebug("camera selection %d %d   %d",index, robotDetectionSettings.availableCameras.size(), ui->cameraSelectionComboBox->count());
+
+    robotDetectionSettings.selectCamera = robotDetectionSettings.availableCameras.at(index);
 }

@@ -29,23 +29,28 @@ class robotDetection: public QThread
         void run();
 
     private:
-        void detectNewRobots(cv::Mat threshold, cv::Mat &originalFrame);
+        void detectNewRobots(cv::Mat threshold);
         void trackFilteredObject(cv::Mat threshold, cv::Mat &originalFrame);
-        void detectBlueDots(cv::Mat threshold, cv::Mat &originalFrame);
+        void detectBlueDots(cv::Mat threshold);
+        void detectBall(cv::Mat threshold, cv::Mat &originalFrame);
         void calculateAngle();
-        void drawObjects(cv::Mat &frame);
+        void drawRobots(cv::Mat &frame);
+        void drawObjects(cv:: Mat &frame);
         void morphOps(cv::Mat &thresh);
+        void deleteUndetectedObject();
         cv::Mat detectColors(cv::Mat frame, QString color);
 
         int oldCameraInput = robotDetectionSettings.selectCamera;
 
         QList<QPoint> bluePoints;
 
-    public slots:
+        void listCameras();
+public slots:
         void startDetecting();
 
     signals:
         void newFrameFinished();
         void makeANewRobot(int x,int y);
+        void makeObject(int x, int y, long i);
 };
 #endif // ROBOTDETECTION_H

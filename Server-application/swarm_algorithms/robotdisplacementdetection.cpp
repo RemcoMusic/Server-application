@@ -1,22 +1,17 @@
 #include "robotdisplacementdetection.h"
 
-#include <simulatedrobot.h>
 
 RobotDisplacementDetection::RobotDisplacementDetection()
 {
 
 }
-inline uint16_t distanceBetweenPoints(RobotLocation* robot1, RobotLocation* robot2)
-{
-    int deltaX = robot1->x - robot2->x;//pytagoras A
-    int deltaY = robot1->y - robot2->y;//pytagoras b
-    return sqrt(deltaX*deltaX + deltaY*deltaY);//pytagoras C, distance between points
-}
 void RobotDisplacementDetection::applyComplementeryFilter(RobotLocation* robot)
 {
-    robot->simulatedRobot->x = round(robot->x * 0.05 + robot->simulatedRobot->x * 0.95);
-    robot->simulatedRobot->y = round(robot->y * 0.05 + robot->simulatedRobot->y * 0.95);
-    robot->simulatedRobot->angle = robot->angle * 0.05 + robot->simulatedRobot->angle * 0.95;
+    double factor1 = swarmAlgorithmsSettings.dispacementComplementeryFilter;
+    double factor2 = 1.0 - swarmAlgorithmsSettings.dispacementComplementeryFilter;
+    robot->simulatedRobot->x = round(robot->x * factor2 + robot->simulatedRobot->x * factor1);
+    robot->simulatedRobot->y = round(robot->y * factor2 + robot->simulatedRobot->y * factor1);
+    robot->simulatedRobot->angle = robot->angle * factor2 + robot->simulatedRobot->angle * factor1;
 }
 void RobotDisplacementDetection::update()
 {
@@ -25,6 +20,8 @@ void RobotDisplacementDetection::update()
     {
         RobotLocation *currentRobot = i.next();
         int distance = distanceBetweenPoints(currentRobot, currentRobot->simulatedRobot);
+        double deltaAngle = calculateDeltaAngle(currentRobot->angle, currentRobot->simulatedRobot->angle);
+        distance += abs(deltaAngle) * 30;
         if(distance > 50)
         {
             currentRobot->lastDisplacement = clock();
