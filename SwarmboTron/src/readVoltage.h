@@ -9,6 +9,6 @@ class ReadVoltage
     private:
         const static int voltageReadPin = 35; 
         int voltageDeviderValue = 4095;
-        int ADC_VALUE = 0;
-        int voltage_value = 0; 
+        double ADC_VALUE = 0;
+        double voltage_value = 0; 
 };

@@ -28,15 +28,12 @@ class MotorDriver
         void rotateAxis(int direction);
 
     private:  
-        int angleDeadband = 60; //deadband for moving around axis
+        int angleDeadband = 45; //deadband for moving around axis
         int oldAngleDeadband = angleDeadband; //variable to keep track of the original deadband
 
-        int minSpeed = 550; //minimum speed at wich the motors are able to turn
+        int minSpeed = 450; //minimum speed at wich the motors are able to turn
         int maxSpeed = 800; //maximum speed at wich the motors are able to turn  
         int oldMaxSpeed = maxSpeed; //variable to keep track of the original deadband
         int MappedMotorSpeed = 0; //motorspeed mapped from the serverspeed to the speed of the robot
-        void goToCoordinates(uint8_t speed, uint16_t desiredAngle, uint16_t currentAngle);
-        bool moveToAngle(int16_t newAngle);
-        void moveRobotRealistic();
-    
+        bool moveToAngle(int16_t newAngle);    
 };

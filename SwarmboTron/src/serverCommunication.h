@@ -9,7 +9,8 @@ class serverCommunication
 {
     public:
         void listen();
-        void send(uint8_t msg);
+        //void send(uint8_t msg);
+        void sendVoltage(double msg);
         void setup();
     
     private:
@@ -19,5 +20,12 @@ class serverCommunication
         uint8_t rx_buffer[sizeof(udpData)];
         unsigned long startMillis;
         unsigned long currentMillis;   
-        unsigned long timeoutPeriod = 5000;   
+        unsigned long timeoutPeriod = 5000; 
+
+        union cvt {
+        float val;
+        unsigned char b[4];
+        } voltageByte;
+
+
 };

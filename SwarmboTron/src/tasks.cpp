@@ -77,8 +77,7 @@ void Tasks::serverCommunication(void * parameter)
       if (currentMillis - startMillis >= period)  
       {
         startMillis = currentMillis; 
-        server.send(voltageReader.read());
-        //server.send(5);
+        server.sendVoltage(voltageReader.read());
       } 
       server.listen();
     }
