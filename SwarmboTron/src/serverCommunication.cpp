@@ -16,11 +16,13 @@ void serverCommunication::setup()
 //   Udp.endPacket();
 // }
 
-void serverCommunication::sendVoltage(double msg)
+void serverCommunication::sendVoltage(uint16_t msg)
 {
   Udp.beginPacket(serverIP, serverPort);
-  voltageByte.val = msg;
-  Udp.write(voltageByte.b,4);
+  // debugE("* Voltage1: %u", msg>>8);
+  // debugE("* Voltage2: %u", msg);
+  Udp.write(msg);
+  Udp.write(msg>>8);
   Udp.endPacket();
 }
 

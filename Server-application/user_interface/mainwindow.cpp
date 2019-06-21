@@ -189,13 +189,13 @@ void MainWindow::updateRobotStatusLabel(){
         }
 
         ui->deleteSelected->setEnabled(true);
-        if(ptr->type == RobotLocation::Type::REAL)
-        {
-            ui->emptyBattery->setEnabled(false);
-        }
-        else {
-            ui->emptyBattery->setEnabled(true);
-        }
+//        if(ptr->type == RobotLocation::Type::REAL)
+//        {
+//            ui->emptyBattery->setEnabled(false);
+//        }
+//        else {
+        ui->emptyBattery->setEnabled(true);
+//        }
 
     }
     else {
@@ -502,7 +502,7 @@ void MainWindow::on_emptyBattery_clicked()
             robot->batteryVoltage += 1.0;
             if(robot->batteryVoltage > globalSettings.batteryVoltageFull)
             {
-                robot->batteryVoltage = globalSettings.batteryVoltageThreshold;
+                robot->batteryVoltage = globalSettings.batteryVoltageThreshold-1;
             }
         }
     }

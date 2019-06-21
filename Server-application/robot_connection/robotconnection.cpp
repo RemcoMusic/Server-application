@@ -49,10 +49,11 @@ void RobotConnection::readyRead()
 
     qDebug() << "Message From: " << sender.toString();
     qDebug() << "Message Port: " << senderPort;
-    qDebug() << "Message: " << Buffer;
+    uint16_t batteryVoltage =0;
+    memcpy((void*)&batteryVoltage, Buffer.data(), std::min(sizeof(batteryVoltage),sizeof(Buffer.size())));
+    qDebug() << "Message: " << batteryVoltage;
 
-    processIP(sender.toString());
-
+    processIP(sender.toString(), batteryVoltage);
 }
 
 void RobotConnection::connectionloop()
@@ -132,7 +133,7 @@ void RobotConnection::turnOffAllRobots()
 }
 
 
-void RobotConnection::processIP(QString ip)
+void RobotConnection::processIP(QString ip, uint16_t voltage)
 {
 //check if IP is new IP
     bool found = false;
@@ -145,6 +146,19 @@ void RobotConnection::processIP(QString ip)
     }
 
     if(found){
+        QListIterator<RobotLocation*> i(locationManager.robots);
+        while (i.hasNext())
+        {
+            RobotLocation *currentRobot = i.next();
+            if(currentRobot->type == Object::Type::REAL)
+            {
+                if(currentRobot->ip == ip)
+                {
+                    currentRobot->batteryVoltage = voltage/100.0;
+                    qDebug() << " CurrentVoltage: " << currentRobot->batteryVoltage << " with IP: " << ip;
+                }
+            }
+        }
         //update Voltage
     }else{
         //turn it on

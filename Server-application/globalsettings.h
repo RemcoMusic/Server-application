@@ -18,7 +18,7 @@ public:
     bool printRobotDetection = 0;
     bool printSwarmAlgoritme = 0;
 
-    double batteryVoltageThreshold = 6.0;
+    double batteryVoltageThreshold = 7.0;
     double batteryVoltageFull = 8.4;
 };
 extern GlobalSettings globalSettings;

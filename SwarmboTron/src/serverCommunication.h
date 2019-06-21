@@ -10,7 +10,7 @@ class serverCommunication
     public:
         void listen();
         //void send(uint8_t msg);
-        void sendVoltage(double msg);
+        void sendVoltage(uint16_t msg);
         void setup();
     
     private:
@@ -21,11 +21,4 @@ class serverCommunication
         unsigned long startMillis;
         unsigned long currentMillis;   
         unsigned long timeoutPeriod = 5000; 
-
-        union cvt {
-        float val;
-        unsigned char b[4];
-        } voltageByte;
-
-
 };

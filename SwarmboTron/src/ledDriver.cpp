@@ -114,17 +114,22 @@ void LedDriver::normal()
 void LedDriver::targetFound()
 {	
 	FastLED.clear();
+	FastLED.setBrightness(20);
+
 	for(int i = 0; i < NUM_LEDS; i++) 
 		{
-			FastLED.setBrightness(10);
-			leds[i] = CRGB::DarkViolet;	
+			leds[i] = CRGB::DarkGoldenrod;	
 		}
 
 	FastLED.setBrightness(brightness);
+
 	leds[middleLedPosition] = CRGB::Red;
 	leds[directionLedPostition - 1] = CRGB::Black;
+	leds[directionLedPostition - 2] = CRGB::Black;
 	leds[directionLedPostition] = CRGB::Blue;
 	leds[directionLedPostition + 1] = CRGB::Black;
+	leds[directionLedPostition + 2] = CRGB::Black;
+
 	FastLED.show();
 }
 

@@ -30,7 +30,7 @@ private:
     QTime myTimer;
 
 
-    void processIP(QString ip);
+    void processIP(QString ip, uint16_t voltage);
     void turnRobotOn(QString ip);
     void updateRobots();
     void turnOffAllRobots();

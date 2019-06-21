@@ -5,7 +5,7 @@ class ReadVoltage
 {
     public:
         void setup();
-        double read();
+        int read();
     private:
         const static int voltageReadPin = 35; 
         int voltageDeviderValue = 4095;

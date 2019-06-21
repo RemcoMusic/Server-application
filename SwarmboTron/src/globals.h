@@ -33,6 +33,7 @@
         uint8_t status = 0;
         bool Map = false;
         bool Led = false;
+        bool fakeVoltage = false;
         };
 
        extern GlobalData globalData;
