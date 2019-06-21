@@ -26,6 +26,7 @@ SOURCES += \
     objects/objectsbase.cpp \
     robotlocationpainter.cpp \
     simulatedrobot.cpp \
+    swarm_algorithms/balldefinedalgorithm.cpp \
     swarm_algorithms/chargealgorithm.cpp \
     swarm_algorithms/circlealgorithm.cpp \
     swarm_algorithms/halfcirclealgorithm.cpp \
@@ -59,6 +60,7 @@ HEADERS += \
     locationmanager.h \
     objects/ball.h \
     objects/objectsbase.h \
+    swarm_algorithms/balldefinedalgorithm.h \
     swarm_algorithms/chargealgorithm.h \
     swarm_algorithms/circlealgorithm.h \
     swarm_algorithms/halfcirclealgorithm.h \

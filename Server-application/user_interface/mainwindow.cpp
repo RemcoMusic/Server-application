@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
+#include <chargealgorithm.h>
 #include <chargestation.h>
 
 
@@ -63,6 +64,7 @@ MainWindow::MainWindow(QWidget *parent) :
     //ui->graphicsView_Data->fitInView(dataScene->sceneRect(), Qt::KeepAspectRatio);
 
     update();
+
 }
 
 MainWindow::~MainWindow()
@@ -82,7 +84,6 @@ void MainWindow::on_pushButton_clicked()
     ui->graphicsView_data_large->setSceneRect(0-10, 0-10, width+10, height+10);
     ui->graphicsView_data_large->fitInView(0-10, 0-10, width+10, height+10, Qt::KeepAspectRatio);
     repaint();
-
 }
 double smoothFps=0;
 void MainWindow::updateGui()
@@ -143,6 +144,7 @@ void MainWindow::updateGui()
     updateManualControl();
     updateRobotStatusLabel();
     on_pushButton_clicked(); // resize the scenes
+    loadCameraSelection();
     dataScene->update();
 }
 void MainWindow::updateRobotStatusLabel(){
@@ -189,14 +191,7 @@ void MainWindow::updateRobotStatusLabel(){
         }
 
         ui->deleteSelected->setEnabled(true);
-//        if(ptr->type == RobotLocation::Type::REAL)
-//        {
-//            ui->emptyBattery->setEnabled(false);
-//        }
-//        else {
         ui->emptyBattery->setEnabled(true);
-//        }
-
     }
     else {
         //location
@@ -499,12 +494,54 @@ void MainWindow::on_emptyBattery_clicked()
         RobotLocation *robot = dynamic_cast<RobotLocation*>(LocationManager::currentSelectedObjects.at(i));
         if(robot)
         {
-            robot->batteryVoltage += 1.0;
-            if(robot->batteryVoltage > globalSettings.batteryVoltageFull)
+            QListIterator<SwarmAlgorithmBase*> i = swarmAlgorithmsSettings.activeAlgorithms;
+            while(i.hasNext())
             {
-                robot->batteryVoltage = globalSettings.batteryVoltageThreshold-1;
+                SwarmAlgorithmBase* currentAlgorithm = i.next();
+                ChargeAlgorithm* chargeAlgorithm = dynamic_cast<ChargeAlgorithm*>(currentAlgorithm);
+                if(chargeAlgorithm)
+                {
+                    if(robot->group == chargeAlgorithm->chargeGroup)
+                    {
+                        robot->group = nullptr;
+                    }
+                    else {
+                        robot->group = chargeAlgorithm->chargeGroup;
+                    }
+                }
             }
         }
     }
 }
 
+
+void MainWindow::on_objectColorComboBox_currentTextChanged(const QString &color)
+{
+    robotDetectionSettings.objectColorTracking = color;
+}
+
+void MainWindow::loadCameraSelection()
+{
+    if(ui->cameraSelectionComboBox->count() != 0) return; //its already loaded so a second time is not needed
+    ui->cameraSelectionComboBox->clear();
+
+    int currentIndex = robotDetectionSettings.availableCameras.indexOf(robotDetectionSettings.selectCamera);
+
+    for(int i = 0;i < robotDetectionSettings.availableCameras.size() ;i++)
+    {
+        ui->cameraSelectionComboBox->addItem( QString::number(robotDetectionSettings.availableCameras.at(i)) );
+    }
+
+    qDebug("current index %d  %d",currentIndex, robotDetectionSettings.selectCamera);
+    if(currentIndex != -1)
+    {
+        ui->cameraSelectionComboBox->setCurrentIndex(currentIndex);
+    }
+}
+void MainWindow::on_cameraSelectionComboBox_currentIndexChanged(int index)
+{
+    if(robotDetectionSettings.availableCameras.size() <= index)return;
+    qDebug("camera selection %d %d   %d",index, robotDetectionSettings.availableCameras.size(), ui->cameraSelectionComboBox->count());
+
+    robotDetectionSettings.selectCamera = robotDetectionSettings.availableCameras.at(index);
+}

@@ -75,6 +75,10 @@ private slots:
 
     void on_SimulationSpeedSlider_valueChanged(int value);
 
+    void on_objectColorComboBox_currentTextChanged(const QString &arg1);
+
+    void on_cameraSelectionComboBox_currentIndexChanged(int index);
+
 public slots:
     void updateGui();
 private:
@@ -96,6 +100,7 @@ private:
     void keyPressEvent(QKeyEvent *event);
     void keyReleaseEvent(QKeyEvent *event);
     void updateManualControl();
+    void loadCameraSelection();
 };
 
 #endif // MAINWINDOW_H
