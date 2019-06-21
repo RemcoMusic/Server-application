@@ -113,6 +113,8 @@ void Tasks::OTAtask(void * parameter)
   for(;;)
   {
     OTAUpdate.handle();
+    vTaskDelay(10/portTICK_PERIOD_MS);
+
   }
 }
 

@@ -5,7 +5,7 @@
 void OTA::startOTA()
 {
   ArduinoOTA.setHostname("SwarmboTronOTA");
-    ArduinoOTA.onStart([=]() mutable
+    ArduinoOTA.onStart([&]() mutable
     {
       started = true;
       String type;
