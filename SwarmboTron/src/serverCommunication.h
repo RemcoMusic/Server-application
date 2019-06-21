@@ -8,7 +8,7 @@
 class serverCommunication
 {
     public:
-        void listen();
+        bool listen();
         //void send(uint8_t msg);
         void sendVoltage(uint16_t msg);
         void setup();
