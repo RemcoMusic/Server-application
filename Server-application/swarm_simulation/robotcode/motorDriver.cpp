@@ -68,7 +68,7 @@ void MotorDriver::driveMotor()
         else //move to new coordinates
         {
             inRightDirection = false;
-            int maxSpeed = 150;
+            int maxSpeed = 550;
             if(abs(angleDelta) > DEADBAND)
             {
                 debugE("rotate");

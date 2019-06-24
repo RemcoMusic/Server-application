@@ -23,6 +23,7 @@ SOURCES += \
     main.cpp \
     objects/ball.cpp \
     objects/chargestation.cpp \
+    objects/elasticball.cpp \
     objects/objectsbase.cpp \
     robotlocationpainter.cpp \
     simulatedrobot.cpp \
@@ -35,6 +36,7 @@ SOURCES += \
     swarm_algorithms/rectanglealgorithm.cpp \
     swarm_algorithms/robotdisplacementdetection.cpp \
     swarm_algorithms/userinputfunctions.cpp \
+    swarm_simulation/elasticcollision.cpp \
     swarm_simulation/robotcode/arduino.cpp \
     test.cpp \
     user_interface\mainwindow.cpp \
@@ -56,6 +58,7 @@ HEADERS += \
     globalhelperfunctions.h \
     main.h \
     objects/chargestation.h \
+    objects/elasticball.h \
     simulatedrobot.h \
     locationmanager.h \
     objects/ball.h \
@@ -69,6 +72,7 @@ HEADERS += \
     swarm_algorithms/rectanglealgorithm.h \
     swarm_algorithms/robotdisplacementdetection.h \
     swarm_algorithms/userinputfunctions.h \
+    swarm_simulation/elasticcollision.h \
     swarm_simulation/robotcode/Arduino.h \
     swarm_simulation/robotcode/debug.h \
     test.h \

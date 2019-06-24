@@ -1,4 +1,6 @@
 #include "ball.h"
+//includes in the cpp to prevent include loops
+#include "elasticball.h"
 #include "locationmanager.h"
 Ball::Ball()
 {
@@ -27,7 +29,10 @@ void Ball::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWid
     {
         color = Qt::yellow;
     }
-
+    if(dynamic_cast<ElasticBall*>(this))
+    {
+        color = Qt::cyan;
+    }
     QPainterPath path;
     path.addEllipse(0,0,size,size);
     painter->fillPath(path, color);

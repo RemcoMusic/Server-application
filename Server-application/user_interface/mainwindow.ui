@@ -484,6 +484,11 @@
               </item>
               <item>
                <property name="text">
+                <string>Simulated Elastic Ball</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
                 <string>Charge Station</string>
                </property>
               </item>
