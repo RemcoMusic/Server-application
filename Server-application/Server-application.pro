@@ -34,6 +34,7 @@ SOURCES += \
     swarm_algorithms/linearmotionalgorithms.cpp \
     swarm_algorithms/rectanglealgorithm.cpp \
     swarm_algorithms/robotdisplacementdetection.cpp \
+    swarm_algorithms/trianglealgorithm.cpp \
     swarm_algorithms/userinputfunctions.cpp \
     swarm_simulation/robotcode/arduino.cpp \
     test.cpp \
@@ -68,6 +69,7 @@ HEADERS += \
     swarm_algorithms/linearmotionalgorithms.h \
     swarm_algorithms/rectanglealgorithm.h \
     swarm_algorithms/robotdisplacementdetection.h \
+    swarm_algorithms/trianglealgorithm.h \
     swarm_algorithms/userinputfunctions.h \
     swarm_simulation/robotcode/Arduino.h \
     swarm_simulation/robotcode/debug.h \
