@@ -1,7 +1,7 @@
 #include "motorDriver.h"
 
 #define DEADBAND 0.20*PI
-#define P 0.7
+#define P 0.5
 double mapDouble(double x, double x1, double x2, double y1, double y2)
 {
  return (x - x1) * (y2 - y1) / (x2 - x1) + y1;
@@ -37,8 +37,7 @@ void MotorDriver::driveMotor()
         }
         else if(distanceFromDestination < 70)
         {
-              turnMotorsOff();
-              int maxSpeed = 30;
+              int maxSpeed = 40;
               if(abs(angleDelta) < 0.15 * PI)
               {
                   double error = mapDouble(abs(angleDelta) ,0,DEADBAND , 0.5, 1);
@@ -98,8 +97,8 @@ void MotorDriver::driveMotor()
     }
     else
     {
-        setMotorSpeed(0,0);  //do nothing
-    }
+        turnMotorsOff();
+    } 
 
 }
 

@@ -1,4 +1,5 @@
 #include <Arduino.h>
+#define FASTLED_ALLOW_INTERRUPTS 0
 #include <FastLED.h>
 #include "globals.h"
 #include "debug.h"
@@ -10,7 +11,7 @@ class LedDriver
         void selectMode();
     private:
         #define PIN 19
-        #define NUM_LEDS 25       
+        #define NUM_LEDS 27       
         #define DELAYVAL 500 
 
         int brightness = 75; 

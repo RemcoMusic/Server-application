@@ -29,7 +29,7 @@ class MotorDriver
 
     private:
 
-        int minSpeed = 400; //minimum speed at wich the motors are able to turn
+        int minSpeed = 600; //minimum speed at wich the motors are able to turn
         int maxSpeed = 800; //maximum speed at wich the motors are able to turn
         bool inRightDirection = false;
         void goToCoordinates(uint8_t speed, uint16_t desiredAngle, uint16_t currentAngle);
