@@ -36,4 +36,5 @@ class MotorDriver
         bool moveToAngle(int16_t newAngle);
         void turnMotorsOff();
 
+        void setMotorSpeed(int speedL, int speedR, bool reverse);
 };

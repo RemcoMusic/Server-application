@@ -24,7 +24,9 @@ enum robotStatus{
     NORMAL = 2,
     CHARGING = 3,
 };
-
+#define DIRECTION_FORWARD 0
+#define DIRECTION_BACKWARD 1
+#define DIRECTION_BOTH 2
 struct  UdpData {
   uint16_t currentX = 0;
   uint16_t currentY = 0;
@@ -33,6 +35,7 @@ struct  UdpData {
   uint16_t currentAngle = 360;
   uint8_t speed = 0;
   uint8_t status = robotStatus::OFF;
+  uint8_t drivingDirection = DIRECTION_BOTH;
 };
 
 

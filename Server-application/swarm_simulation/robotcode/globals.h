@@ -1,6 +1,10 @@
-#pragma once
-#include <Arduino.h>
+ #pragma once
+ #include <Arduino.h>
+
 #ifdef ARDUINO
+#define DIRECTION_FORWARD 0
+#define DIRECTION_BACKWARD 1
+#define DIRECTION_BOTH 2
         enum robotStatus{
         OFF = 0,
         STARTUP = 1,
@@ -16,6 +20,7 @@
         uint16_t currentAngle = 0;
         uint8_t speed = 0;
         uint8_t status = robotStatus::OFF;
+        uint8_t drivingDirection = DIRECTION_BOTH;
         };
 #endif
         extern UdpData udpData;
@@ -32,6 +37,8 @@
         uint8_t status = 0;
         bool Map = false;
         bool Led = false;
+        bool fakeVoltage = false;
+        bool reverseDriving = true;
         };
 
        extern GlobalData globalData;
