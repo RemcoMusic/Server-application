@@ -28,7 +28,10 @@ void LinearMotionAlgorithms::generateRobotList()
         RobotLocation *currentRobot = i.next();
         if(currentRobot->group == robotGroup)
         {
-             data.swarmRobots.append(currentRobot);
+            if(currentRobot->isReady())
+            {
+                data.swarmRobots.append(currentRobot);
+            }
         }
 
     }

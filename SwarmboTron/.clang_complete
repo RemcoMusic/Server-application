@@ -61,8 +61,8 @@
 -IC:\tinlasAS\git\Server-application\SwarmboTron\lib\FastLED
 -IC:\tinlasAS\git\Server-application\SwarmboTron\lib\RemoteDebug\src
 -IC:\Users\Rene Schouten\.platformio\packages\framework-arduinoespressif32\libraries\WiFiClientSecure\src
--IC:\Users\Rene Schouten\.platformio\packages\framework-arduinoespressif32\libraries\WiFi\src
 -IC:\Users\Rene Schouten\.platformio\packages\framework-arduinoespressif32\libraries\SPI\src
+-IC:\Users\Rene Schouten\.platformio\packages\framework-arduinoespressif32\libraries\WiFi\src
 -IC:\Users\Rene Schouten\.platformio\packages\framework-arduinoespressif32\libraries\ArduinoOTA\src
 -IC:\Users\Rene Schouten\.platformio\packages\framework-arduinoespressif32\libraries\ESPmDNS\src
 -IC:\Users\Rene Schouten\.platformio\packages\framework-arduinoespressif32\libraries\Update\src
