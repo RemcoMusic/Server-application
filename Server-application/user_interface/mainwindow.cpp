@@ -50,7 +50,6 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->sliderVDinges, SIGNAL(valueChanged(int)),ui->lcdNumberVDinges, SLOT(display(int)));
 
 
-    //on_colorComboBox_currentIndexChanged(0);
     ui->sliderErode->setValue(robotDetectionSettings.erodeObject);
     ui->sliderDilate->setValue(robotDetectionSettings.dilateObject);
     ui->sliderDeviation->setValue(robotDetectionSettings.xyDeviationMilimeter);
@@ -95,7 +94,8 @@ void MainWindow::updateGui()
         for(int i = 0; i<swarmAlgorithmsSettings.anvailableAlgoritms.size();i++){
             ui->ActiveAlgoritmList->addItem(swarmAlgorithmsSettings.anvailableAlgoritms.at(i));
         }
-
+        //normally the slider values will only be changed when the combobox is clicked
+        on_colorComboBox_currentIndexChanged(0);
 
     }
     int t = fpsTimer->elapsed();
