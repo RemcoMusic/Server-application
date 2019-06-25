@@ -1,3 +1,4 @@
+
 #include <Arduino.h>
 #include "ledDriver.h"
 
@@ -6,7 +7,7 @@ CRGB leds[NUM_LEDS];
 void LedDriver::setup()
 {
 	LEDS.addLeds<WS2812,PIN,GRB>(leds,NUM_LEDS);
-	off(); 
+	off();
 }
 
 bool lastTargetFound = false;
@@ -15,8 +16,8 @@ void LedDriver::selectMode()
 {
 		if(udpData.status != currentMode)
 		{
-			currentMode = udpData.status;		
-			switch (udpData.status) 
+			currentMode = udpData.status;
+			switch (udpData.status)
 			{
 				case 0: off();		//all leds off
 						break;
@@ -34,16 +35,14 @@ void LedDriver::selectMode()
 		if(globalData.targetFound && (globalData.targetFound != lastTargetFound) && udpData.status == 2)
 		{
 			targetFound();
-			debugE("targetLed on");
 			lastTargetFound = true;
 		}
 		else if(!globalData.targetFound && udpData.status == 2)
 		{
 			lastTargetFound = false;
-			debugE("targetLed off");
 			normal();
 		}
-		
+
 		// if(lastTargetFound != globalData.targetFound)
 		// {
 		// 	if(globalData.targetFound)
@@ -61,14 +60,14 @@ void LedDriver::selectMode()
 		// {
 		// 	lastTargetFound = false;
 		// }
-		
+
 }
 
 void LedDriver::charging()
 {
 		brightness = 0;
 
-		for(int i = 0; i < NUM_LEDS; i++) 
+		for(int i = 0; i < NUM_LEDS; i++)
 		{
 			leds[i] = CRGB::Orange;
 		}
@@ -76,14 +75,14 @@ void LedDriver::charging()
 		for(int b = 0; b < 255; b++)
 		{
 			FastLED.setBrightness(b);
-			FastLED.show(); 	
+			FastLED.show();
 			delay(10);
 		}
 
 		for(int b = 255; b > 0; b++)
 		{
 			FastLED.setBrightness(b);
-			FastLED.show(); 	
+			FastLED.show();
 			delay(10);
 		}
 }
@@ -92,7 +91,7 @@ void LedDriver::off()
 {
 	FastLED.clear();
 	FastLED.setBrightness(0);
-	FastLED.show(); 	
+	FastLED.show();
 }
 
 void LedDriver::startup()
@@ -114,23 +113,23 @@ void LedDriver::normal()
 }
 
 void LedDriver::targetFound()
-{	
+{
 	FastLED.clear();
+	FastLED.setBrightness(20);
+
 	for(int i = 0; i < NUM_LEDS; i++) 
 		{
-			FastLED.setBrightness(10);
-			leds[i] = CRGB::DarkViolet;	
+			leds[i] = CRGB::DarkGoldenrod;	
 		}
 
 	FastLED.setBrightness(brightness);
+
 	leds[middleLedPosition] = CRGB::Red;
 	leds[directionLedPostition - 1] = CRGB::Black;
+	leds[directionLedPostition - 2] = CRGB::Black;
 	leds[directionLedPostition] = CRGB::Blue;
 	leds[directionLedPostition + 1] = CRGB::Black;
+	leds[directionLedPostition + 2] = CRGB::Black;
+
 	FastLED.show();
 }
-
-
-
-
-

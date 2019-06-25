@@ -157,33 +157,34 @@ void SwarmSimulation::moveRobotRealistic(RobotLocation *robot)
             }
         }
     }
-    if(swarmSimulationSettings.acceleartionControlEnabled)
-    {
-        double acceleration = 5;
-        if(left > robot->currentSpeedLeft)
-        {
-            robot->currentSpeedLeft+= std::min(acceleration,left - robot->currentSpeedLeft);
-        }
-        if(left < robot->currentSpeedLeft)
-        {
-            robot->currentSpeedLeft-= std::min(acceleration, robot->currentSpeedLeft - left);
-        }
-        if(right > robot->currentSpeedRight)
-        {
-            robot->currentSpeedRight+= std::min(acceleration,right - robot->currentSpeedRight);
-        }
-        if(right < robot->currentSpeedRight)
-        {
-            robot->currentSpeedRight-= std::min(acceleration, robot->currentSpeedRight - right);
-        }
-        moveWheels(robot->currentSpeedLeft, robot->currentSpeedRight, robot);
-    }
-    else {
-         moveWheels(left, right, robot);
-    }
+
+    moveWheels(left, right, robot);
 }
 void SwarmSimulation::moveWheels(double Vl, double Vr, RobotLocation* robot)
 {
+    if(swarmSimulationSettings.acceleartionControlEnabled)
+    {
+        double acceleration = deltaT * 5000;
+        if(Vl > robot->currentSpeedLeft)
+        {
+            robot->currentSpeedLeft+= std::min(acceleration,Vl - robot->currentSpeedLeft);
+        }
+        if(Vl < robot->currentSpeedLeft)
+        {
+            robot->currentSpeedLeft-= std::min(acceleration, robot->currentSpeedLeft - Vl);
+        }
+        if(Vr > robot->currentSpeedRight)
+        {
+            robot->currentSpeedRight+= std::min(acceleration,Vr - robot->currentSpeedRight);
+        }
+        if(Vr < robot->currentSpeedRight)
+        {
+            robot->currentSpeedRight-= std::min(acceleration, robot->currentSpeedRight - Vr);
+        }
+        Vl = robot->currentSpeedLeft;
+        Vr = robot->currentSpeedRight;
+    }
+
     //http://www.cs.columbia.edu/~allen/F17/NOTES/icckinematics.pdfs
     //calculations from https://www.robotc.net/wikiarchive/File:Differential_Steering_Graphic_2_wheels.png
     //https://www.robotc.net/wikiarchive/Tutorials/Arduino_Projects/Additional_Info/Turning_Calculations

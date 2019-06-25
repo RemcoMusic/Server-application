@@ -6,8 +6,8 @@
 class GlobalSettings
 {
 public:
-    int fieldSizeX=1720;//mm
-    int fieldSizeY=1150;//mm
+    int fieldSizeX=1660;//mm
+    int fieldSizeY=1250;//mm
 
     int cameraX= 640;
     int cameraY= 480;
@@ -18,7 +18,7 @@ public:
     bool printRobotDetection = 0;
     bool printSwarmAlgoritme = 0;
 
-    double batteryVoltageThreshold = 6.0;
+    double batteryVoltageThreshold = 7.0;
     double batteryVoltageFull = 8.4;
 };
 extern GlobalSettings globalSettings;
