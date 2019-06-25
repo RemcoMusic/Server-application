@@ -53,7 +53,8 @@ SOURCES += \
     swarm_algorithms/swarmalgorithmbase.cpp \
     robotgroup.cpp \
     swarm_simulation/robotcode/motorDriver.cpp \
-    swarm_simulation/robotcode/globals.cpp
+    swarm_simulation/robotcode/globals.cpp \
+    include/rangeSlider.cpp
 
 HEADERS += \
     globalhelperfunctions.h \
@@ -92,7 +93,8 @@ HEADERS += \
     globalsettings.h \
     robotgroup.h \
     swarm_simulation/robotcode/motorDriver.h \
-    swarm_simulation/robotcode/globals.h
+    swarm_simulation/robotcode/globals.h \
+    include/rangeSlider.h
 FORMS += \
         user_interface/mainwindow.ui
 
@@ -104,7 +106,7 @@ INCLUDEPATH += robot_detection
 INCLUDEPATH += robot_connection
 INCLUDEPATH += user_interface
 INCLUDEPATH += objects
-
+INCLUDEPATH += include
 INCLUDEPATH += $$(OPENCV_INCLUDE)
 
 LIBS += $$(OPENCV_PATH)\bin\libopencv_core410.dll

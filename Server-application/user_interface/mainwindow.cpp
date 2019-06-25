@@ -41,13 +41,19 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->lcdNumberTotalObstacles->setPalette(Qt::green);
 
 
-    connect(ui->sliderHue, SIGNAL(valueChanged(int)),this, SLOT(colorSlidersChanged(int)));
-    connect(ui->sliderSaturation, SIGNAL(valueChanged(int)),this, SLOT(colorSlidersChanged(int)));
-    connect(ui->sliderVDinges, SIGNAL(valueChanged(int)),this, SLOT(colorSlidersChanged(int)));
+    connect(ui->sliderHue, SIGNAL(lowerValueChanged(int)),this, SLOT(colorSlidersChanged(int)));
+    connect(ui->sliderSaturation, SIGNAL(lowerValueChanged(int)),this, SLOT(colorSlidersChanged(int)));
+    connect(ui->sliderVDinges, SIGNAL(lowerValueChanged(int)),this, SLOT(colorSlidersChanged(int)));
+    connect(ui->sliderHue, SIGNAL(upperValueChanged(int)),this, SLOT(colorSlidersChanged(int)));
+    connect(ui->sliderSaturation, SIGNAL(upperValueChanged(int)),this, SLOT(colorSlidersChanged(int)));
+    connect(ui->sliderVDinges, SIGNAL(upperValueChanged(int)),this, SLOT(colorSlidersChanged(int)));
 
-    connect(ui->sliderHue, SIGNAL(valueChanged(int)),ui->lcdNumberHue, SLOT(display(int)));
-    connect(ui->sliderSaturation, SIGNAL(valueChanged(int)),ui->lcdNumberSaturation, SLOT(display(int)));
-    connect(ui->sliderVDinges, SIGNAL(valueChanged(int)),ui->lcdNumberVDinges, SLOT(display(int)));
+    connect(ui->sliderHue, SIGNAL(lowerValueChanged(int)),ui->lcdNumberHue, SLOT(display(int)));
+    connect(ui->sliderSaturation, SIGNAL(lowerValueChanged(int)),ui->lcdNumberSaturation, SLOT(display(int)));
+    connect(ui->sliderVDinges, SIGNAL(lowerValueChanged(int)),ui->lcdNumberVDinges, SLOT(display(int)));
+    connect(ui->sliderHue, SIGNAL(upperValueChanged(int)),ui->lcdNumberHue, SLOT(display(int)));
+    connect(ui->sliderSaturation, SIGNAL(upperValueChanged(int)),ui->lcdNumberSaturation, SLOT(display(int)));
+    connect(ui->sliderVDinges, SIGNAL(upperValueChanged(int)),ui->lcdNumberVDinges, SLOT(display(int)));
 
 
     ui->sliderErode->setValue(robotDetectionSettings.erodeObject);
@@ -96,7 +102,6 @@ void MainWindow::updateGui()
         }
         //normally the slider values will only be changed when the combobox is clicked
         on_colorComboBox_currentIndexChanged(0);
-
     }
     int t = fpsTimer->elapsed();
     fpsTimer->restart();
@@ -258,13 +263,29 @@ void MainWindow::colorSlidersChanged(int c)
 {
     if(flipFlop){
         int currentColor = ui->colorComboBox->currentIndex();
-        int h = ui->sliderHue->value();
-        int s = ui->sliderSaturation->value();
-        int v = ui->sliderVDinges->value();
+        int h_low = ui->sliderHue->GetLowerValue();
+        int s_low = ui->sliderSaturation->GetLowerValue();
+        int v_low = ui->sliderVDinges->GetLowerValue();
+        int h_high = ui->sliderHue->GetUpperValue();
+        int s_high = ui->sliderSaturation->GetUpperValue();
+        int v_high = ui->sliderVDinges->GetUpperValue();
 
-        robotDetectionSettings.HSVColorValues.at(currentColor)->h = h;
-        robotDetectionSettings.HSVColorValues.at(currentColor)->s = s;
-        robotDetectionSettings.HSVColorValues.at(currentColor)->v = v;
+        robotDetectionSettings.HSVColorValues.at(currentColor)->h_low = h_low;
+        robotDetectionSettings.HSVColorValues.at(currentColor)->s_low = s_low;
+        robotDetectionSettings.HSVColorValues.at(currentColor)->v_low = v_low;
+        robotDetectionSettings.HSVColorValues.at(currentColor)->h_high = h_high;
+        robotDetectionSettings.HSVColorValues.at(currentColor)->s_high = s_high;
+        robotDetectionSettings.HSVColorValues.at(currentColor)->v_high = v_high;
+        QPalette palette = ui->lowerColor->palette();
+        palette.setColor(ui->lowerColor->backgroundRole(), QColor::fromHsv(h_low*2,s_low,v_low));
+        ui->lowerColor->setAutoFillBackground(true);
+        ui->lowerColor->setPalette(palette);
+        palette = ui->upperColor->palette();
+
+        palette.setColor(ui->upperColor->backgroundRole(), QColor::fromHsv(h_high*2,s_high,v_high));
+        ui->upperColor->setAutoFillBackground(true);
+        ui->upperColor->setPalette(palette);
+
     }
 
 
@@ -275,9 +296,13 @@ void MainWindow::on_colorComboBox_currentIndexChanged(int index)
     //update new sliders
     qDebug() << "comboBox index: " << index;
     flipFlop = false;
-    ui->sliderHue->setValue(robotDetectionSettings.HSVColorValues.at(index)->h);
-    ui->sliderSaturation->setValue(robotDetectionSettings.HSVColorValues.at(index)->s);
-    ui->sliderVDinges->setValue(robotDetectionSettings.HSVColorValues.at(index)->v);
+    ui->sliderHue->setLowerValue(robotDetectionSettings.HSVColorValues.at(index)->h_low);
+    ui->sliderSaturation->setLowerValue(robotDetectionSettings.HSVColorValues.at(index)->s_low);
+    ui->sliderVDinges->setLowerValue(robotDetectionSettings.HSVColorValues.at(index)->v_low);
+
+    ui->sliderHue->setUpperValue(robotDetectionSettings.HSVColorValues.at(index)->h_high);
+    ui->sliderSaturation->setUpperValue(robotDetectionSettings.HSVColorValues.at(index)->s_high);
+    ui->sliderVDinges->setUpperValue(robotDetectionSettings.HSVColorValues.at(index)->v_high);
     flipFlop = true;
 
 }

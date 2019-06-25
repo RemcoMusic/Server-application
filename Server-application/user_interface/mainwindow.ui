@@ -651,6 +651,27 @@
         <item>
          <layout class="QVBoxLayout" name="verticalLayout_6">
           <item>
+           <layout class="QHBoxLayout" name="horizontalLayout_7">
+            <property name="sizeConstraint">
+             <enum>QLayout::SetMinimumSize</enum>
+            </property>
+            <item>
+             <widget class="QLabel" name="lowerColor">
+              <property name="text">
+               <string/>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLabel" name="upperColor">
+              <property name="text">
+               <string/>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item>
            <layout class="QGridLayout" name="gridLayout">
             <item row="6" column="3">
              <widget class="QLCDNumber" name="lcdNumberDeviation"/>
@@ -662,9 +683,9 @@
              <widget class="QLCDNumber" name="lcdNumberHue"/>
             </item>
             <item row="1" column="2">
-             <widget class="QSlider" name="sliderHue">
+             <widget class="RangeSlider" name="sliderHue">
               <property name="maximum">
-               <number>179</number>
+               <number>180</number>
               </property>
               <property name="orientation">
                <enum>Qt::Horizontal</enum>
@@ -681,62 +702,32 @@
               </property>
               <item>
                <property name="text">
-                <string>Red_Low</string>
+                <string>Red</string>
                </property>
               </item>
               <item>
                <property name="text">
-                <string>Red_High</string>
+                <string>Blue</string>
                </property>
               </item>
               <item>
                <property name="text">
-                <string>Blue_Low</string>
+                <string>Green</string>
                </property>
               </item>
               <item>
                <property name="text">
-                <string>Blue_High</string>
+                <string>Orange</string>
                </property>
               </item>
               <item>
                <property name="text">
-                <string>Green_Low</string>
+                <string>Pink</string>
                </property>
               </item>
               <item>
                <property name="text">
-                <string>Green_High</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>Orange_Low</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>Orange_High</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>Pink_Low</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>Pink_High</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>Yellow_Low</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>Yellow_High</string>
+                <string>Yellow</string>
                </property>
               </item>
              </widget>
@@ -758,7 +749,7 @@
              </widget>
             </item>
             <item row="2" column="2">
-             <widget class="QSlider" name="sliderSaturation">
+             <widget class="RangeSlider" name="sliderSaturation">
               <property name="maximum">
                <number>255</number>
               </property>
@@ -778,7 +769,7 @@
              </widget>
             </item>
             <item row="3" column="2">
-             <widget class="QSlider" name="sliderVDinges">
+             <widget class="RangeSlider" name="sliderVDinges">
               <property name="maximum">
                <number>255</number>
               </property>
@@ -925,6 +916,13 @@
   </widget>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
+ <customwidgets>
+  <customwidget>
+   <class>RangeSlider</class>
+   <extends>QSlider</extends>
+   <header>rangeslider.h</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections>
   <connection>

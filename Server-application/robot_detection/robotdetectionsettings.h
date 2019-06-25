@@ -6,25 +6,22 @@
 
 enum ColorNames{
     NOCOLOR = -1,
-    RED_LOW = 0,
-    RED_HIGH = 1,
-    BLUE_LOW = 2,
-    BLUE_HIGH = 3,
-    GREEN_LOW = 4,
-    GREEN_HIGH = 5,
-    ORANGE_LOW = 6,
-    ORANGE_HIGH = 7,
-    PINK_LOW = 8,
-    PINK_HIGH = 9,
-    YELLOW_LOW = 10,
-    YELLOW_HIGH = 11
+    RED = 0,
+    BLUE = 1,
+    GREEN = 2,
+    ORANGE = 3,
+    PINK = 4,
+    YELLOW = 5,
 };
 
 struct Hsv{
     int c = ColorNames::NOCOLOR;
-    int h =0; //0-179
-    int s=0; //0-255
-    int v=0; //0-255
+    int h_low =0; //0-179
+    int s_low=0; //0-255
+    int v_low=0; //0-255
+    int h_high =0; //0-179
+    int s_high=0; //0-255
+    int v_high=0; //0-255
 };
 
 class RobotDetectionSettings
