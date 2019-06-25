@@ -5,13 +5,14 @@
 #include "halfcirclealgorithm.h"
 #include "linealgorithm.h"
 #include "rectanglealgorithm.h"
+#include "trianglealgorithm.h"
 SwarmAlgorithmsSettings swarmAlgorithmsSettings;
 
 SwarmAlgorithmsSettings::SwarmAlgorithmsSettings()
 {
     anvailableAlgoritms << "RemcoAlgoritm"\
                            << "CircleAlgorirm"\
-                        << "LineAlgoritm" << "halfCircleAlgorithm" << "RectangleAlgorithm" << "BallDefinedAlgorithm";
+                        << "LineAlgoritm" << "halfCircleAlgorithm" << "RectangleAlgorithm" << "BallDefinedAlgorithm" << "TriangleAlgorithm";
 }
 
 void SwarmAlgorithmsSettings::runNewAlgortim(QString newAlgoritm, bool clearOthers)
@@ -45,5 +46,8 @@ void SwarmAlgorithmsSettings::runNewAlgortim(QString newAlgoritm, bool clearOthe
     }
     else if(newAlgoritm == "BallDefinedAlgorithm"){
         activeAlgorithms.append(new BallDefinedAlgorithm());
+    }
+    else if(newAlgoritm == "TriangleAlgorithm"){
+        activeAlgorithms.append(new TriangleAlgorithm());
     }
 }

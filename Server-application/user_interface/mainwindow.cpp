@@ -3,6 +3,7 @@
 
 #include <chargealgorithm.h>
 #include <chargestation.h>
+#include <elasticball.h>
 
 
 QGraphicsScene *dataScene;   //global
@@ -467,6 +468,16 @@ void MainWindow::on_comboBox_currentIndexChanged(const QString &arg1)  // sorry 
          b->type = Object::Type::SIMULATED;
          locationManager.addObject(b);
     }
+    else if (arg1 == "Simulated Elastic Ball") {
+            int x = qrand() % globalSettings.fieldSizeX;
+            int y = qrand() % globalSettings.fieldSizeY;
+
+             Ball* b = new ElasticBall();
+             b->x = x;
+             b->y = y;
+             b->type = Object::Type::SIMULATED;
+             locationManager.addObject(b);
+        }
     ui->comboBox->setCurrentIndex(0);
 }
 

@@ -1,5 +1,4 @@
-#ifndef BALL_H
-#define BALL_H
+#pragma once
 
 #include "objectsbase.h"
 #include <QDebug>
@@ -30,5 +29,3 @@ protected:
     void mouseReleaseEvent(QGraphicsSceneMouseEvent *event) override;
 
 };
-
-#endif // BALL_H

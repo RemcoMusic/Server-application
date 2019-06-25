@@ -13,7 +13,7 @@ public:
     int acceleartionControlEnabled = true;  //1
     int badMotorsEnbabled = true;   //1
     bool enableArduinoLogging = false;
-    int simulationSpeed = 1;
+    int simulationSpeed = 10;
 
 };
 extern SwarmSimulationSettings swarmSimulationSettings;

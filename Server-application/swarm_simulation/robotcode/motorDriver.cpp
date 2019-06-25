@@ -29,13 +29,13 @@ void MotorDriver::driveMotor()
             angleDelta = angleDelta + 2 * PI;
         }
 
-        if (distanceFromDestination < 20)
+        if (distanceFromDestination < 10)
         {
             turnMotorsOff();
             globalData.targetFound = true;
             debugE("targed found");
         }
-        else if(distanceFromDestination < 70)
+        else if(distanceFromDestination < 40)
         {
               turnMotorsOff();
               int maxSpeed = 30;
@@ -68,7 +68,7 @@ void MotorDriver::driveMotor()
         else //move to new coordinates
         {
             inRightDirection = false;
-            int maxSpeed = 150;
+            int maxSpeed = 550;
             if(abs(angleDelta) > DEADBAND)
             {
                 debugE("rotate");

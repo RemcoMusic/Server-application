@@ -6,6 +6,7 @@
 #include <QString>
 
 
+
 class SwarmAlgorithmsSettings
 {
 public:

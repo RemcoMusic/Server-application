@@ -157,33 +157,34 @@ void SwarmSimulation::moveRobotRealistic(RobotLocation *robot)
             }
         }
     }
-    if(swarmSimulationSettings.acceleartionControlEnabled)
-    {
-        double acceleration = 5;
-        if(left > robot->currentSpeedLeft)
-        {
-            robot->currentSpeedLeft+= std::min(acceleration,left - robot->currentSpeedLeft);
-        }
-        if(left < robot->currentSpeedLeft)
-        {
-            robot->currentSpeedLeft-= std::min(acceleration, robot->currentSpeedLeft - left);
-        }
-        if(right > robot->currentSpeedRight)
-        {
-            robot->currentSpeedRight+= std::min(acceleration,right - robot->currentSpeedRight);
-        }
-        if(right < robot->currentSpeedRight)
-        {
-            robot->currentSpeedRight-= std::min(acceleration, robot->currentSpeedRight - right);
-        }
-        moveWheels(robot->currentSpeedLeft, robot->currentSpeedRight, robot);
-    }
-    else {
-         moveWheels(left, right, robot);
-    }
+
+    moveWheels(left, right, robot);
 }
 void SwarmSimulation::moveWheels(double Vl, double Vr, RobotLocation* robot)
 {
+    if(swarmSimulationSettings.acceleartionControlEnabled)
+    {
+        double acceleration = deltaT * 5000;
+        if(Vl > robot->currentSpeedLeft)
+        {
+            robot->currentSpeedLeft+= std::min(acceleration,Vl - robot->currentSpeedLeft);
+        }
+        if(Vl < robot->currentSpeedLeft)
+        {
+            robot->currentSpeedLeft-= std::min(acceleration, robot->currentSpeedLeft - Vl);
+        }
+        if(Vr > robot->currentSpeedRight)
+        {
+            robot->currentSpeedRight+= std::min(acceleration,Vr - robot->currentSpeedRight);
+        }
+        if(Vr < robot->currentSpeedRight)
+        {
+            robot->currentSpeedRight-= std::min(acceleration, robot->currentSpeedRight - Vr);
+        }
+        Vl = robot->currentSpeedLeft;
+        Vr = robot->currentSpeedRight;
+    }
+
     //http://www.cs.columbia.edu/~allen/F17/NOTES/icckinematics.pdfs
     //calculations from https://www.robotc.net/wikiarchive/File:Differential_Steering_Graphic_2_wheels.png
     //https://www.robotc.net/wikiarchive/Tutorials/Arduino_Projects/Additional_Info/Turning_Calculations
@@ -236,32 +237,129 @@ void SwarmSimulation::robotCodeSimulation(RobotLocation* robot, RobotLocation* r
 
     delete motorDriver;
 }
+
+void SwarmSimulation::moveBall(ElasticBall* ball)
+{
+    ball->x += cos(ball->direction) * ball->speed * deltaT;
+    ball->y += sin(ball->direction) * ball->speed * deltaT;
+}
+void wallCollision(double &ballAngle, double wallAngle)
+{
+    if(ballAngle > wallAngle)
+    {
+        ballAngle = wallAngle - (ballAngle - wallAngle);
+    }
+    else {
+        ballAngle = wallAngle + (ballAngle - wallAngle);
+    }
+
+}
+
+void SwarmSimulation::checkWallCollision(ElasticBall* ball)
+{
+    while(ball->direction < 0) ball->direction+=2*M_PI;
+
+    //plus 10 because the objects are constrained to prevent going out of the field
+    int collisionRadius = ball->collisionRadius + 10;
+    if(ball->y >= globalSettings.fieldSizeY - collisionRadius)
+    {
+        wallCollision(ball->direction,0);
+    }
+    else if(ball->y <= collisionRadius)
+    {
+        wallCollision(ball->direction,M_PI);
+    }
+    else if(ball->x >= globalSettings.fieldSizeX - collisionRadius)
+    {
+        wallCollision(ball->direction,1.5*M_PI);
+    }
+    else if(ball->x <= collisionRadius)
+    {
+        wallCollision(ball->direction,0.5*M_PI);
+    }
+}
+
+void SwarmSimulation::elasticCollision(Object* object, ElasticBall* ball, double ObjectSpeedX, double ObjectSpeedY)
+{
+    double BallSpeedX = ball->speed * cos(ball->direction);
+    double BallSpeedY = ball->speed * sin(ball->direction);
+    qDebug("%f %f",ObjectSpeedX,ObjectSpeedY);
+
+    collision2Ds(10,1,0.95,
+                 object->x,object->y,ball->x,ball->y,
+                 ObjectSpeedX,ObjectSpeedY,BallSpeedX,BallSpeedY);
+    ball->direction = atan2(BallSpeedY,BallSpeedX);
+    ball->speed = sqrt(BallSpeedX*BallSpeedX + BallSpeedY*BallSpeedY);
+
+}
+void SwarmSimulation::checkForBallCollsion(QList<ElasticBall*> &elasticBalls, RobotLocation* robot, double ObjectSpeedX, double ObjectSpeedY)
+{
+    QListIterator<ElasticBall*> ballIterator(elasticBalls);
+    while (ballIterator.hasNext())
+    {
+        ElasticBall* currentBall = ballIterator.next();
+        int distance = distanceBetweenPoints(robot,currentBall);
+        if(distance < currentBall->size + robot->collisionRadius)
+        {
+            elasticCollision(robot, currentBall,ObjectSpeedX,ObjectSpeedY);
+        }
+    }
+}
 void SwarmSimulation::startSimulation()
 {
     //qDebug() << "start simulation called" << endl;
+    //calculate deltaT in seconds
     deltaT = (double)(clock() - lastTime)/CLOCKS_PER_SEC;
     deltaT = std::fmax(deltaT, 0.1);
     lastTime = clock();
+
+    //generate a list of elastic balls
+    QList<ElasticBall*> elasticBalls;
+    QListIterator<Object*> objectIterator(locationManager.objects);
+    while (objectIterator.hasNext())
+    {
+        Object* currentObject = objectIterator.next();
+        ElasticBall* currentBall = dynamic_cast<ElasticBall*>(currentObject);
+        if(currentBall)
+        {
+            elasticBalls.append(currentBall);
+        }
+     }
+
     QListIterator<RobotLocation*> i(locationManager.robots);
     while (i.hasNext())
     {
         RobotLocation *currentRobot = i.next();
         if(currentRobot->type == Object::Type::SIMULATED)
         {
+            int previousX = currentRobot->x;
+            int previousY = currentRobot->y;
             if(swarmSimulationSettings.realisticSimulationEnabled)
             {
-                robotCodeSimulation(currentRobot, currentRobot);
-                robotCodeSimulation(currentRobot->simulatedRobot,currentRobot);
-                //moveRobotRealistic(currentRobot);
-                //moveRobotRealistic(currentRobot->simulatedRobot);
+                //robotCodeSimulation(currentRobot, currentRobot);
+                //robotCodeSimulation(currentRobot->simulatedRobot,currentRobot);
+                moveRobotRealistic(currentRobot);
+                moveRobotRealistic(currentRobot->simulatedRobot);
             }
             else {
                 moveRobot(currentRobot);
                 moveRobot(currentRobot->simulatedRobot);
             }
+            int deltaX = currentRobot->x - previousX;
+            int deltaY = currentRobot->y - previousY;
+            checkForBallCollsion(elasticBalls,currentRobot,deltaX/deltaT,deltaY/deltaT);
         }
     }
-
+    //move elastic balls
+    QListIterator<ElasticBall*> ballIterator(elasticBalls);
+    while (ballIterator.hasNext())
+    {
+        ElasticBall* currentBall = ballIterator.next();
+        checkWallCollision(currentBall);
+        moveBall(currentBall);
+        //slow the ball down
+        currentBall->speed *= 1.0 - 0.5 * deltaT;
+    }
 
     emit simulationFinished();
 }
