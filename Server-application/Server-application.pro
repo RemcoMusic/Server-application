@@ -8,11 +8,14 @@ QT       += core gui
 QT       += network
 QT       += testlib
 
+QT.testlib.CONFIG -= console
+
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-TARGET = Server-application
+TARGET = SwarmboTron
 TEMPLATE = app
 
+RC_ICONS = SwarmboTron.ico
 
 CONFIG += c++11
 
@@ -135,3 +138,6 @@ LIBS += $$(OPENCV_PATH)\bin\libopencv_videoio410.dll
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
+
+DISTFILES += \
+    SwarmboTron.ico

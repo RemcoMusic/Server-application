@@ -11,14 +11,18 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>SwarmboTron</string>
+  </property>
+  <property name="windowIcon">
+   <iconset>
+    <normaloff>../../../SwarmboTron Logo/Logo-01.png</normaloff>../../../SwarmboTron Logo/Logo-01.png</iconset>
   </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QVBoxLayout" name="verticalLayout">
     <item>
      <widget class="QTabWidget" name="tabWidget">
       <property name="currentIndex">
-       <number>2</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="tab">
        <attribute name="title">
@@ -542,7 +546,7 @@
           <item>
            <widget class="QPushButton" name="pushButton">
             <property name="text">
-             <string>thisButttonDoesNothing</string>
+             <string>Refresh the user interface</string>
             </property>
            </widget>
           </item>
@@ -781,7 +785,7 @@
             <item row="3" column="0">
              <widget class="QLabel" name="label_5">
               <property name="text">
-               <string>V-Dinges</string>
+               <string>Value</string>
               </property>
              </widget>
             </item>
