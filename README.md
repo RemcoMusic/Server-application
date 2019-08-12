@@ -5,7 +5,9 @@ The swarm is able to work together to achieve a certain goal. The power of this 
 
 This project was started at the university of applied sciences. The goal was simple and that was that we had to create a swarm. And so we did. It is created by 4 students in only 7 weeks. We worked 4 days in the week for this application. And this is the result.
 
-[![Demo video](http://img.youtube.com/vi/2AMBKfd8Uyc/0.jpg)](http://www.youtube.com/watch?v=2AMBKfd8Uyc)
+<a href="http://www.youtube.com/watch?feature=player_embedded&v=2AMBKfd8Uyc
+" target="_blank"><img src="http://img.youtube.com/vi/2AMBKfd8Uyc/0.jpg" 
+alt="Demo video" width="500" height="350" border="10" /></a>
 
 Getting Started
 ======
