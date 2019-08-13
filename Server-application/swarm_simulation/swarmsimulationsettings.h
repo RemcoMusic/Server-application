@@ -3,19 +3,18 @@
 
 #include <QObject>
 
+
+
 class SwarmSimulationSettings
 {
 public:
     SwarmSimulationSettings();
-    struct VisualisationVariables
-    {
+    int realisticSimulationEnabled = true;  //1
+    int acceleartionControlEnabled = true;  //1
+    int badMotorsEnbabled = true;   //1
+    bool enableArduinoLogging = false;
+    int simulationSpeed = 10;
 
-    }visualisationVariables;
-
-    struct SettingVariables
-    {
-
-    }settingVariables;
 };
-
+extern SwarmSimulationSettings swarmSimulationSettings;
 #endif // SWARMSIMULATIONSETTINGS_H

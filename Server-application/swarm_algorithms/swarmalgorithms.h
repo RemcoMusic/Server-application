@@ -1,18 +1,23 @@
-#ifndef SWARMALGORITHMS_H
-#define SWARMALGORITHMS_H
+#pragma once
 
 #include <QObject>
-#include <QtCore>
-#include <QTimer>
+
+#include "chargealgorithm.h"
+#include "robotdisplacementdetection.h"
 #include "swarmalgorithmssettings.h"
-extern SwarmAlgorithmsSettings swarmAlgorithmsSettings;
-class SwarmAlgorithms : public QObject
+
+class SwarmAlgorithms: public QObject
 {
+    Q_OBJECT
 public:
     SwarmAlgorithms();
-
+    void doTheAlgoritm();
+    ChargeAlgorithm chargeAlgorithm;
 private:
+    RobotDisplacementDetection robotDisplacementDetection;
+public slots:
     void update();
+signals:
+    void algoritmFinished();
 };
 
-#endif // SWARMALGORITHMS_H

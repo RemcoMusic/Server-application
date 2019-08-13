@@ -2,11 +2,15 @@
 #define SWARMALGORITHMBASE_H
 
 #include <QObject>
+#include <robotgroup.h>
 
 class SwarmAlgorithmBase
 {
 public:
     SwarmAlgorithmBase();
+
+    ~SwarmAlgorithmBase();
+    RobotGroup *robotGroup = nullptr;
     struct AlgorithmDiscription
     {
         QString name;
@@ -15,8 +19,12 @@ public:
         int maximalAmountOfBots;
         QString errorMessage;
         bool errorOccured=false;
+
+        bool systemAlgorithm = false;
     }algorithmDiscription;
     virtual void update()=0;
+
+
 };
 
 #endif // SWARMALGORITHMBASE_H

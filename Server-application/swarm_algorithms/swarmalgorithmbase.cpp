@@ -4,3 +4,9 @@ SwarmAlgorithmBase::SwarmAlgorithmBase()
 {
 
 }
+
+SwarmAlgorithmBase::~SwarmAlgorithmBase()
+{
+
+}
+

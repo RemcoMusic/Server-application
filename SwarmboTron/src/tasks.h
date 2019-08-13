@@ -1,0 +1,20 @@
+//#include "OTA.h"
+#pragma once
+#include "serverCommunication.h"
+#include "motorDriver.h"
+#include "readVoltage.h"
+#include "ledDriver.h"
+#include "globals.h"
+#include "debug.h"
+#include "OTA.h"
+
+class Tasks
+{
+    public:
+        Tasks();
+        static void serverCommunication(void * parameter);
+        static void motorDriver(void * parameter);
+        static void OTAtask(void * parameter);
+        static void LEDtask(void * parameter);
+        static void debuggerTask(void * parameter);
+};
